@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
-import SentinelApp from "./SentinelApp";
+import LedgerApp from "./LedgerApp";
 
 const COLORS = {
   deep: "#0D1117",
@@ -339,7 +339,7 @@ export default function SlatePlatform() {
             </div>
           </div>
           <div style={{ padding: "28px" }}>
-            {activeModule === "dashboard" ? <Dashboard onModuleClick={setActiveModule} /> : activeModule === "sentinel" ? <SentinelApp /> : <ModulePlaceholder module={activeModuleData} />}
+            {activeModule === "dashboard" ? <Dashboard onModuleClick={setActiveModule} /> : activeModule === "sentinel" ? <SentinelApp /> : activeModule === "ledger" ? <LedgerApp /> : <ModulePlaceholder module={activeModuleData} />}
           </div>
         </div>
       </div>
