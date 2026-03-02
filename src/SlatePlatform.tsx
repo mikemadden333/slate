@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import SentinelApp from "./SentinelApp";
 import LedgerApp from "./LedgerApp";
+import BriefApp from "./BriefApp";
 
 const COLORS = {
   deep: "#0D1117",
@@ -340,7 +341,7 @@ export default function SlatePlatform() {
             </div>
           </div>
           <div style={{ padding: "28px" }}>
-            {activeModule === "dashboard" ? <Dashboard onModuleClick={setActiveModule} /> : activeModule === "sentinel" ? <SentinelApp /> : activeModule === "ledger" ? <LedgerApp /> : <ModulePlaceholder module={activeModuleData} />}
+            {activeModule === "dashboard" ? <Dashboard onModuleClick={setActiveModule} /> : activeModule === "sentinel" ? <SentinelApp /> : activeModule === "ledger" ? <LedgerApp /> : activeModule === "brief" ? <BriefApp /> : <ModulePlaceholder module={activeModuleData} />}
           </div>
         </div>
       </div>
