@@ -1,7 +1,7 @@
 /**
- * IntelQuery — Section 10: Ask PULSE.
+ * IntelQuery — Section 10: Ask Sentinel.
  *
- * Header: "Ask PULSE Anything"
+ * Header: "Ask Sentinel Anything"
  * Prominent input. Suggested questions that update based on conditions.
  * Responses in clean answer cards with data sources.
  */
@@ -38,7 +38,7 @@ export default function IntelQuery({ campus, risk }: Props) {
     const acuteCount = risk.contagionZones.filter(z => z.phase === 'ACUTE').length;
     const activeCount = risk.contagionZones.filter(z => z.phase === 'ACTIVE').length;
 
-    const systemPrompt = `You are PULSE, a violence intelligence system for Noble Schools in Chicago.
+    const systemPrompt = `You are Sentinel, a violence intelligence system for Noble Schools in Chicago.
 You are answering a question from the principal of ${campus.name} in ${campus.communityArea}.
 
 Current data:
@@ -93,7 +93,7 @@ Rules:
     <div style={{ border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, marginBottom: 24 }}>
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#1B3A6B' }}>Ask PULSE</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#1B3A6B' }}>Ask Sentinel</div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
           Ask anything about your campus safety environment
         </div>

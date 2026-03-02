@@ -1,6 +1,6 @@
 /**
  * ExplainModal — Reusable "What is this?" overlay.
- * Plain-English explanations for every technical concept in PULSE.
+ * Plain-English explanations for every technical concept in Sentinel.
  * Clicking the backdrop closes the modal.
  */
 

@@ -195,7 +195,7 @@ export default function LedgerApp() {
             marginTop: 8,
             paddingLeft: 2,
           }}>
-            Financial Intelligence Platform
+            Slate Ledger
           </div>
         </div>
 
