@@ -41,7 +41,7 @@ const GlobalCSS = () => (<style>{`
 const SplashScreen = ({ onComplete }) => {
   const [p, setP] = useState(0);
 
-    // Slate stone strike — deep resonant tone, unlocks on any interaction
+  // Stone strike sound — best effort, silent if browser blocks
   useEffect(() => {
     let played = false;
     const playStrike = () => {
@@ -50,60 +50,47 @@ const SplashScreen = ({ onComplete }) => {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const now = ctx.currentTime;
-
-        // Deep fundamental — slate being struck
         const osc1 = ctx.createOscillator();
         const g1 = ctx.createGain();
         osc1.type = 'triangle';
-        osc1.frequency.setValueAtTime(110, now); // A2 — deep
-        osc1.frequency.exponentialRampToValueAtTime(82, now + 0.8); // decay down
+        osc1.frequency.setValueAtTime(110, now);
+        osc1.frequency.exponentialRampToValueAtTime(82, now + 0.8);
         g1.gain.setValueAtTime(0.18, now);
         g1.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
         osc1.connect(g1); g1.connect(ctx.destination);
         osc1.start(now); osc1.stop(now + 1.2);
-
-        // Stone overtone — the ring
         const osc2 = ctx.createOscillator();
         const g2 = ctx.createGain();
         osc2.type = 'sine';
-        osc2.frequency.value = 220; // A3
+        osc2.frequency.value = 220;
         g2.gain.setValueAtTime(0.08, now);
         g2.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
         osc2.connect(g2); g2.connect(ctx.destination);
         osc2.start(now + 0.02); osc2.stop(now + 0.9);
-
-        // Click transient — the impact
         const buf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < data.length; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.008));
-        }
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.008));
         const click = ctx.createBufferSource();
-        const gClick = ctx.createGain();
+        const gC = ctx.createGain();
         click.buffer = buf;
-        gClick.gain.setValueAtTime(0.12, now);
-        gClick.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-        click.connect(gClick); gClick.connect(ctx.destination);
+        gC.gain.setValueAtTime(0.12, now);
+        gC.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        click.connect(gC); gC.connect(ctx.destination);
         click.start(now);
-
-        // Resonance — low hum that fades
         const osc3 = ctx.createOscillator();
         const g3 = ctx.createGain();
         osc3.type = 'sine';
-        osc3.frequency.value = 55; // A1 — sub bass
+        osc3.frequency.value = 55;
         g3.gain.setValueAtTime(0.06, now + 0.05);
         g3.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
         osc3.connect(g3); g3.connect(ctx.destination);
         osc3.start(now + 0.05); osc3.stop(now + 2.0);
-
         setTimeout(() => ctx.close(), 3000);
       } catch (e) {}
       document.removeEventListener('click', playStrike);
       document.removeEventListener('touchstart', playStrike);
     };
-    // Try immediately (works if returning user)
     playStrike();
-    // Also listen for first interaction (works for new visits)
     if (!played) {
       document.addEventListener('click', playStrike, { once: true });
       document.addEventListener('touchstart', playStrike, { once: true });
@@ -114,6 +101,17 @@ const SplashScreen = ({ onComplete }) => {
     };
   }, []);
 
+  // Splash phase timers
+  useEffect(() => {
+    const t = [
+      setTimeout(() => setP(1), 600),
+      setTimeout(() => setP(2), 2800),
+      setTimeout(() => setP(3), 5000),
+      setTimeout(() => setP(4), 7400),
+      setTimeout(() => onComplete(), 9800),
+    ];
+    return () => t.forEach(clearTimeout);
+  }, []);
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 9999,
