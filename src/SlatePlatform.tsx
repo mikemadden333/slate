@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
+import SentinelApp from "./SentinelApp";
 import LedgerApp from "./LedgerApp";
 
 const COLORS = {
