@@ -154,7 +154,7 @@ export default function ContagionPanel({
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '16px', background: '#F0FDF4', borderRadius: 10, border: '1px solid #BBF7D0',
         }}>
-          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#16A34A', flexShrink: 0 }} />
+          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#0EA5E9', flexShrink: 0 }} />
           <div>
             <div style={{ fontSize: 18, fontWeight: 600, color: '#15803D', lineHeight: 1.3 }}>
               Your campus is outside all active violence contagion zones.
@@ -564,7 +564,7 @@ function NetworkContagionSection({ corridors }: { corridors: CorridorGroup[]; ca
 }
 
 const FC_COLORS: Record<string, { color: string; bg: string }> = {
-  LOW: { color: '#16A34A', bg: '#DCFCE7' },
+  LOW: { color: '#0EA5E9', bg: '#E0F2FE' },
   ELEVATED: { color: '#D97706', bg: '#FFFBEB' },
   HIGH: { color: '#DC2626', bg: '#FEF2F2' },
 };

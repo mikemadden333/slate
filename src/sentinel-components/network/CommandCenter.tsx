@@ -33,7 +33,7 @@ const TEXT2 = '#94A3B8';
 const GOLD = '#F0B429';
 
 const LABEL_COLORS: Record<string, string> = {
-  CRITICAL: '#DC2626', HIGH: '#EA580C', ELEVATED: '#D97706', LOW: '#16A34A',
+  CRITICAL: '#DC2626', HIGH: '#EA580C', ELEVATED: '#D97706', LOW: '#0EA5E9',
 };
 
 const INC_TYPE_COLORS: Record<string, string> = {
@@ -405,7 +405,7 @@ export default function CommandCenter({
               </select>
               <div style={{ fontSize: 13, color: TEXT2, marginBottom: 8 }}>Was 911 already called by campus?</div>
               <div style={{ display: 'flex', gap: 8 }}>
-                {actionBtn('#16A34A', 'Yes — Already Called', () => { logAction('911 confirmed — already called by campus', activeCampus.short); close(); })}
+                {actionBtn('#0EA5E9', 'Yes — Already Called', () => { logAction('911 confirmed — already called by campus', activeCampus.short); close(); })}
                 {actionBtn('#D97706', 'No — I am calling', () => { logAction('911 called — initiated from Command Center', activeCampus.short); close(); })}
               </div>
             </div>
@@ -461,7 +461,7 @@ export default function CommandCenter({
               <div style={{ fontSize: 12, color: TEXT2, marginBottom: 4 }}>Situation summary:</div>
               {preBlock(situationMsg)}
               {copyBtn(situationMsg, 'Copy Situation Summary')}
-              {actionBtn('#16A34A', 'Log: CPS Notified', () => { logAction('CPS Safety Center notified', activeCampus.short); close(); })}
+              {actionBtn('#0EA5E9', 'Log: CPS Notified', () => { logAction('CPS Safety Center notified', activeCampus.short); close(); })}
             </div>
           </div>
         );
@@ -512,7 +512,7 @@ export default function CommandCenter({
                   Send via Text
                 </a>
               </div>
-              {actionBtn('#16A34A', 'Log: Leadership Notified', () => { logAction('Leadership notified', activeCampus.short); close(); })}
+              {actionBtn('#0EA5E9', 'Log: Leadership Notified', () => { logAction('Leadership notified', activeCampus.short); close(); })}
             </div>
           </div>
         );
@@ -542,7 +542,7 @@ export default function CommandCenter({
               <div style={{ fontSize: 12, color: GOLD, fontWeight: 600, marginBottom: 4 }}>{labels[commsTab]}</div>
               {preBlock(msgs[commsTab])}
               {copyBtn(msgs[commsTab], `Copy ${labels[commsTab]}`)}
-              {actionBtn('#16A34A', `Log: ${labels[commsTab]} Drafted`, () => { logAction(`${labels[commsTab]} drafted`, activeCampus.short, 'pending'); close(); })}
+              {actionBtn('#0EA5E9', `Log: ${labels[commsTab]} Drafted`, () => { logAction(`${labels[commsTab]} drafted`, activeCampus.short, 'pending'); close(); })}
             </div>
           </div>
         );
@@ -566,7 +566,7 @@ export default function CommandCenter({
               </div>
               <div style={{ fontSize: 12, color: GOLD, fontWeight: 600, marginBottom: 6 }}>Campuses in ACUTE zones:</div>
               {campusesInAcute.length === 0 ? (
-                <div style={{ fontSize: 12, color: '#16A34A', marginBottom: 12 }}>None — network clear of ACUTE exposure</div>
+                <div style={{ fontSize: 12, color: '#0EA5E9', marginBottom: 12 }}>None — network clear of ACUTE exposure</div>
               ) : (
                 <div style={{ marginBottom: 12 }}>
                   {campusesInAcute.map(r => {
@@ -637,9 +637,9 @@ export default function CommandCenter({
         {/* Center: metrics */}
         <div style={{ display: 'flex', gap: 20 }}>
           <HeaderMetric label="Network Avg" value={String(networkSummary.avgScore)} color={TEXT} />
-          <HeaderMetric label="Elevated" value={String(elevatedCount)} color={elevatedCount > 0 ? '#D97706' : '#16A34A'} />
-          <HeaderMetric label="Contagion" value={String(contagionCount)} color={contagionCount > 0 ? '#DC2626' : '#16A34A'} />
-          <HeaderMetric label="ICE" value={iceAlerts.length > 0 ? 'ACTIVE' : 'CLEAR'} color={iceAlerts.length > 0 ? '#7C3AED' : '#16A34A'} />
+          <HeaderMetric label="Elevated" value={String(elevatedCount)} color={elevatedCount > 0 ? '#D97706' : '#0EA5E9'} />
+          <HeaderMetric label="Contagion" value={String(contagionCount)} color={contagionCount > 0 ? '#DC2626' : '#0EA5E9'} />
+          <HeaderMetric label="ICE" value={iceAlerts.length > 0 ? 'ACTIVE' : 'CLEAR'} color={iceAlerts.length > 0 ? '#7C3AED' : '#0EA5E9'} />
         </div>
 
         {/* Right: clock + campus selector + export + exit */}
@@ -803,7 +803,7 @@ export default function CommandCenter({
             {CAMPUSES.map(campus => {
               const r = risks.find(rr => rr.campusId === campus.id);
               if (!r) return null;
-              const color = LABEL_COLORS[r.label] ?? '#16A34A';
+              const color = LABEL_COLORS[r.label] ?? '#0EA5E9';
               return (
                 <Marker key={campus.id} position={[campus.lat, campus.lng]}
                   icon={makeMapShield(campus.short, r.score, color)}
@@ -851,7 +851,7 @@ export default function CommandCenter({
         <div style={{ flex: 1, overflowY: 'auto', padding: '4px 8px' }} className="cc-scroll">
           {feedIncidents.length === 0 ? (
             <div style={{ padding: 20, textAlign: 'center' }}>
-              <div style={{ fontSize: 13, color: '#16A34A', fontWeight: 600, marginBottom: 4 }}>
+              <div style={{ fontSize: 13, color: '#0EA5E9', fontWeight: 600, marginBottom: 4 }}>
                 No incidents reported near Noble campuses in the last {incidentWindow} hours.
               </div>
               <div style={{ fontSize: 11, color: TEXT2 }}>Network quiet.</div>
@@ -903,7 +903,7 @@ export default function CommandCenter({
         <PanelHeader title="NETWORK RISK FORECAST" sub="NEXT 7 DAYS" />
         <div style={{ flex: 1, display: 'flex', gap: 6, padding: '6px 12px', alignItems: 'stretch' }}>
           {forecast.map((day, i) => {
-            const labelColor = LABEL_COLORS[day.label] ?? '#16A34A';
+            const labelColor = LABEL_COLORS[day.label] ?? '#0EA5E9';
             const dateObj = new Date(day.date);
             const dateShort = dateObj.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
             return (
@@ -1004,7 +1004,7 @@ export default function CommandCenter({
                 {entry.action}
                 {entry.campus && <span style={{ color: TEXT2 }}> &mdash; {entry.campus}</span>}
               </span>
-              <span style={{ fontSize: 8, color: entry.status === 'complete' ? '#16A34A' : '#D97706', flexShrink: 0 }}>
+              <span style={{ fontSize: 8, color: entry.status === 'complete' ? '#0EA5E9' : '#D97706', flexShrink: 0 }}>
                 {entry.status === 'complete' ? '✓' : '○'}
               </span>
             </div>

@@ -240,7 +240,7 @@ function ScienceSection() {
           desc="Elevated, declining risk" marker={null}
         />
         <TimelineBar
-          phase="MONITOR" hours="7–21d" color="#16A34A" width="25%"
+          phase="MONITOR" hours="7–21d" color="#0EA5E9" width="25%"
           desc="Returning to baseline" marker={null}
         />
 
@@ -371,7 +371,7 @@ function LabelsSection() {
         gap: 20,
       }}>
         <LabelCard
-          label="LOW" color="#16A34A"          pulsing={false}
+          label="LOW" color="#0EA5E9"          pulsing={false}
           body="Your campus neighborhood is quiet. No contagion-level crimes in recent history. Standard safety protocols. This is where Noble Network campuses are most of the time."
         />
         <LabelCard

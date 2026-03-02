@@ -1,5 +1,5 @@
 /**
- * PULSE 2.0 — Main Application
+ * Slate Sentinel — Safety Intelligence
  * Splash screen, risk-colored header, all 10 campus sections in narrative scroll.
  */
 
@@ -430,7 +430,7 @@ export default function App() {
         {/* Left: PULSE + view toggle */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 22, letterSpacing: 3 }}>
-            PULSE<span style={{ color: '#F0B429' }}>.</span>
+            Sentinel<span style={{ color: '#F0B429' }}>.</span>
           </div>
           <div style={{ display: 'flex', gap: 4 }}>
             <NavBtn label="My Campus" active={view === 'campus'} onClick={() => setView('campus')} />
@@ -455,7 +455,7 @@ export default function App() {
           </div>
         ) : (
           <div style={{ color: '#fff', fontWeight: 600, fontSize: 16 }}>
-            How PULSE Works
+            How Sentinel Works
           </div>
         )}
 
@@ -636,7 +636,7 @@ export default function App() {
               recommendedCode={recommendedCode}
             />
 
-            {/* 10. Ask PULSE */}
+            {/* 10. Ask Sentinel */}
             <div ref={intelQueryRef}>
               <IntelQuery campus={selectedCampus} risk={selectedRisk} />
             </div>
@@ -719,7 +719,7 @@ export default function App() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             transition: 'transform 200ms ease, box-shadow 200ms ease',
           }}
-          title="How PULSE Works"
+          title="How Sentinel Works"
           onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
           onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
         >
@@ -745,7 +745,7 @@ export default function App() {
           <text x="14" y="20" textAnchor="middle" fill="#fff" fontSize="9"
             fontWeight="800" fontFamily="system-ui">N</text>
         </svg>
-        <span>PULSE — Built for Noble Schools — Chicago, Illinois — {weather.temperature.toFixed(0)}°F</span>
+        <span>Slate Sentinel — Noble Schools — Chicago, Illinois — {weather.temperature.toFixed(0)}°F</span>
       </footer>
     </div>
   );

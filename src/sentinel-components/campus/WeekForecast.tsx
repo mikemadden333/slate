@@ -18,7 +18,7 @@ interface Props {
 }
 
 const LABEL_COLORS: Record<string, { color: string; bg: string }> = {
-  LOW:      { color: '#16A34A', bg: '#DCFCE7' },
+  LOW:      { color: '#0EA5E9', bg: '#E0F2FE' },
   ELEVATED: { color: '#D97706', bg: '#FFFBEB' },
   HIGH:     { color: '#EA580C', bg: '#FFF7ED' },
 };

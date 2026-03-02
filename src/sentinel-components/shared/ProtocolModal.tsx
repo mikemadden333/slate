@@ -166,7 +166,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
               <button
                 onClick={() => copyToClipboard(ec.paScript, setCopiedPA)}
                 style={{
-                  background: copiedPA ? '#16A34A' : '#F3F4F6',
+                  background: copiedPA ? '#0EA5E9' : '#F3F4F6',
                   border: 'none',
                   borderRadius: 6,
                   padding: '4px 10px',
@@ -218,8 +218,8 @@ Context: Risk score ${risk.score} (${risk.label}).`;
                   width: 20,
                   height: 20,
                   borderRadius: 4,
-                  border: `2px solid ${checkedSteps[idx] ? '#16A34A' : '#D1D5DB'}`,
-                  background: checkedSteps[idx] ? '#16A34A' : '#fff',
+                  border: `2px solid ${checkedSteps[idx] ? '#0EA5E9' : '#D1D5DB'}`,
+                  background: checkedSteps[idx] ? '#0EA5E9' : '#fff',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -276,7 +276,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
                   <button
                     onClick={() => copyToClipboard(familyMessage, setCopiedFamily)}
                     style={{
-                      background: copiedFamily ? '#16A34A' : '#F3F4F6',
+                      background: copiedFamily ? '#0EA5E9' : '#F3F4F6',
                       border: 'none',
                       borderRadius: 6,
                       padding: '4px 10px',

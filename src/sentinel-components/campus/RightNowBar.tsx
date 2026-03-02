@@ -37,7 +37,7 @@ const PERIODS: { key: SchoolPeriod; label: string; width: number }[] = [
 const PERIOD_COLORS: Record<string, string> = {
   PRE_SCHOOL: '#6B7280',
   ARRIVAL: '#2563EB',
-  SCHOOL_DAY: '#16A34A',
+  SCHOOL_DAY: '#0EA5E9',
   DISMISSAL: '#D97706',
   AFTER_SCHOOL: '#6B7280',
   OVERNIGHT: '#374151',

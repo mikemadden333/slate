@@ -139,7 +139,7 @@ const LABEL_HUMAN: Record<string, string> = {
 
 /* ---- Score bar zone boundaries ---- */
 const SCORE_ZONES = [
-  { label: 'LOW', end: 25, color: '#16A34A' },
+  { label: 'LOW', end: 25, color: '#0EA5E9' },
   { label: 'ELEVATED', end: 45, color: '#D97706' },
   { label: 'HIGH', end: 70, color: '#EA580C' },
   { label: 'CRITICAL', end: 100, color: '#DC2626' },

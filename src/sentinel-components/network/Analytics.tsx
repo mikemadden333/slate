@@ -370,7 +370,7 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
         display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
         gap: 10, marginTop: 8, marginBottom: 24,
       }}>
-        <StatBox label="LOW" count={risks.filter(r => r.label === 'LOW').length} color="#16A34A" />
+        <StatBox label="LOW" count={risks.filter(r => r.label === 'LOW').length} color="#0EA5E9" />
         <StatBox label="ELEVATED" count={risks.filter(r => r.label === 'ELEVATED').length} color="#D97706" />
         <StatBox label="HIGH" count={risks.filter(r => r.label === 'HIGH').length} color="#EA580C" />
         <StatBox label="CRITICAL" count={risks.filter(r => r.label === 'CRITICAL').length} color="#DC2626" />

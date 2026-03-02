@@ -19,7 +19,7 @@ export default function SinceLastVisitCard({ data, onDismiss }: Props) {
     : `${Math.round(data.hoursAgo / 24)} days ago`;
 
   const scoreDir = data.scoreChange > 0 ? '↑' : data.scoreChange < 0 ? '↓' : '';
-  const scoreColor = data.scoreChange > 0 ? '#DC2626' : data.scoreChange < 0 ? '#16A34A' : '#6B7280';
+  const scoreColor = data.scoreChange > 0 ? '#DC2626' : data.scoreChange < 0 ? '#0EA5E9' : '#6B7280';
   const scoreWord = data.scoreChange > 0 ? 'rising' : data.scoreChange < 0 ? 'improving' : 'stable';
 
   return (

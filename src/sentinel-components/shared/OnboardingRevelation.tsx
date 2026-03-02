@@ -43,10 +43,10 @@ export default function OnboardingRevelation({
       bg: '#F5F3FF',
     },
     {
-      icon: <Bell size={48} style={{ color: '#16A34A' }} />,
+      icon: <Bell size={48} style={{ color: '#0EA5E9' }} />,
       title: 'Sentinel Briefs You Every Morning',
       body: 'Every school day, Sentinel delivers a 3-sentence briefing: what happened, what it means, and what to do. On quiet days, it tells you everything is fine. On high-risk days, it guides you through every step. You\'ll never run school without this information again.',
-      bg: '#DCFCE7',
+      bg: '#E0F2FE',
     },
   ];
 
