@@ -57,7 +57,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{
               fontSize: 12, fontWeight: 600,
-              color: hasAlerts ? '#7C3AED' : '#0EA5E9',
+              color: hasAlerts ? '#7C3AED' : '#16A34A',
             }}>
               {hasAlerts
                 ? `${iceAlerts.length} report${iceAlerts.length !== 1 ? 's' : ''}`
@@ -92,7 +92,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
                 padding: '12px 14px', background: '#F0FDF4', borderRadius: 8,
                 marginBottom: 14,
               }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#0EA5E9', flexShrink: 0 }} />
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#16A34A', flexShrink: 0 }} />
                 <span style={{ fontSize: 13, color: '#15803D' }}>
                   No confirmed immigration enforcement activity near Noble campuses. Monitoring active.
                 </span>
@@ -152,7 +152,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
             <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
               <ExplainLink onClick={() => setShowExplain(true)} label="What is Code White?" />
               <Explainer title="ICE Intelligence">
-                <p style={{ margin: '0 0 12px' }}>Sentinel monitors news feeds and social media for immigration enforcement activity near Noble campuses using a <strong>three-tier verification filter</strong>.</p>
+                <p style={{ margin: '0 0 12px' }}>PULSE monitors news feeds and social media for immigration enforcement activity near Noble campuses using a <strong>three-tier verification filter</strong>.</p>
                 <p style={{ margin: '0 0 12px' }}>Alerts are only surfaced when within <strong>3 miles</strong> of a campus with a <strong>non-zero distance</strong> (0.0 mi = geocoding failure, discarded).</p>
                 <p style={{ margin: 0 }}>Code White (Neptune Protocol) is Noble&apos;s response protocol for confirmed ICE activity near campuses.</p>
               </Explainer>

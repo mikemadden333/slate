@@ -131,7 +131,7 @@ export default function ContagionPanel({
             <Explainer title="Violence Contagion Model">
               <p style={{ margin: '0 0 12px' }}>Based on research by Yale sociologist Andrew Papachristos, gun violence spreads through social networks like an infectious disease. A person's risk of being shot increases by <strong>900%</strong> if someone in their social network was recently shot.</p>
               <p style={{ margin: '0 0 12px' }}>The contagion effect peaks between <strong>18-72 hours</strong> after a homicide (the "retaliation window") and persists for up to <strong>125 days</strong>.</p>
-              <p style={{ margin: 0 }}>Sentinel tracks three phases: <strong>ACUTE</strong> (0-72h, 0.5mi radius), <strong>ACTIVE</strong> (3-14d, 1mi), and <strong>WATCH</strong> (14-125d, 1.5mi).</p>
+              <p style={{ margin: 0 }}>PULSE tracks three phases: <strong>ACUTE</strong> (0-72h, 0.5mi radius), <strong>ACTIVE</strong> (3-14d, 1mi), and <strong>WATCH</strong> (14-125d, 1.5mi).</p>
             </Explainer>
           </div>
           <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2, lineHeight: 1.4 }}>
@@ -154,7 +154,7 @@ export default function ContagionPanel({
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '16px', background: '#F0FDF4', borderRadius: 10, border: '1px solid #BBF7D0',
         }}>
-          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#0EA5E9', flexShrink: 0 }} />
+          <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#16A34A', flexShrink: 0 }} />
           <div>
             <div style={{ fontSize: 18, fontWeight: 600, color: '#15803D', lineHeight: 1.3 }}>
               Your campus is outside all active violence contagion zones.
@@ -564,7 +564,7 @@ function NetworkContagionSection({ corridors }: { corridors: CorridorGroup[]; ca
 }
 
 const FC_COLORS: Record<string, { color: string; bg: string }> = {
-  LOW: { color: '#0EA5E9', bg: '#E0F2FE' },
+  LOW: { color: '#16A34A', bg: '#DCFCE7' },
   ELEVATED: { color: '#D97706', bg: '#FFFBEB' },
   HIGH: { color: '#DC2626', bg: '#FEF2F2' },
 };
@@ -596,7 +596,7 @@ function PapachristosModal({ onClose }: { onClose: () => void }) {
         rivals — face dramatically elevated risk of violence for up to 125 days.
       </p>
       <p style={{ fontSize: 16, lineHeight: 1.8 }}>
-        Sentinel tracks every homicide near your campus and calculates where you are in that risk window.
+        PULSE tracks every homicide near your campus and calculates where you are in that risk window.
         This science has never been applied to school safety before. <strong>Noble Schools is the first.</strong>
       </p>
       <p style={{ fontWeight: 600, color: '#1B3A6B', fontSize: 16 }}>The three phases:</p>

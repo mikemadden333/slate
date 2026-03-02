@@ -1,7 +1,7 @@
 /**
  * OnboardingRevelation — First-time user revelation sequence.
  * Not a tutorial. A revelation of what the principal didn't know.
- * 4 screens showing the gap Sentinel closes.
+ * 4 screens showing the gap PULSE closes.
  */
 
 import { useState } from 'react';
@@ -25,28 +25,28 @@ export default function OnboardingRevelation({
     {
       icon: <MapPin size={48} style={{ color: '#DC2626' }} />,
       title: 'What You Didn\'t Know',
-      body: `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of ${campus.name}. You likely knew about very few of them. That gap between what happened and what you knew is the problem Sentinel solves.`,
+      body: `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of ${campus.name}. You likely knew about very few of them. That gap between what happened and what you knew is the problem PULSE solves.`,
       bg: '#FEF2F2',
     },
     {
       icon: <Activity size={48} style={{ color: '#D97706' }} />,
       title: 'Your Neighborhood Right Now',
       body: inContagionZone
-        ? `${campus.name} is currently inside ${contagionZoneCount} violence contagion zone${contagionZoneCount > 1 ? 's' : ''}. This means a recent homicide near your campus has created a statistically elevated risk of follow-on violence. Sentinel tracks these zones continuously.`
-        : `${campus.name} is not currently inside a violence contagion zone. This is good news — and Sentinel will alert you immediately if that changes. Every homicide within 2 miles creates a 125-day zone that Sentinel monitors.`,
+        ? `${campus.name} is currently inside ${contagionZoneCount} violence contagion zone${contagionZoneCount > 1 ? 's' : ''}. This means a recent homicide near your campus has created a statistically elevated risk of follow-on violence. PULSE tracks these zones continuously.`
+        : `${campus.name} is not currently inside a violence contagion zone. This is good news — and PULSE will alert you immediately if that changes. Every homicide within 2 miles creates a 125-day zone that PULSE monitors.`,
       bg: '#FFFBEB',
     },
     {
       icon: <Shield size={48} style={{ color: '#7C3AED' }} />,
       title: 'Intelligence, Not Surveillance',
-      body: 'Sentinel monitors public neighborhood safety signals — not students. It protects the dignity of your community while giving you the information you need. ICE intelligence protects families. Violence intelligence protects operations. Everything is public data, transformed into judgment.',
+      body: 'PULSE monitors public neighborhood safety signals — not students. It protects the dignity of your community while giving you the information you need. ICE intelligence protects families. Violence intelligence protects operations. Everything is public data, transformed into judgment.',
       bg: '#F5F3FF',
     },
     {
-      icon: <Bell size={48} style={{ color: '#0EA5E9' }} />,
-      title: 'Sentinel Briefs You Every Morning',
-      body: 'Every school day, Sentinel delivers a 3-sentence briefing: what happened, what it means, and what to do. On quiet days, it tells you everything is fine. On high-risk days, it guides you through every step. You\'ll never run school without this information again.',
-      bg: '#E0F2FE',
+      icon: <Bell size={48} style={{ color: '#16A34A' }} />,
+      title: 'PULSE Briefs You Every Morning',
+      body: 'Every school day, PULSE delivers a 3-sentence briefing: what happened, what it means, and what to do. On quiet days, it tells you everything is fine. On high-risk days, it guides you through every step. You\'ll never run school without this information again.',
+      bg: '#DCFCE7',
     },
   ];
 
@@ -122,7 +122,7 @@ export default function OnboardingRevelation({
             width: '100%',
           }}
         >
-          {isLast ? 'Begin Using Sentinel' : 'Continue'}
+          {isLast ? 'Begin Using PULSE' : 'Continue'}
         </button>
 
         {!isLast && (

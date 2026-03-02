@@ -408,7 +408,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
           padding: '0 20px', color: '#fff', zIndex: 10001,
         }}>
           <span style={{ fontWeight: 700, fontSize: 14, letterSpacing: 2, color: '#F0B429' }}>
-            Sentinel COMMAND CENTER — NOBLE SCHOOLS
+            PULSE COMMAND CENTER — NOBLE SCHOOLS
           </span>
           <span style={{ fontSize: 13 }}>
             {new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
@@ -622,7 +622,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>ICE:</span>
-                  <span style={{ fontWeight: 700, color: intelStats.iceCount > 0 ? '#7C3AED' : (fullscreen ? '#0EA5E9' : '#0EA5E9') }}>
+                  <span style={{ fontWeight: 700, color: intelStats.iceCount > 0 ? '#7C3AED' : (fullscreen ? '#16A34A' : '#16A34A') }}>
                     {intelStats.iceCount > 0 ? `${intelStats.iceCount} ALERTS` : 'CLEAR'}
                   </span>
                 </div>
@@ -698,7 +698,7 @@ function LToggle({ label, on, onToggle }: { label: string; on: boolean; onToggle
     }}>
       <span style={{
         width: 10, height: 10, borderRadius: '50%',
-        background: on ? '#0EA5E9' : '#D1D5DB', transition: 'background 200ms',
+        background: on ? '#16A34A' : '#D1D5DB', transition: 'background 200ms',
       }} />
       {label}
     </button>

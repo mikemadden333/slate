@@ -27,9 +27,7 @@ const GlobalCSS = () => (<style>{`
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
   * { box-sizing: border-box; }
   body { margin: 0; padding: 0; overflow: hidden; }
-  .slate-module-box { position: relative !important; width: 100% !important; }
-  .slate-module-box [style*="position: fixed"], .slate-module-box [style*="position:fixed"] { position: absolute !important; z-index: 10 !important; }
-  .slate-module-box > div { height: auto !important; min-height: auto !important; max-height: none !important; }
+  .slate-module-box { overflow: visible; }
   .slate-scroll::-webkit-scrollbar { width: 6px; }
   .slate-scroll::-webkit-scrollbar-track { background: transparent; }
   .slate-scroll::-webkit-scrollbar-thumb { background: ${C.chalk}; border-radius: 3px; }

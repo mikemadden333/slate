@@ -1,7 +1,7 @@
 /**
  * Explainer — Reusable "?" icon that opens a full-screen explanation modal.
  * Circular ? icon. Full-screen modal slides up on mobile, fades in on desktop.
- * Used throughout Sentinel to explain every technical concept in plain English.
+ * Used throughout PULSE to explain every technical concept in plain English.
  */
 
 import { useState } from 'react';

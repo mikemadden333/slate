@@ -58,7 +58,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 const ALL_TYPES = ['HOMICIDE', 'WEAPONS VIOLATION', 'BATTERY', 'ASSAULT', 'ROBBERY', 'NARCOTICS', 'SHOTSPOTTER', 'NEWS'] as const;
 
-const CORRIDOR_COLORS: Record<string, string> = { CLEAR: '#0EA5E9', CAUTION: '#D97706', AVOID: '#DC2626' };
+const CORRIDOR_COLORS: Record<string, string> = { CLEAR: '#16A34A', CAUTION: '#D97706', AVOID: '#DC2626' };
 
 const SNAP_HOURS = [2, 6, 24, 168, 336, 720];
 const SNAP_LABELS = ['2h', '6h', '24h', '7d', '14d', '30d'];
@@ -756,7 +756,7 @@ function LayerToggle({ label, on, onToggle }: { label: string; on: boolean; onTo
     }}>
       <span style={{
         width: 10, height: 10, borderRadius: '50%',
-        background: on ? '#0EA5E9' : '#D1D5DB',
+        background: on ? '#16A34A' : '#D1D5DB',
         transition: 'background 200ms',
       }} />
       {label}

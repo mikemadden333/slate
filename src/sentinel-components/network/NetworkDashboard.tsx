@@ -104,15 +104,15 @@ export default function NetworkDashboard({
           active={filter === 'all'} onClick={() => setFilter('all')} color="#1B3A6B" />
         <MetricTile label="Elevated" value={`${summary.campusesElevated}`}
           sub="of 17" active={filter === 'elevated'} onClick={() => setFilter('elevated')}
-          color={summary.campusesElevated > 0 ? '#D97706' : '#0EA5E9'} />
+          color={summary.campusesElevated > 0 ? '#D97706' : '#16A34A'} />
         <MetricTile label="Contagion" value={`${summary.acuteZones + summary.activeZones}`}
           sub={`${summary.acuteZones} ACUTE · ${summary.activeZones} ACTIVE`}
           active={filter === 'contagion'} onClick={() => setFilter('contagion')}
-          color={summary.acuteZones > 0 ? '#DC2626' : summary.activeZones > 0 ? '#D97706' : '#0EA5E9'} />
+          color={summary.acuteZones > 0 ? '#DC2626' : summary.activeZones > 0 ? '#D97706' : '#16A34A'} />
         <MetricTile label="ICE" value={summary.iceAlerts > 0 ? 'ACTIVE' : 'CLEAR'}
           sub={summary.iceAlerts > 0 ? `${summary.iceAlerts} alert${summary.iceAlerts !== 1 ? 's' : ''}` : 'No reports'}
           active={filter === 'ice'} onClick={() => setFilter('ice')}
-          color={summary.iceAlerts > 0 ? '#7C3AED' : '#0EA5E9'} />
+          color={summary.iceAlerts > 0 ? '#7C3AED' : '#16A34A'} />
       </div>
 
       {/* Executive Morning Briefing */}

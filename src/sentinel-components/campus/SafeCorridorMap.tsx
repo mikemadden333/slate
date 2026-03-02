@@ -19,7 +19,7 @@ interface Props {
 }
 
 const STATUS_COLORS: Record<string, { color: string; bg: string; label: string }> = {
-  CLEAR:   { color: '#0EA5E9', bg: '#E0F2FE', label: 'Clear' },
+  CLEAR:   { color: '#16A34A', bg: '#DCFCE7', label: 'Clear' },
   CAUTION: { color: '#D97706', bg: '#FFFBEB', label: 'Caution' },
   AVOID:   { color: '#DC2626', bg: '#FEF2F2', label: 'Avoid' },
 };
@@ -134,10 +134,10 @@ function CorridorExplainModal({ onClose }: { onClose: () => void }) {
   return (
     <ExplainModal title="How Corridors Are Determined" onClose={onClose}>
       <p style={{ marginTop: 0 }}>
-        Sentinel identifies 4 primary walking corridors radiating from your campus based on the street grid.
+        PULSE identifies 4 primary walking corridors radiating from your campus based on the street grid.
       </p>
       <ul style={{ paddingLeft: 20 }}>
-        <li><strong style={{ color: '#0EA5E9' }}>GREEN:</strong> No incidents in last 6h. Clear.</li>
+        <li><strong style={{ color: '#16A34A' }}>GREEN:</strong> No incidents in last 6h. Clear.</li>
         <li><strong style={{ color: '#D97706' }}>AMBER:</strong> Incidents in last 24h. Exercise awareness.</li>
         <li><strong style={{ color: '#DC2626' }}>RED:</strong> Incidents in last 6h or active ShotSpotter. Consider alternate routes.</li>
       </ul>

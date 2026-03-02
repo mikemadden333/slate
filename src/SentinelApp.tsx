@@ -1,5 +1,5 @@
 /**
- * Slate Sentinel — Safety Intelligence
+ * PULSE 2.0 — Main Application
  * Splash screen, risk-colored header, all 10 campus sections in narrative scroll.
  */
 
