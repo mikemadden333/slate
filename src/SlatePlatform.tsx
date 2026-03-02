@@ -40,103 +40,120 @@ const GlobalCSS = () => (<style>{`
    ═══════════════════════════════════════════════════════════ */
 const SplashScreen = ({ onComplete }) => {
   const [p, setP] = useState(0);
-  // Slate startup chime — two-note ascending tone
-  useEffect(() => {
+  const [started, setStarted] = useState(false);
+
+  const handleEnter = () => {
+    if (started) return;
+    setStarted(true);
+    // Startup chime — D major ascending
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const playTone = (freq, start, duration, gain = 0.12) => {
+      const playTone = (freq, start, dur, vol = 0.12) => {
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.value = freq;
         g.gain.setValueAtTime(0, ctx.currentTime + start);
-        g.gain.linearRampToValueAtTime(gain, ctx.currentTime + start + 0.08);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration);
+        g.gain.linearRampToValueAtTime(vol, ctx.currentTime + start + 0.08);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
         osc.connect(g);
         g.connect(ctx.destination);
         osc.start(ctx.currentTime + start);
-        osc.stop(ctx.currentTime + start + duration);
+        osc.stop(ctx.currentTime + start + dur);
       };
-      // First note: D5 — warm, grounded
-      playTone(587.33, 0.8, 1.8, 0.10);
-      // Second note: A5 — clarity, lift
-      playTone(880, 1.2, 2.0, 0.08);
-      // Subtle harmonic: D6 — shimmer
-      playTone(1174.66, 1.4, 1.6, 0.04);
+      playTone(587.33, 0.3, 2.0, 0.10);
+      playTone(880, 0.7, 2.2, 0.08);
+      playTone(1174.66, 0.9, 1.8, 0.04);
       setTimeout(() => ctx.close(), 5000);
     } catch (e) {}
-  }, []);
+  };
+
   useEffect(() => {
+    if (!started) return;
     const t = [
-      setTimeout(() => setP(1), 1200),
-      setTimeout(() => setP(2), 3600),
-      setTimeout(() => setP(3), 6000),
-      setTimeout(() => setP(4), 8400),
-      setTimeout(() => onComplete(), 10200),
+      setTimeout(() => setP(1), 600),
+      setTimeout(() => setP(2), 2800),
+      setTimeout(() => setP(3), 5000),
+      setTimeout(() => setP(4), 7400),
+      setTimeout(() => onComplete(), 9800),
     ];
     return () => t.forEach(clearTimeout);
-  }, []);
+  }, [started]);
 
   return (
-    <div style={{
+    <div onClick={handleEnter} style={{
       position: "fixed", inset: 0, zIndex: 9999,
       background: "linear-gradient(160deg, #161D2F 0%, #0D1117 35%, #1C2333 65%, #161D2F 100%)",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      cursor: !started ? "pointer" : "default",
       opacity: p >= 4 ? 0 : 1, transition: "opacity 2.2s cubic-bezier(0.4, 0, 0.2, 1)",
     }}>
       <div style={{ position: "absolute", width: 700, height: 700, borderRadius: "50%", background: `radial-gradient(circle, ${C.gold}06 0%, transparent 60%)`, top: "35%", left: "50%", transform: "translate(-50%, -50%)", animation: "slateGlow 5s ease-in-out infinite" }} />
 
-      {/* Badge */}
-      <div style={{ position: "relative", marginBottom: 60, padding: "10px 28px", borderRadius: 24, border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.06)", fontSize: 10, fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.70)", opacity: p >= 1 ? 1 : 0, transition: "opacity 1s ease" }}>
-        Platform Design System — Version 2.0 — Confidential
-      </div>
-
-      {/* Mark */}
-      <div style={{ position: "relative", opacity: p >= 1 ? 1 : 0, transform: p >= 1 ? "translateY(0) scale(1)" : "translateY(30px) scale(0.9)", transition: "all 1.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>
-        <svg width="80" height="60" viewBox="0 0 40 30" fill="none">
-          <path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.10)" />
-          <path d="M8 2 L36 2 L32 28 L4 28 Z" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.5" />
-          <line x1="10" y1="13" x2="30" y2="13" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" />
-          <line x1="10" y1="19" x2="22" y2="19" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" opacity="0.45" />
-        </svg>
-      </div>
-
-      {/* Wordmark */}
-      <div style={{ position: "relative", marginTop: 24, fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 900, fontSize: 88, color: C.white, letterSpacing: "-0.04em", lineHeight: 1, opacity: p >= 1 ? 1 : 0, transform: p >= 1 ? "translateY(0)" : "translateY(24px)", transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s" }}>
-        Slate<span style={{ color: C.gold }}>.</span>
-      </div>
-
-      {/* Tagline */}
-      <div style={{ position: "relative", marginTop: 28, fontSize: 14, fontWeight: 500, letterSpacing: "8px", textTransform: "uppercase", color: "rgba(255,255,255,0.70)", opacity: p >= 2 ? 1 : 0, transform: p >= 2 ? "translateY(0)" : "translateY(10px)", transition: "all 1s ease" }}>
-        Start With The Facts
-      </div>
-
-      {/* Module dots */}
-      <div style={{ position: "relative", marginTop: 64, display: "flex", gap: 24, opacity: p >= 2 ? 1 : 0, transition: "opacity 0.8s ease 0.4s" }}>
-        {MODULES.map((m, i) => (
-          <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, opacity: p >= 2 ? 1 : 0, transition: `opacity 0.6s ease ${0.5 + i * 0.12}s` }}>
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: m.color, boxShadow: `0 0 14px ${m.color}60`, color: m.color, animation: p >= 2 ? "slateDotPulse 3s ease-in-out infinite" : "none", animationDelay: `${i * 0.3}s` }} />
-            <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: m.color }}>{m.label}</span>
+      {!started ? (
+        /* Pre-entry state — just the mark and a prompt */
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 32, animation: "slateDotPulse 3s ease-in-out infinite", color: C.gold }}>
+          <svg width="60" height="45" viewBox="0 0 40 30" fill="none">
+            <path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.10)" />
+            <line x1="10" y1="13" x2="30" y2="13" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" />
+            <line x1="10" y1="19" x2="22" y2="19" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" opacity="0.55" />
+          </svg>
+          <div style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 900, fontSize: 48, color: C.white, letterSpacing: "-0.04em" }}>
+            Slate<span style={{ color: C.gold }}>.</span>
           </div>
-        ))}
-      </div>
-
-      {/* Descriptor */}
-      <div style={{ position: "relative", marginTop: 64, fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.50)", letterSpacing: "1.5px", opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease" }}>
-        Intelligence Platform for Charter School Networks — Chicago · National
-      </div>
-
-      {/* Corporate footer */}
-      <div style={{ position: "absolute", bottom: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 10, opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease 0.4s" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 10, color: "rgba(255,255,255,0.45)", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }}>
-          <span>Slate Systems, LLC</span>
-          <span style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(255,255,255,0.25)" }} />
-          <span>Madden Advisory Group</span>
+          <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(255,255,255,0.40)" }}>
+            Click to enter
+          </div>
         </div>
-        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1px" }}>
-          Proprietary & Confidential · All Rights Reserved · 2026
-        </div>
-      </div>
+      ) : (
+        /* Post-click — full branded sequence */
+        <>
+          <div style={{ position: "relative", marginBottom: 60, padding: "10px 28px", borderRadius: 24, border: "1px solid rgba(255,255,255,0.18)", background: "rgba(255,255,255,0.06)", fontSize: 10, fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.70)", opacity: p >= 1 ? 1 : 0, transition: "opacity 1s ease" }}>
+            Platform Design System — Version 2.0 — Confidential
+          </div>
+
+          <div style={{ position: "relative", opacity: p >= 1 ? 1 : 0, transform: p >= 1 ? "translateY(0) scale(1)" : "translateY(30px) scale(0.9)", transition: "all 1.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+            <svg width="80" height="60" viewBox="0 0 40 30" fill="none">
+              <path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.10)" />
+              <path d="M8 2 L36 2 L32 28 L4 28 Z" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.5" />
+              <line x1="10" y1="13" x2="30" y2="13" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="10" y1="19" x2="22" y2="19" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" opacity="0.55" />
+            </svg>
+          </div>
+
+          <div style={{ position: "relative", marginTop: 24, fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 900, fontSize: 88, color: C.white, letterSpacing: "-0.04em", lineHeight: 1, opacity: p >= 1 ? 1 : 0, transform: p >= 1 ? "translateY(0)" : "translateY(24px)", transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s" }}>
+            Slate<span style={{ color: C.gold }}>.</span>
+          </div>
+
+          <div style={{ position: "relative", marginTop: 28, fontSize: 14, fontWeight: 500, letterSpacing: "8px", textTransform: "uppercase", color: "rgba(255,255,255,0.65)", opacity: p >= 2 ? 1 : 0, transform: p >= 2 ? "translateY(0)" : "translateY(10px)", transition: "all 1s ease" }}>
+            Start With The Facts
+          </div>
+
+          <div style={{ position: "relative", marginTop: 64, display: "flex", gap: 24, opacity: p >= 2 ? 1 : 0, transition: "opacity 0.8s ease 0.4s" }}>
+            {MODULES.map((m, i) => (
+              <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, opacity: p >= 2 ? 1 : 0, transition: `opacity 0.6s ease ${0.5 + i * 0.12}s` }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: m.color, boxShadow: `0 0 14px ${m.color}60`, color: m.color, animation: p >= 2 ? "slateDotPulse 3s ease-in-out infinite" : "none", animationDelay: `${i * 0.3}s` }} />
+                <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: m.color }}>{m.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ position: "relative", marginTop: 64, fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.50)", letterSpacing: "1.5px", opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease" }}>
+            Intelligence Platform for Charter School Networks — Chicago · National
+          </div>
+
+          <div style={{ position: "absolute", bottom: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 10, opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease 0.4s" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 10, color: "rgba(255,255,255,0.45)", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }}>
+              <span>Slate Systems, LLC</span>
+              <span style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(255,255,255,0.25)" }} />
+              <span>Madden Advisory Group</span>
+            </div>
+            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1px" }}>
+              Proprietary & Confidential · All Rights Reserved · 2026
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
