@@ -42,13 +42,39 @@ const GlobalCSS = () => (<style>{`
    ═══════════════════════════════════════════════════════════ */
 const SplashScreen = ({ onComplete }) => {
   const [p, setP] = useState(0);
+  // Slate startup chime — two-note ascending tone
+  useEffect(() => {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const playTone = (freq, start, duration, gain = 0.12) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(0, ctx.currentTime + start);
+        g.gain.linearRampToValueAtTime(gain, ctx.currentTime + start + 0.08);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(ctx.currentTime + start);
+        osc.stop(ctx.currentTime + start + duration);
+      };
+      // First note: D5 — warm, grounded
+      playTone(587.33, 0.8, 1.8, 0.10);
+      // Second note: A5 — clarity, lift
+      playTone(880, 1.2, 2.0, 0.08);
+      // Subtle harmonic: D6 — shimmer
+      playTone(1174.66, 1.4, 1.6, 0.04);
+      setTimeout(() => ctx.close(), 5000);
+    } catch (e) {}
+  }, []);
   useEffect(() => {
     const t = [
-      setTimeout(() => setP(1), 800),
-      setTimeout(() => setP(2), 2600),
-      setTimeout(() => setP(3), 4400),
-      setTimeout(() => setP(4), 6200),
-      setTimeout(() => onComplete(), 7800),
+      setTimeout(() => setP(1), 1200),
+      setTimeout(() => setP(2), 3600),
+      setTimeout(() => setP(3), 6000),
+      setTimeout(() => setP(4), 8400),
+      setTimeout(() => onComplete(), 10200),
     ];
     return () => t.forEach(clearTimeout);
   }, []);
@@ -56,14 +82,14 @@ const SplashScreen = ({ onComplete }) => {
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 9999,
-      background: "linear-gradient(160deg, #111827 0%, #0D1117 35%, #1C2333 65%, #111827 100%)",
+      background: "linear-gradient(160deg, #161D2F 0%, #0D1117 35%, #1C2333 65%, #161D2F 100%)",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      opacity: p >= 4 ? 0 : 1, transition: "opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1)",
+      opacity: p >= 4 ? 0 : 1, transition: "opacity 2.2s cubic-bezier(0.4, 0, 0.2, 1)",
     }}>
       <div style={{ position: "absolute", width: 700, height: 700, borderRadius: "50%", background: `radial-gradient(circle, ${C.gold}06 0%, transparent 60%)`, top: "35%", left: "50%", transform: "translate(-50%, -50%)", animation: "slateGlow 5s ease-in-out infinite" }} />
 
       {/* Badge */}
-      <div style={{ position: "relative", marginBottom: 60, padding: "10px 28px", borderRadius: 24, border: "1px solid rgba(255,255,255,0.18)", background: "rgba(255,255,255,0.06)", fontSize: 10, fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.60)", opacity: p >= 1 ? 1 : 0, transition: "opacity 1s ease" }}>
+      <div style={{ position: "relative", marginBottom: 60, padding: "10px 28px", borderRadius: 24, border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.06)", fontSize: 10, fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.70)", opacity: p >= 1 ? 1 : 0, transition: "opacity 1s ease" }}>
         Platform Design System — Version 2.0 — Confidential
       </div>
 
@@ -83,7 +109,7 @@ const SplashScreen = ({ onComplete }) => {
       </div>
 
       {/* Tagline */}
-      <div style={{ position: "relative", marginTop: 28, fontSize: 14, fontWeight: 500, letterSpacing: "8px", textTransform: "uppercase", color: "rgba(255,255,255,0.60)", opacity: p >= 2 ? 1 : 0, transform: p >= 2 ? "translateY(0)" : "translateY(10px)", transition: "all 1s ease" }}>
+      <div style={{ position: "relative", marginTop: 28, fontSize: 14, fontWeight: 500, letterSpacing: "8px", textTransform: "uppercase", color: "rgba(255,255,255,0.70)", opacity: p >= 2 ? 1 : 0, transform: p >= 2 ? "translateY(0)" : "translateY(10px)", transition: "all 1s ease" }}>
         Start With The Facts
       </div>
 
@@ -98,18 +124,18 @@ const SplashScreen = ({ onComplete }) => {
       </div>
 
       {/* Descriptor */}
-      <div style={{ position: "relative", marginTop: 64, fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.40)", letterSpacing: "1.5px", opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease" }}>
+      <div style={{ position: "relative", marginTop: 64, fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.50)", letterSpacing: "1.5px", opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease" }}>
         Intelligence Platform for Charter School Networks — Chicago · National
       </div>
 
       {/* Corporate footer */}
       <div style={{ position: "absolute", bottom: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 10, opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease 0.4s" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 10, color: "rgba(255,255,255,0.35)", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 10, color: "rgba(255,255,255,0.45)", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }}>
           <span>Slate Systems, LLC</span>
           <span style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(255,255,255,0.25)" }} />
           <span>Madden Advisory Group</span>
         </div>
-        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.22)", letterSpacing: "1px" }}>
+        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1px" }}>
           Proprietary & Confidential · All Rights Reserved · 2026
         </div>
       </div>
@@ -124,14 +150,14 @@ const ModuleHeader = ({ module: m }) => (
     <div style={{ position: "absolute", right: 80, bottom: -60, width: 140, height: 140, borderRadius: "50%", background: m.color, opacity: 0.03 }} />
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, position: "relative" }}>
       <svg width="16" height="12" viewBox="0 0 40 30" fill="none"><path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.12)" /><line x1="10" y1="13" x2="30" y2="13" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" /><line x1="10" y1="19" x2="22" y2="19" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" opacity="0.5" /></svg>
-      <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: "2.5px", textTransform: "uppercase" }}>Slate {m.label}</span>
+      <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "2.5px", textTransform: "uppercase" }}>Slate {m.label}</span>
       <span style={{ marginLeft: 8, padding: "2px 10px", borderRadius: 12, background: `${m.color}20`, border: `1px solid ${m.color}35`, fontSize: 9, fontWeight: 700, color: m.color, letterSpacing: "1.5px", textTransform: "uppercase" }}>{m.status}</span>
     </div>
     <div style={{ display: "flex", alignItems: "baseline", gap: 16, position: "relative" }}>
       <span style={{ fontSize: 30, fontWeight: 900, color: C.white, letterSpacing: "-0.03em" }}>{m.label}</span>
       <span style={{ fontSize: 9, fontWeight: 600, color: m.color, letterSpacing: "2.5px", textTransform: "uppercase" }}>{m.category}</span>
     </div>
-    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.50)", marginTop: 8, fontStyle: "italic", position: "relative" }}>{m.tagline}</div>
+    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.60)", marginTop: 8, fontStyle: "italic", position: "relative" }}>{m.tagline}</div>
   </div>
 );
 
@@ -147,12 +173,12 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
       <div style={{ flex: 1, padding: "16px 0", overflowY: "auto", flexShrink: 1 }}>
         <NI label="Dashboard" icon="⬡" color={C.gold} active={activeModule === "dashboard"} collapsed={collapsed} onClick={() => setActiveModule("dashboard")} />
         <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "12px 16px" }} />
-        {!collapsed && <div style={{ padding: "0 24px", marginBottom: 10, fontSize: 9, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.22)" }}>Modules</div>}
+        {!collapsed && <div style={{ padding: "0 24px", marginBottom: 10, fontSize: 9, fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.32)" }}>Modules</div>}
         {MODULES.map(m => <NI key={m.id} label={m.label} icon={m.icon} color={m.color} active={activeModule === m.id} collapsed={collapsed} onClick={() => setActiveModule(m.id)} />)}
       </div>
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", flexShrink: 0 }}>
-        {!collapsed && <div style={{ padding: "14px 24px 4px" }}><div style={{ fontSize: 9, color: "rgba(255,255,255,0.22)", letterSpacing: "1.5px", lineHeight: 1.8, textTransform: "uppercase", fontWeight: 600 }}>Slate Systems, LLC</div><div style={{ fontSize: 8, color: "rgba(255,255,255,0.14)", letterSpacing: "1px" }}>Madden Advisory Group</div></div>}
-        <div onClick={() => setCollapsed(!collapsed)} style={{ padding: "14px 24px", display: "flex", justifyContent: collapsed ? "center" : "flex-end", cursor: "pointer", color: "rgba(255,255,255,0.22)", fontSize: 12 }}>{collapsed ? "▸" : "◂"}</div>
+        {!collapsed && <div style={{ padding: "14px 24px 4px" }}><div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1.5px", lineHeight: 1.8, textTransform: "uppercase", fontWeight: 600 }}>Slate Systems, LLC</div><div style={{ fontSize: 8, color: "rgba(255,255,255,0.14)", letterSpacing: "1px" }}>Madden Advisory Group</div></div>}
+        <div onClick={() => setCollapsed(!collapsed)} style={{ padding: "14px 24px", display: "flex", justifyContent: collapsed ? "center" : "flex-end", cursor: "pointer", color: "rgba(255,255,255,0.32)", fontSize: 12 }}>{collapsed ? "▸" : "◂"}</div>
       </div>
     </div>
   );
@@ -160,7 +186,7 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
 const NI = ({ label, icon, color, active, collapsed, onClick }) => (
   <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 12, padding: collapsed ? "11px 0" : "11px 24px", justifyContent: collapsed ? "center" : "flex-start", cursor: "pointer", margin: "1px 10px", borderRadius: 10, background: active ? `${color}12` : "transparent", borderLeft: active ? `3px solid ${color}` : "3px solid transparent", transition: "all 0.15s ease" }} onMouseEnter={e => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }} onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? `${color}12` : "transparent"; }}>
     <span style={{ fontSize: 15, width: 22, textAlign: "center", flexShrink: 0 }}>{icon}</span>
-    {!collapsed && <span style={{ fontSize: 13, fontWeight: active ? 700 : 500, color: active ? color : "rgba(255,255,255,0.60)", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{label}</span>}
+    {!collapsed && <span style={{ fontSize: 13, fontWeight: active ? 700 : 500, color: active ? color : "rgba(255,255,255,0.70)", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{label}</span>}
   </div>
 );
 
