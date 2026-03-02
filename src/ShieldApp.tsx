@@ -1,171 +1,132 @@
 // @ts-nocheck
 import { useState } from "react";
 
-const COLORS = {
-  deep: "#0D1117", rock: "#1C2333", mid: "#2D3748", lightText: "#4A5568",
-  gold: "#F0B429", chalk: "#E8EDF2", bg: "#F5F7FA", white: "#FFFFFF", accent: "#8B5CF6",
-};
+const C = { deep: "#0D1117", mid: "#2D3748", light: "#4A5568", chalk: "#E8EDF2", purple: "#8B5CF6", white: "#FFFFFF", bg: "#F5F7FA" };
 
 const COMPLIANCE_AREAS = [
-  { name: "FERPA", status: "compliant", lastAudit: "Feb 2026", nextDeadline: "Aug 2026", score: 98 },
-  { name: "Title IX", status: "compliant", lastAudit: "Jan 2026", nextDeadline: "Jul 2026", score: 95 },
-  { name: "504 / ADA", status: "attention", lastAudit: "Dec 2025", nextDeadline: "Mar 2026", score: 87 },
-  { name: "OSHA", status: "compliant", lastAudit: "Nov 2025", nextDeadline: "May 2026", score: 94 },
-  { name: "Food Safety (HACCP)", status: "compliant", lastAudit: "Jan 2026", nextDeadline: "Jul 2026", score: 96 },
-  { name: "Fire Safety", status: "compliant", lastAudit: "Oct 2025", nextDeadline: "Apr 2026", score: 99 },
-  { name: "Background Checks", status: "compliant", lastAudit: "Feb 2026", nextDeadline: "Ongoing", score: 100 },
-  { name: "Mandated Reporting", status: "compliant", lastAudit: "Jan 2026", nextDeadline: "Jun 2026", score: 97 },
-  { name: "Bond Covenants", status: "compliant", lastAudit: "Feb 2026", nextDeadline: "Jun 2026", score: 100 },
-  { name: "Charter Agreement", status: "compliant", lastAudit: "Dec 2025", nextDeadline: "Sep 2026", score: 93 },
-  { name: "Data Privacy (SOPPA)", status: "attention", lastAudit: "Nov 2025", nextDeadline: "Apr 2026", score: 85 },
-  { name: "Transportation Safety", status: "compliant", lastAudit: "Jan 2026", nextDeadline: "Aug 2026", score: 91 },
+  { area: "FERPA", status: "compliant", lastAudit: "2026-01-15", nextAudit: "2026-07-15", items: 0, desc: "Student data privacy" },
+  { area: "Title IX", status: "compliant", lastAudit: "2025-11-01", nextAudit: "2026-05-01", items: 2, desc: "Gender equity & harassment" },
+  { area: "OSHA", status: "action_needed", lastAudit: "2025-09-20", nextAudit: "2026-03-20", items: 4, desc: "Workplace safety" },
+  { area: "Fire Safety", status: "compliant", lastAudit: "2026-02-01", nextAudit: "2026-08-01", items: 0, desc: "Inspections & drills" },
+  { area: "Food Safety", status: "compliant", lastAudit: "2026-01-10", nextAudit: "2026-04-10", items: 1, desc: "USDA & health dept" },
+  { area: "Special Education", status: "monitoring", lastAudit: "2025-12-15", nextAudit: "2026-06-15", items: 3, desc: "IEP compliance" },
+  { area: "Transportation", status: "compliant", lastAudit: "2026-02-10", nextAudit: "2026-08-10", items: 0, desc: "Vehicle & driver certs" },
+  { area: "Background Checks", status: "compliant", lastAudit: "2026-02-20", nextAudit: "2026-08-20", items: 0, desc: "Staff clearances" },
+  { area: "Insurance", status: "compliant", lastAudit: "2025-10-01", nextAudit: "2026-10-01", items: 0, desc: "Property, liability, D&O" },
+  { area: "Bond Covenants", status: "compliant", lastAudit: "2026-01-30", nextAudit: "2026-07-30", items: 0, desc: "S&P BBB-Stable requirements" },
+  { area: "Charter Agreement", status: "compliant", lastAudit: "2025-08-01", nextAudit: "2026-08-01", items: 1, desc: "CPS authorizer terms" },
+  { area: "Cybersecurity", status: "monitoring", lastAudit: "2026-02-15", nextAudit: "2026-05-15", items: 2, desc: "SOC 2 prep & data protection" },
 ];
 
 const INCIDENTS = [
-  { id: 1, date: "Feb 28, 2026", campus: "Johnson", type: "Slip & Fall", severity: "low", status: "closed", claim: false },
-  { id: 2, date: "Feb 25, 2026", campus: "Bulls", type: "Property Damage", severity: "low", status: "closed", claim: false },
-  { id: 3, date: "Feb 22, 2026", campus: "Noble Street", type: "Student Injury (PE)", severity: "medium", status: "open", claim: true },
-  { id: 4, date: "Feb 18, 2026", campus: "Gary Comer", type: "Visitor Incident", severity: "low", status: "closed", claim: false },
-  { id: 5, date: "Feb 14, 2026", campus: "Muchin", type: "Equipment Malfunction", severity: "medium", status: "under review", claim: true },
-  { id: 6, date: "Feb 10, 2026", campus: "Pritzker", type: "Slip & Fall", severity: "low", status: "closed", claim: false },
-  { id: 7, date: "Feb 5, 2026", campus: "Baker", type: "Vehicle Incident (Parking)", severity: "low", status: "closed", claim: false },
-  { id: 8, date: "Jan 30, 2026", campus: "DRW Trading", type: "Water Damage", severity: "high", status: "open", claim: true },
+  { date: "2026-02-28", type: "Slip & Fall", campus: "Johnson", status: "open", severity: "minor" },
+  { date: "2026-02-25", type: "Property Damage", campus: "Bulls", status: "investigating", severity: "moderate" },
+  { date: "2026-02-20", type: "Student Altercation", campus: "Hansberry", status: "resolved", severity: "minor" },
+  { date: "2026-02-18", type: "Bus Incident", campus: "Rauner", status: "resolved", severity: "minor" },
+  { date: "2026-02-12", type: "Water Leak", campus: "Muchin", status: "resolved", severity: "moderate" },
+  { date: "2026-02-08", type: "Fire Alarm (false)", campus: "DRW", status: "resolved", severity: "minor" },
 ];
 
-const INSURANCE = [
-  { type: "General Liability", carrier: "Travelers", premium: 1240000, expiry: "Jul 2026", coverage: 10000000 },
-  { type: "Property", carrier: "Zurich", premium: 890000, expiry: "Jul 2026", coverage: 150000000 },
-  { type: "Workers Comp", carrier: "Hartford", premium: 720000, expiry: "Jul 2026", coverage: 1000000 },
-  { type: "D&O", carrier: "Chubb", premium: 185000, expiry: "Sep 2026", coverage: 5000000 },
-  { type: "Cyber Liability", carrier: "AIG", premium: 95000, expiry: "Nov 2026", coverage: 3000000 },
-  { type: "Auto", carrier: "Travelers", premium: 210000, expiry: "Jul 2026", coverage: 2000000 },
-];
-
-const statusColor = (s) => s === "compliant" ? "#059669" : s === "attention" ? "#D97706" : "#DC2626";
-const sevColor = (s) => s === "low" ? "#059669" : s === "medium" ? "#D97706" : "#DC2626";
-
-const KPI = ({ label, value, sub, color }) => (
-  <div style={{ background: COLORS.white, borderRadius: 10, padding: "18px 20px", borderTop: "3px solid " + color, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-    <div style={{ fontSize: 10, fontWeight: 600, color: COLORS.lightText, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>{label}</div>
-    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: COLORS.deep }}>{value}</div>
-    {sub && <div style={{ fontSize: 11, color: COLORS.lightText, marginTop: 2 }}>{sub}</div>}
-  </div>
-);
+const statusColor = (s: string) => s === 'compliant' ? '#059669' : s === 'action_needed' ? '#DC2626' : '#D97706';
+const statusLabel = (s: string) => s === 'compliant' ? 'COMPLIANT' : s === 'action_needed' ? 'ACTION NEEDED' : 'MONITORING';
 
 export default function ShieldApp() {
-  const compliant = COMPLIANCE_AREAS.filter(c => c.status === "compliant").length;
-  const attention = COMPLIANCE_AREAS.filter(c => c.status === "attention").length;
-  const avgScore = Math.round(COMPLIANCE_AREAS.reduce((s, c) => s + c.score, 0) / COMPLIANCE_AREAS.length);
-  const openIncidents = INCIDENTS.filter(i => i.status !== "closed").length;
-  const totalPremium = INSURANCE.reduce((s, i) => s + i.premium, 0);
+  const [tab, setTab] = useState<'compliance' | 'incidents' | 'insurance'>('compliance');
+  const compliant = COMPLIANCE_AREAS.filter(c => c.status === 'compliant').length;
+  const totalItems = COMPLIANCE_AREAS.reduce((a, c) => a + c.items, 0);
+  const openIncidents = INCIDENTS.filter(i => i.status !== 'resolved').length;
 
   return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", maxWidth: 1100, margin: "0 auto" }}>
-      <div style={{
-        background: "linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%)",
-        borderRadius: 16, padding: "32px 36px", marginBottom: 24, position: "relative", overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", right: -20, top: -20, width: 160, height: 160, borderRadius: "50%", background: "#A78BFA", opacity: 0.1 }} />
-        <div style={{ fontSize: 22, fontWeight: 700, color: COLORS.white, marginBottom: 4 }}>Slate Shield</div>
-        <div style={{ fontSize: 13, color: "#C4B5FD", lineHeight: 1.5 }}>
-          Risk management, compliance monitoring, incident tracking, and insurance oversight across 17 campuses.
-        </div>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 24 }}>
-        <KPI label="Compliance Score" value={avgScore + "%"} sub={compliant + " of " + COMPLIANCE_AREAS.length + " areas"} color="#8B5CF6" />
-        <KPI label="Needs Attention" value={attention} sub="compliance areas" color="#D97706" />
-        <KPI label="Open Incidents" value={openIncidents} sub={"of " + INCIDENTS.length + " total (90 days)"} color="#EF4444" />
-        <KPI label="Active Claims" value={INCIDENTS.filter(i => i.claim).length} sub="insurance claims" color="#F0B429" />
-        <KPI label="Annual Premiums" value={"$" + (totalPremium / 1000000).toFixed(1) + "M"} sub="6 policies" color="#10B981" />
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
-        {/* Compliance Grid */}
-        <div style={{ background: COLORS.white, borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.deep, marginBottom: 16 }}>Compliance Status</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {COMPLIANCE_AREAS.map((c, i) => (
-              <div key={i} style={{
-                padding: "10px 14px", borderRadius: 8, border: "1px solid " + COLORS.chalk,
-                background: c.status === "attention" ? "#FFFBEB" : COLORS.white,
-              }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: COLORS.deep }}>{c.name}</span>
-                  <span style={{
-                    width: 8, height: 8, borderRadius: "50%",
-                    background: statusColor(c.status),
-                    boxShadow: c.status === "attention" ? "0 0 6px rgba(217,119,6,0.5)" : "none",
-                  }} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: COLORS.lightText }}>
-                  <span>Score: {c.score}%</span>
-                  <span>Next: {c.nextDeadline}</span>
-                </div>
-              </div>
-            ))}
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: C.deep }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
+        {[
+          { label: 'Compliance Areas', value: String(COMPLIANCE_AREAS.length), sub: `${compliant} compliant`, color: '#059669' },
+          { label: 'Open Items', value: String(totalItems), sub: totalItems === 0 ? 'All clear' : `${totalItems} require attention`, color: totalItems > 0 ? '#D97706' : '#059669' },
+          { label: 'Open Incidents', value: String(openIncidents), sub: `${INCIDENTS.length} total this month`, color: openIncidents > 0 ? '#D97706' : '#059669' },
+          { label: 'Next Audit', value: 'Mar 20', sub: 'OSHA — Workplace Safety', color: C.purple },
+        ].map((k, i) => (
+          <div key={i} style={{ background: C.white, borderRadius: 14, padding: '20px 22px', borderTop: `3px solid ${C.purple}`, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>{k.label}</div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 26, fontWeight: 700, color: C.deep }}>{k.value}</div>
+            <div style={{ fontSize: 12, color: k.color, marginTop: 4, fontWeight: 600 }}>{k.sub}</div>
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Insurance Portfolio */}
-        <div style={{ background: COLORS.white, borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.deep, marginBottom: 16 }}>Insurance Portfolio</div>
-          {INSURANCE.map((ins, i) => (
-            <div key={i} style={{ padding: "12px 0", borderBottom: i < INSURANCE.length - 1 ? "1px solid " + COLORS.chalk : "none" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: COLORS.deep }}>{ins.type}</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, color: COLORS.deep }}>
-                  ${(ins.premium / 1000).toFixed(0)}K
-                </span>
+      <div style={{ display: 'flex', gap: 0, marginBottom: 24, borderBottom: '1px solid ' + C.chalk }}>
+        {(['compliance', 'incidents', 'insurance'] as const).map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{
+            padding: '12px 22px', border: 'none', cursor: 'pointer', fontSize: 13,
+            fontWeight: tab === t ? 700 : 500, color: tab === t ? C.deep : C.light, background: 'transparent',
+            borderBottom: tab === t ? '2px solid ' + C.purple : '2px solid transparent',
+            textTransform: 'capitalize', transition: 'all 0.15s',
+          }}>{t}</button>
+        ))}
+      </div>
+
+      {tab === 'compliance' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {COMPLIANCE_AREAS.map(c => (
+            <div key={c.area} style={{ background: C.white, borderRadius: 12, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ flex: '0 0 160px' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.deep }}>{c.area}</div>
+                <div style={{ fontSize: 11, color: C.light, marginTop: 2 }}>{c.desc}</div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: COLORS.lightText }}>
-                <span>{ins.carrier} — Coverage: ${(ins.coverage / 1000000).toFixed(0)}M</span>
-                <span>Exp: {ins.expiry}</span>
-              </div>
+              <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 700, letterSpacing: '1px', color: statusColor(c.status), background: statusColor(c.status) + '12' }}>
+                {statusLabel(c.status)}
+              </span>
+              <div style={{ flex: 1 }} />
+              {c.items > 0 && <span style={{ fontSize: 12, fontWeight: 600, color: '#D97706' }}>{c.items} item{c.items > 1 ? 's' : ''}</span>}
+              <div style={{ fontSize: 11, color: C.light }}>Next: {c.nextAudit}</div>
             </div>
           ))}
-          <div style={{ marginTop: 14, padding: "10px 14px", background: "#F5F3FF", borderRadius: 8, fontSize: 12, color: "#6D28D9", fontWeight: 600 }}>
-            Total Annual Premium: ${(totalPremium / 1000000).toFixed(2)}M
-          </div>
         </div>
-      </div>
+      )}
 
-      {/* Incident Log */}
-      <div style={{ background: COLORS.white, borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.deep, marginBottom: 16 }}>Recent Incidents (90 Days)</div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-          <thead>
-            <tr style={{ borderBottom: "2px solid " + COLORS.chalk }}>
-              {["Date", "Campus", "Type", "Severity", "Status", "Claim"].map(h => (
-                <th key={h} style={{ textAlign: "left", padding: "8px 12px", fontSize: 10, fontWeight: 600, color: COLORS.lightText, textTransform: "uppercase", letterSpacing: "0.5px" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {INCIDENTS.map(inc => (
-              <tr key={inc.id} style={{ borderBottom: "1px solid " + COLORS.chalk }}>
-                <td style={{ padding: "10px 12px", color: COLORS.lightText }}>{inc.date}</td>
-                <td style={{ padding: "10px 12px", fontWeight: 600, color: COLORS.deep }}>{inc.campus}</td>
-                <td style={{ padding: "10px 12px" }}>{inc.type}</td>
-                <td style={{ padding: "10px 12px" }}>
-                  <span style={{ padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 600, background: sevColor(inc.severity) + "18", color: sevColor(inc.severity) }}>
-                    {inc.severity.toUpperCase()}
-                  </span>
-                </td>
-                <td style={{ padding: "10px 12px" }}>
-                  <span style={{ padding: "2px 8px", borderRadius: 10, fontSize: 10, fontWeight: 600,
-                    background: inc.status === "closed" ? "#ECFDF5" : inc.status === "open" ? "#FEF3C7" : "#F0F4FF",
-                    color: inc.status === "closed" ? "#059669" : inc.status === "open" ? "#D97706" : "#6366F1",
-                  }}>
-                    {inc.status.toUpperCase()}
-                  </span>
-                </td>
-                <td style={{ padding: "10px 12px", fontWeight: 600, color: inc.claim ? "#D97706" : COLORS.lightText }}>{inc.claim ? "Yes" : "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {tab === 'incidents' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {INCIDENTS.map((inc, i) => (
+            <div key={i} style={{ background: C.white, borderRadius: 12, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ fontSize: 12, color: C.light, fontFamily: "'JetBrains Mono', monospace", flex: '0 0 90px' }}>{inc.date}</div>
+              <div style={{ flex: '0 0 140px', fontWeight: 600, color: C.deep, fontSize: 14 }}>{inc.type}</div>
+              <div style={{ flex: '0 0 100px', fontSize: 13, color: C.mid }}>{inc.campus}</div>
+              <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 700, letterSpacing: '1px', color: inc.status === 'resolved' ? '#059669' : '#D97706', background: (inc.status === 'resolved' ? '#059669' : '#D97706') + '12' }}>
+                {inc.status.toUpperCase()}
+              </span>
+              <div style={{ flex: 1 }} />
+              <span style={{ fontSize: 11, color: inc.severity === 'moderate' ? '#D97706' : C.light, fontWeight: 600 }}>{inc.severity}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === 'insurance' && (
+        <div style={{ background: C.white, borderRadius: 14, padding: '28px 32px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.deep, marginBottom: 20 }}>Insurance Coverage Summary</div>
+          {[
+            { type: 'General Liability', carrier: 'Philadelphia Indemnity', premium: '$842K', expiry: '2026-10-01', limit: '$10M' },
+            { type: 'Property', carrier: 'Zurich', premium: '$1.2M', expiry: '2026-10-01', limit: '$175M' },
+            { type: 'D&O', carrier: 'Chubb', premium: '$156K', expiry: '2026-10-01', limit: '$5M' },
+            { type: 'Workers Comp', carrier: 'Hartford', premium: '$620K', expiry: '2026-07-01', limit: 'Statutory' },
+            { type: 'Cyber Liability', carrier: 'Coalition', premium: '$84K', expiry: '2026-10-01', limit: '$3M' },
+            { type: 'Umbrella', carrier: 'AIG', premium: '$210K', expiry: '2026-10-01', limit: '$25M' },
+          ].map((ins, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 0', borderBottom: i < 5 ? '1px solid ' + C.chalk : 'none' }}>
+              <div style={{ flex: '0 0 160px', fontWeight: 600, fontSize: 14, color: C.deep }}>{ins.type}</div>
+              <div style={{ flex: '0 0 160px', fontSize: 13, color: C.mid }}>{ins.carrier}</div>
+              <div style={{ flex: '0 0 80px', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, color: C.deep }}>{ins.premium}</div>
+              <div style={{ flex: '0 0 80px', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: C.deep }}>{ins.limit}</div>
+              <div style={{ flex: 1 }} />
+              <div style={{ fontSize: 11, color: C.light }}>Expires {ins.expiry}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: C.light, borderTop: '1px solid ' + C.chalk }}>
+        <div>Slate Shield — Risk Management Intelligence</div>
+        <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, LLC · Madden Advisory Group · 2026</div>
+      </footer>
     </div>
   );
 }

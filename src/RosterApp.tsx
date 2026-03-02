@@ -1,185 +1,98 @@
 // @ts-nocheck
 import { useState } from "react";
 
-const COLORS = {
-  deep: "#0D1117", rock: "#1C2333", mid: "#2D3748", lightText: "#4A5568",
-  gold: "#F0B429", chalk: "#E8EDF2", bg: "#F5F7FA", white: "#FFFFFF", accent: "#3B82F6",
-};
+const C = { deep: "#0D1117", mid: "#2D3748", light: "#4A5568", chalk: "#E8EDF2", blue: "#3B82F6", white: "#FFFFFF", bg: "#F5F7FA" };
 
 const CAMPUSES = [
-  { name: "Noble Street", enrolled: 742, capacity: 800, apps: 412, yield: 0.68, retention: 0.91 },
-  { name: "Pritzker", enrolled: 698, capacity: 750, apps: 388, yield: 0.71, retention: 0.89 },
-  { name: "Rauner", enrolled: 721, capacity: 750, apps: 345, yield: 0.65, retention: 0.88 },
-  { name: "Gary Comer", enrolled: 685, capacity: 700, apps: 401, yield: 0.72, retention: 0.93 },
-  { name: "UIC", enrolled: 756, capacity: 800, apps: 378, yield: 0.69, retention: 0.90 },
-  { name: "Muchin", enrolled: 612, capacity: 650, apps: 298, yield: 0.64, retention: 0.87 },
-  { name: "Johnson", enrolled: 734, capacity: 775, apps: 356, yield: 0.67, retention: 0.89 },
-  { name: "Bulls", enrolled: 701, capacity: 750, apps: 410, yield: 0.73, retention: 0.92 },
-  { name: "ITW Speer", enrolled: 688, capacity: 725, apps: 334, yield: 0.66, retention: 0.88 },
-  { name: "Baker", enrolled: 714, capacity: 750, apps: 367, yield: 0.70, retention: 0.90 },
-  { name: "Hansberry", enrolled: 692, capacity: 725, apps: 321, yield: 0.63, retention: 0.86 },
-  { name: "DRW Trading", enrolled: 745, capacity: 800, apps: 425, yield: 0.74, retention: 0.94 },
-  { name: "Mansueto", enrolled: 703, capacity: 750, apps: 352, yield: 0.68, retention: 0.89 },
-  { name: "Butler", enrolled: 678, capacity: 700, apps: 298, yield: 0.62, retention: 0.85 },
-  { name: "Goldblatt", enrolled: 719, capacity: 750, apps: 341, yield: 0.67, retention: 0.88 },
-  { name: "TNA", enrolled: 731, capacity: 775, apps: 389, yield: 0.71, retention: 0.91 },
-  { name: "Comer Science", enrolled: 701, capacity: 725, apps: 356, yield: 0.69, retention: 0.90 },
+  { name: "Noble Street", capacity: 750, enrolled: 738, applied: 412, accepted: 298, yield: 0.72, attrition: 0.034 },
+  { name: "Pritzker", capacity: 820, enrolled: 804, applied: 445, accepted: 320, yield: 0.71, attrition: 0.028 },
+  { name: "Rauner", capacity: 700, enrolled: 688, applied: 380, accepted: 275, yield: 0.69, attrition: 0.041 },
+  { name: "Gary Comer", capacity: 780, enrolled: 762, applied: 398, accepted: 290, yield: 0.74, attrition: 0.031 },
+  { name: "UIC", capacity: 720, enrolled: 706, applied: 356, accepted: 260, yield: 0.73, attrition: 0.029 },
+  { name: "Muchin", capacity: 680, enrolled: 648, applied: 310, accepted: 228, yield: 0.68, attrition: 0.045 },
+  { name: "Johnson", capacity: 760, enrolled: 744, applied: 402, accepted: 295, yield: 0.72, attrition: 0.033 },
+  { name: "Bulls", capacity: 700, enrolled: 678, applied: 342, accepted: 252, yield: 0.70, attrition: 0.038 },
+  { name: "ITW Speer", capacity: 680, enrolled: 662, applied: 325, accepted: 240, yield: 0.71, attrition: 0.036 },
+  { name: "Baker", capacity: 720, enrolled: 698, applied: 368, accepted: 270, yield: 0.72, attrition: 0.032 },
+  { name: "Hansberry", capacity: 700, enrolled: 674, applied: 335, accepted: 248, yield: 0.69, attrition: 0.042 },
+  { name: "DRW Trading", capacity: 780, enrolled: 758, applied: 415, accepted: 305, yield: 0.73, attrition: 0.027 },
+  { name: "Mansueto", capacity: 720, enrolled: 702, applied: 372, accepted: 268, yield: 0.71, attrition: 0.035 },
+  { name: "Butler", capacity: 700, enrolled: 680, applied: 348, accepted: 255, yield: 0.70, attrition: 0.039 },
+  { name: "Goldblatt", capacity: 680, enrolled: 656, applied: 312, accepted: 230, yield: 0.68, attrition: 0.044 },
+  { name: "TNA", capacity: 660, enrolled: 638, applied: 298, accepted: 218, yield: 0.67, attrition: 0.047 },
+  { name: "Comer Science", capacity: 640, enrolled: 622, applied: 285, accepted: 210, yield: 0.66, attrition: 0.048 },
 ];
 
-const MONTHLY_APPS = [
-  { month: "Sep", apps: 234 }, { month: "Oct", apps: 412 }, { month: "Nov", apps: 589 },
-  { month: "Dec", apps: 823 }, { month: "Jan", apps: 1456 }, { month: "Feb", apps: 2102 },
-  { month: "Mar", apps: 3241 }, { month: "Apr", apps: 4012 }, { month: "May", apps: 4534 },
-  { month: "Jun", apps: 5123 }, { month: "Jul", apps: 5534 }, { month: "Aug", apps: 5871 },
-];
-
-const totalEnrolled = CAMPUSES.reduce((s, c) => s + c.enrolled, 0);
-const totalCapacity = CAMPUSES.reduce((s, c) => s + c.capacity, 0);
-const totalApps = CAMPUSES.reduce((s, c) => s + c.apps, 0);
-const avgYield = CAMPUSES.reduce((s, c) => s + c.yield, 0) / CAMPUSES.length;
-const avgRetention = CAMPUSES.reduce((s, c) => s + c.retention, 0) / CAMPUSES.length;
-
-const KPI = ({ label, value, sub, color }) => (
-  <div style={{ background: COLORS.white, borderRadius: 10, padding: "18px 20px", borderTop: "3px solid " + color, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-    <div style={{ fontSize: 10, fontWeight: 600, color: COLORS.lightText, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>{label}</div>
-    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: COLORS.deep }}>{value}</div>
-    {sub && <div style={{ fontSize: 11, color: COLORS.lightText, marginTop: 2 }}>{sub}</div>}
-  </div>
-);
+const totals = CAMPUSES.reduce((a, c) => ({
+  capacity: a.capacity + c.capacity, enrolled: a.enrolled + c.enrolled,
+  applied: a.applied + c.applied, accepted: a.accepted + c.accepted,
+}), { capacity: 0, enrolled: 0, applied: 0, accepted: 0 });
 
 export default function RosterApp() {
-  const [sortBy, setSortBy] = useState("name");
-  const sorted = [...CAMPUSES].sort((a, b) => {
-    if (sortBy === "name") return a.name.localeCompare(b.name);
-    if (sortBy === "enrolled") return b.enrolled - a.enrolled;
-    if (sortBy === "yield") return b.yield - a.yield;
-    if (sortBy === "retention") return b.retention - a.retention;
-    return 0;
-  });
+  const [sortBy, setSortBy] = useState<'name' | 'enrolled' | 'yield' | 'attrition'>('enrolled');
+  const sorted = [...CAMPUSES].sort((a, b) => sortBy === 'name' ? a.name.localeCompare(b.name) : sortBy === 'yield' ? b.yield - a.yield : sortBy === 'attrition' ? b.attrition - a.attrition : b.enrolled - a.enrolled);
 
   return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", maxWidth: 1100, margin: "0 auto" }}>
-      <div style={{
-        background: "linear-gradient(135deg, #1E3A5F 0%, #2563EB 100%)",
-        borderRadius: 16, padding: "32px 36px", marginBottom: 24, position: "relative", overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", right: -20, top: -20, width: 160, height: 160, borderRadius: "50%", background: COLORS.accent, opacity: 0.08 }} />
-        <div style={{ fontSize: 22, fontWeight: 700, color: COLORS.white, marginBottom: 4 }}>Slate Roster</div>
-        <div style={{ fontSize: 13, color: "#93C5FD", lineHeight: 1.5 }}>
-          Enrollment intelligence across 17 campuses. Application tracking, yield modeling, retention early warning.
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: C.deep }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
+        {[
+          { label: 'Total Enrolled', value: totals.enrolled.toLocaleString(), sub: `${(totals.enrolled / totals.capacity * 100).toFixed(1)}% of capacity` },
+          { label: 'Network Capacity', value: totals.capacity.toLocaleString(), sub: `${totals.capacity - totals.enrolled} seats available` },
+          { label: 'Applications', value: totals.applied.toLocaleString(), sub: `FY26 cycle — ${(totals.accepted / totals.applied * 100).toFixed(0)}% acceptance rate` },
+          { label: 'Avg Yield Rate', value: `${(CAMPUSES.reduce((a, c) => a + c.yield, 0) / CAMPUSES.length * 100).toFixed(1)}%`, sub: 'Accepted → Enrolled' },
+        ].map((k, i) => (
+          <div key={i} style={{ background: C.white, borderRadius: 14, padding: '20px 22px', borderTop: `3px solid ${C.blue}`, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>{k.label}</div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 26, fontWeight: 700, color: C.deep }}>{k.value}</div>
+            <div style={{ fontSize: 12, color: C.light, marginTop: 4 }}>{k.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: 'uppercase', letterSpacing: '2px' }}>Campus Enrollment</div>
+        <div style={{ display: 'flex', gap: 4 }}>
+          {(['enrolled', 'yield', 'attrition', 'name'] as const).map(s => (
+            <button key={s} onClick={() => setSortBy(s)} style={{
+              padding: '5px 12px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: sortBy === s ? 700 : 500,
+              color: sortBy === s ? C.deep : C.light, background: sortBy === s ? C.chalk : 'transparent',
+            }}>{s === 'enrolled' ? 'By Size' : s === 'yield' ? 'By Yield' : s === 'attrition' ? 'By Attrition' : 'A-Z'}</button>
+          ))}
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 14, marginBottom: 24 }}>
-        <KPI label="Total Enrolled" value={totalEnrolled.toLocaleString()} sub={"of " + totalCapacity.toLocaleString() + " capacity"} color="#3B82F6" />
-        <KPI label="Utilization" value={(totalEnrolled / totalCapacity * 100).toFixed(1) + "%"} sub="across 17 campuses" color="#8B5CF6" />
-        <KPI label="Applications" value={totalApps.toLocaleString()} sub="FY26 cycle" color="#F0B429" />
-        <KPI label="Avg Yield" value={(avgYield * 100).toFixed(1) + "%"} sub="application to enrollment" color="#10B981" />
-        <KPI label="Avg Retention" value={(avgRetention * 100).toFixed(1) + "%"} sub="year over year" color="#EF4444" />
-      </div>
-
-      {/* Application Funnel */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
-        <div style={{ background: COLORS.white, borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.deep, marginBottom: 16 }}>Application Funnel — FY26</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {[
-              { stage: "Inquiries", count: 8420, pct: 100 },
-              { stage: "Applications Started", count: 5871, pct: 69.7 },
-              { stage: "Applications Completed", count: 4102, pct: 48.7 },
-              { stage: "Offers Extended", count: 3241, pct: 38.5 },
-              { stage: "Offers Accepted", count: 2456, pct: 29.2 },
-              { stage: "Enrolled (Day 10)", count: 2102, pct: 25.0 },
-            ].map((s, i) => (
-              <div key={i}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: COLORS.mid, marginBottom: 3 }}>
-                  <span>{s.stage}</span>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>{s.count.toLocaleString()} ({s.pct}%)</span>
-                </div>
-                <div style={{ height: 6, background: COLORS.chalk, borderRadius: 3, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: s.pct + "%", background: "linear-gradient(90deg, #3B82F6, #8B5CF6)", borderRadius: 3, transition: "width 0.5s ease" }} />
-                </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {sorted.map(c => {
+          const pct = c.enrolled / c.capacity;
+          return (
+            <div key={c.name} style={{ background: C.white, borderRadius: 12, padding: '16px 20px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ flex: '0 0 140px' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.deep }}>{c.name}</div>
+                <div style={{ fontSize: 11, color: C.light, marginTop: 2 }}>{c.enrolled} / {c.capacity}</div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ background: COLORS.white, borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.deep, marginBottom: 16 }}>Cumulative Applications by Month</div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 180 }}>
-            {MONTHLY_APPS.map((m, i) => {
-              const maxApps = MONTHLY_APPS[MONTHLY_APPS.length - 1].apps;
-              const h = (m.apps / maxApps) * 160;
-              return (
-                <div key={i} style={{ flex: 1, textAlign: "center" }}>
-                  <div style={{ fontSize: 9, fontFamily: "'JetBrains Mono', monospace", color: COLORS.lightText, marginBottom: 3 }}>
-                    {m.apps > 999 ? (m.apps / 1000).toFixed(1) + "k" : m.apps}
-                  </div>
-                  <div style={{
-                    height: h, background: i <= 5 ? "linear-gradient(180deg, #3B82F6, #2563EB)" : "linear-gradient(180deg, #93C5FD, #BFDBFE)",
-                    borderRadius: "3px 3px 0 0", transition: "height 0.3s ease",
-                  }} />
-                  <div style={{ fontSize: 9, color: COLORS.lightText, marginTop: 3 }}>{m.month}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+              <div style={{ flex: 1, height: 8, background: C.chalk, borderRadius: 4, overflow: 'hidden' }}>
+                <div style={{ width: `${pct * 100}%`, height: '100%', background: pct > 0.95 ? '#059669' : pct > 0.85 ? C.blue : '#D97706', borderRadius: 4, transition: 'width 0.3s' }} />
+              </div>
+              <div style={{ flex: '0 0 60px', textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, color: pct > 0.95 ? '#059669' : C.deep }}>
+                {(pct * 100).toFixed(1)}%
+              </div>
+              <div style={{ flex: '0 0 80px', textAlign: 'right' }}>
+                <div style={{ fontSize: 11, color: C.light }}>Yield</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.deep }}>{(c.yield * 100).toFixed(0)}%</div>
+              </div>
+              <div style={{ flex: '0 0 80px', textAlign: 'right' }}>
+                <div style={{ fontSize: 11, color: C.light }}>Attrition</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: c.attrition > 0.04 ? '#DC2626' : C.deep }}>{(c.attrition * 100).toFixed(1)}%</div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Campus Table */}
-      <div style={{ background: COLORS.white, borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.deep }}>Campus Enrollment Detail</div>
-          <div style={{ display: "flex", gap: 6 }}>
-            {[
-              { id: "name", label: "Name" }, { id: "enrolled", label: "Enrolled" },
-              { id: "yield", label: "Yield" }, { id: "retention", label: "Retention" },
-            ].map(s => (
-              <button key={s.id} onClick={() => setSortBy(s.id)} style={{
-                padding: "4px 10px", borderRadius: 6, border: "1px solid " + COLORS.chalk,
-                background: sortBy === s.id ? "#EFF6FF" : COLORS.white,
-                color: sortBy === s.id ? "#2563EB" : COLORS.lightText,
-                fontSize: 11, fontWeight: 500, cursor: "pointer",
-              }}>{s.label}</button>
-            ))}
-          </div>
-        </div>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-            <thead>
-              <tr style={{ borderBottom: "2px solid " + COLORS.chalk }}>
-                {["Campus", "Enrolled", "Capacity", "Utilization", "Applications", "Yield", "Retention"].map(h => (
-                  <th key={h} style={{ textAlign: "left", padding: "8px 12px", fontSize: 10, fontWeight: 600, color: COLORS.lightText, textTransform: "uppercase", letterSpacing: "0.5px" }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map((c, i) => {
-                const util = c.enrolled / c.capacity;
-                return (
-                  <tr key={i} style={{ borderBottom: "1px solid " + COLORS.chalk }}>
-                    <td style={{ padding: "10px 12px", fontWeight: 600, color: COLORS.deep }}>{c.name}</td>
-                    <td style={{ padding: "10px 12px", fontFamily: "'JetBrains Mono', monospace" }}>{c.enrolled.toLocaleString()}</td>
-                    <td style={{ padding: "10px 12px", fontFamily: "'JetBrains Mono', monospace", color: COLORS.lightText }}>{c.capacity.toLocaleString()}</td>
-                    <td style={{ padding: "10px 12px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ width: 60, height: 5, background: COLORS.chalk, borderRadius: 3, overflow: "hidden" }}>
-                          <div style={{ height: "100%", width: (util * 100) + "%", background: util > 0.95 ? "#EF4444" : util > 0.85 ? "#F0B429" : "#10B981", borderRadius: 3 }} />
-                        </div>
-                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{(util * 100).toFixed(0)}%</span>
-                      </div>
-                    </td>
-                    <td style={{ padding: "10px 12px", fontFamily: "'JetBrains Mono', monospace" }}>{c.apps}</td>
-                    <td style={{ padding: "10px 12px", fontFamily: "'JetBrains Mono', monospace", color: c.yield >= 0.70 ? "#059669" : c.yield >= 0.65 ? "#D97706" : "#DC2626" }}>{(c.yield * 100).toFixed(0)}%</td>
-                    <td style={{ padding: "10px 12px", fontFamily: "'JetBrains Mono', monospace", color: c.retention >= 0.90 ? "#059669" : c.retention >= 0.87 ? "#D97706" : "#DC2626" }}>{(c.retention * 100).toFixed(1)}%</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: C.light, borderTop: '1px solid ' + C.chalk }}>
+        <div>Slate Roster — Enrollment Intelligence — FY2026 Cycle</div>
+        <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, LLC · Madden Advisory Group · 2026</div>
+      </footer>
     </div>
   );
 }
