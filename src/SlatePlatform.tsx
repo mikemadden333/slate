@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import SentinelApp from "./SentinelApp";
 import LedgerApp from "./LedgerApp";
 import BriefApp from "./BriefApp";
@@ -267,6 +267,41 @@ const Dashboard = ({ onModuleClick }) => {
 export default function SlatePlatform() {
   const [showSplash, setShowSplash] = useState(true);
   const [activeModule, setActiveModule] = useState("dashboard");
+  const strikeRef = useRef(false);
+  const handleModuleClick = (mod) => {
+    if (strikeRef.current === false) {
+      strikeRef.current = true;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = ctx.currentTime;
+        const o1 = ctx.createOscillator(); const g1 = ctx.createGain();
+        o1.type = 'triangle'; o1.frequency.setValueAtTime(110, now);
+        o1.frequency.exponentialRampToValueAtTime(82, now + 0.8);
+        g1.gain.setValueAtTime(0.18, now);
+        g1.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+        o1.connect(g1); g1.connect(ctx.destination); o1.start(now); o1.stop(now + 1.2);
+        const o2 = ctx.createOscillator(); const g2 = ctx.createGain();
+        o2.type = 'sine'; o2.frequency.value = 220;
+        g2.gain.setValueAtTime(0.08, now);
+        g2.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+        o2.connect(g2); g2.connect(ctx.destination); o2.start(now + 0.02); o2.stop(now + 0.9);
+        const buf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.008));
+        const cl = ctx.createBufferSource(); const gC = ctx.createGain(); cl.buffer = buf;
+        gC.gain.setValueAtTime(0.12, now);
+        gC.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        cl.connect(gC); gC.connect(ctx.destination); cl.start(now);
+        const o3 = ctx.createOscillator(); const g3 = ctx.createGain();
+        o3.type = 'sine'; o3.frequency.value = 55;
+        g3.gain.setValueAtTime(0.06, now + 0.05);
+        g3.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+        o3.connect(g3); g3.connect(ctx.destination); o3.start(now + 0.05); o3.stop(now + 2.0);
+        setTimeout(() => ctx.close(), 3000);
+      } catch (e) {}
+    }
+    setActiveModule(mod);
+  };
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const activeModuleData = MODULES.find(m => m.id === activeModule);
 
@@ -282,7 +317,7 @@ export default function SlatePlatform() {
   return (
     <div style={{ display: "flex", height: "100vh", width: "100vw", fontFamily: "'Inter', system-ui, sans-serif", background: C.bg, overflow: "hidden" }}>
       <GlobalCSS />
-      <Sidebar activeModule={activeModule} setActiveModule={setActiveModule} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+      <Sidebar activeModule={activeModule} setActiveModule={handleModuleClick} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
         <div style={{ height: 52, minHeight: 52, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 28px", borderBottom: `1px solid ${C.chalk}`, background: C.white }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -294,7 +329,7 @@ export default function SlatePlatform() {
           </div>
         </div>
         <div className="slate-scroll" style={{ flex: 1, overflow: "auto", padding: activeModule === "dashboard" ? "32px 36px" : "24px 28px" }}>
-          {activeModule === "dashboard" ? <Dashboard onModuleClick={setActiveModule} /> : renderModule()}
+          {activeModule === "dashboard" ? <Dashboard onModuleClick={handleModuleClick} /> : renderModule()}
         </div>
       </div>
     </div>
