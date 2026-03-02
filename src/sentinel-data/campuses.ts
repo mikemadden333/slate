@@ -34,3 +34,13 @@ export const CAMPUSES: Campus[] = [
   { id: 17, name: 'The Noble Academy',             short: 'Noble Acad',  addr: '17 E. 71st St',             lat: 41.8780, lng: -87.6320, communityArea: 'West Town',       areaNumber: 24, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
   { id: 18, name: 'UIC College Prep',              short: 'UIC',         addr: '2235 S. Millard Ave',       lat: 41.8502, lng: -87.7183, communityArea: 'South Lawndale',  areaNumber: 30, enroll: 480, arrH: 7, arrM: 30, dH: 15, dM: 10 },
 ];
+
+export const CAMPUS_STATS = {
+  networkAvgPerPupil: 10290,
+  totalEHH: 12125.5,
+  totalPreTilt: 124.9,
+  perPupilSpread: 2244,
+  highestPerPupil: { name: 'Gary Comer', value: 11894 },
+  lowestPerPupil: { name: 'Butler', value: 9650 },
+  mlFundTotal: 1.1,
+};
