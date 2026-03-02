@@ -131,7 +131,7 @@ export default function ContagionPanel({
             <Explainer title="Violence Contagion Model">
               <p style={{ margin: '0 0 12px' }}>Based on research by Yale sociologist Andrew Papachristos, gun violence spreads through social networks like an infectious disease. A person's risk of being shot increases by <strong>900%</strong> if someone in their social network was recently shot.</p>
               <p style={{ margin: '0 0 12px' }}>The contagion effect peaks between <strong>18-72 hours</strong> after a homicide (the "retaliation window") and persists for up to <strong>125 days</strong>.</p>
-              <p style={{ margin: 0 }}>PULSE tracks three phases: <strong>ACUTE</strong> (0-72h, 0.5mi radius), <strong>ACTIVE</strong> (3-14d, 1mi), and <strong>WATCH</strong> (14-125d, 1.5mi).</p>
+              <p style={{ margin: 0 }}>Sentinel tracks three phases: <strong>ACUTE</strong> (0-72h, 0.5mi radius), <strong>ACTIVE</strong> (3-14d, 1mi), and <strong>WATCH</strong> (14-125d, 1.5mi).</p>
             </Explainer>
           </div>
           <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2, lineHeight: 1.4 }}>
@@ -546,7 +546,7 @@ function NetworkContagionSection({ corridors }: { corridors: CorridorGroup[]; ca
   if (corridors.length === 0) return null;
   return (
     <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: 16, marginTop: 16 }}>
-      <div style={{ fontWeight: 700, fontSize: 14, color: '#0D1117', marginBottom: 8 }}>Noble Network Alert</div>
+      <div style={{ fontWeight: 700, fontSize: 14, color: '#0D1117', marginBottom: 8 }}>Network Alert</div>
       {corridors.map(group => {
         const names = group.campuses.map(c => c.name);
         return (
@@ -555,7 +555,7 @@ function NetworkContagionSection({ corridors }: { corridors: CorridorGroup[]; ca
             padding: '12px 14px', fontSize: 14, color: '#991B1B', lineHeight: 1.6, marginBottom: 6,
           }}>
             <strong>{names.join(', ')}</strong> ({group.campuses.map(c => `${c.distance.toFixed(1)}mi away`).join(', ')})
-            {' '}is in the same contagion zone. This homicide{group.block ? ` near ${group.block}` : ''} affects multiple Noble campuses simultaneously.
+            {' '}is in the same contagion zone. This homicide{group.block ? ` near ${group.block}` : ''} affects multiple campuses simultaneously.
           </div>
         );
       })}
@@ -596,8 +596,8 @@ function PapachristosModal({ onClose }: { onClose: () => void }) {
         rivals — face dramatically elevated risk of violence for up to 125 days.
       </p>
       <p style={{ fontSize: 16, lineHeight: 1.8 }}>
-        PULSE tracks every homicide near your campus and calculates where you are in that risk window.
-        This science has never been applied to school safety before. <strong>Noble Schools is the first.</strong>
+        Sentinel tracks every homicide near your campus and calculates where you are in that risk window.
+        This science has never been applied to school safety before. <strong>This has never been done before.</strong>
       </p>
       <p style={{ fontWeight: 600, color: '#0D1117', fontSize: 16 }}>The three phases:</p>
       <ul style={{ paddingLeft: 20, fontSize: 15, lineHeight: 1.8 }}>
@@ -629,7 +629,7 @@ function RetaliationDismissalModal({ direction, onClose }: { direction: string; 
         <li><strong>Position extra staff</strong> — Place additional adults at all exit points and the first two blocks of each primary walking route.</li>
         <li><strong>Consider staggered release</strong> — Release students in waves rather than all at once.</li>
         <li><strong>Communicate with families</strong> — If risk is HIGH or CRITICAL, send a brief ParentSquare message noting modified procedures.</li>
-        <li><strong>Coordinate with neighboring schools</strong> — If multiple Noble campuses are in the same contagion corridor, coordinate dismissal timing.</li>
+        <li><strong>Coordinate with neighboring schools</strong> — If multiple campuses are in the same contagion corridor, coordinate dismissal timing.</li>
       </ol>
     </ExplainModal>
   );

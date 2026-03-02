@@ -230,7 +230,7 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
       </Section>
 
       {/* 3. Community Area Incident Density */}
-      <Section title="Incident Density by Community Area" subtitle="30-day incidents within 1 mile of Noble campuses">
+      <Section title="Incident Density by Community Area" subtitle="30-day incidents within 1 mile of campuses">
         {communityData.length > 0 ? (
           <div style={{ height: Math.max(200, communityData.length * 36) }}>
             <ResponsiveContainer width="100%" height="100%">

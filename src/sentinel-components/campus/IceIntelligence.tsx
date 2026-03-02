@@ -81,7 +81,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
               padding: '12px 14px', background: '#fff', borderRadius: 8, marginBottom: 14,
               fontSize: 13, color: '#374151', lineHeight: 1.6,
             }}>
-              Activity has been reported near Noble campuses. Noble follows Chicago&apos;s
+              Activity has been reported near campuses. The network follows Chicago&apos;s
               Welcoming City Ordinance — ICE requires a criminal judicial warrant to enter schools.
             </div>
 
@@ -94,7 +94,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
               }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#16A34A', flexShrink: 0 }} />
                 <span style={{ fontSize: 13, color: '#15803D' }}>
-                  No confirmed immigration enforcement activity near Noble campuses. Monitoring active.
+                  No confirmed immigration enforcement activity near campuses. Monitoring active.
                 </span>
               </div>
             )}
@@ -152,9 +152,9 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
             <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
               <ExplainLink onClick={() => setShowExplain(true)} label="What is Code White?" />
               <Explainer title="ICE Intelligence">
-                <p style={{ margin: '0 0 12px' }}>PULSE monitors news feeds and social media for immigration enforcement activity near Noble campuses using a <strong>three-tier verification filter</strong>.</p>
+                <p style={{ margin: '0 0 12px' }}>Sentinel monitors news feeds and social media for immigration enforcement activity near campuses using a <strong>three-tier verification filter</strong>.</p>
                 <p style={{ margin: '0 0 12px' }}>Alerts are only surfaced when within <strong>3 miles</strong> of a campus with a <strong>non-zero distance</strong> (0.0 mi = geocoding failure, discarded).</p>
-                <p style={{ margin: 0 }}>Code White (Neptune Protocol) is Noble&apos;s response protocol for confirmed ICE activity near campuses.</p>
+                <p style={{ margin: 0 }}>Code White (Neptune Protocol) is the network's response protocol for confirmed ICE activity near campuses.</p>
               </Explainer>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
       {showExplain && (
         <ExplainModal title="Code White — Neptune Protocol" onClose={() => setShowExplain(false)}>
           <p style={{ marginTop: 0, fontSize: 15, lineHeight: 1.7 }}>
-            <strong>Code White (Neptune Protocol)</strong> is Noble&apos;s response when immigration
+            <strong>Code White (Neptune Protocol)</strong> is the network's response when immigration
             enforcement (ICE) activity is detected near a campus.
           </p>
           <p style={{ fontSize: 15, lineHeight: 1.7 }}>
@@ -174,14 +174,14 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
           <p style={{ fontWeight: 600 }}>When Code White is activated:</p>
           <ul style={{ paddingLeft: 20, fontSize: 15, lineHeight: 1.8 }}>
             <li>All exterior doors are locked immediately</li>
-            <li>No one enters without Noble School ID</li>
-            <li>Noble Legal is contacted immediately</li>
+            <li>No one enters without school ID</li>
+            <li>Network Legal is contacted immediately</li>
             <li>A family notification is sent (carefully worded to protect families)</li>
             <li>Normal dismissal may be modified</li>
           </ul>
           <p style={{ fontSize: 15, lineHeight: 1.7, color: '#DC2626', fontWeight: 600 }}>
             Critical: The PA announcement and family notification must NEVER mention ICE, immigration,
-            or the nature of the threat. Many Noble families include undocumented individuals who could
+            or the nature of the threat. Many our families include undocumented individuals who could
             be endangered by such information in a message.
           </p>
         </ExplainModal>

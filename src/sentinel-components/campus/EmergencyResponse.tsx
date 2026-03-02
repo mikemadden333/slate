@@ -20,7 +20,7 @@ export default function EmergencyResponse({ onSelectCode, recommendedCode }: Pro
           Safety Protocols
         </div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
-          Noble emergency codes — tap any protocol to begin the guided response
+          Emergency codes — tap any protocol to begin the guided response
         </div>
       </div>
 

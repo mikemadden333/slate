@@ -106,7 +106,7 @@ function getActions(risk: CampusRisk): string[] {
     return [
       'Brief your security team before first bell and position someone at primary entrances.',
       'Monitor dismissal closely — consider modified dismissal procedures.',
-      'Coordinate with Noble Network Safety Director on current conditions.',
+      'Coordinate with Network Safety Director on current conditions.',
     ];
   }
   if (risk.label === 'ELEVATED') {

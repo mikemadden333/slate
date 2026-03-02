@@ -325,7 +325,7 @@ function getRetaliationActions(period: SchoolPeriod, hoursRemaining: number): st
   } else {
     actions.push('Brief all staff on elevated conditions — they should be aware without alarming students.');
     actions.push(`Review Safe Corridors below and prepare modified routes for dismissal in ${hoursRemaining > 4 ? 'the coming hours' : 'the next few hours'}.`);
-    actions.push('Contact Noble Network Safety Director to coordinate with nearby campuses in the same contagion zone.');
+    actions.push('Contact Network Safety Director to coordinate with nearby campuses in the same contagion zone.');
   }
 
   return actions;

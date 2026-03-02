@@ -1,6 +1,6 @@
 /**
  * SplashScreen — "Know. Prepare. Protect."
- * Deep navy overlay. Noble shield. Three words fade in 400ms apart.
+ * Deep navy overlay. Slate mark. Three words fade in 400ms apart.
  * Total: 2.4s, then fades away in 800ms.
  * Once per calendar day via localStorage.
  */
@@ -52,7 +52,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
       opacity: phase === 4 ? 0 : 1,
       transition: 'opacity 800ms ease-out',
     }}>
-      {/* Noble shield */}
+      {/* Slate mark */}
       <svg width="80" height="96" viewBox="0 0 80 96" fill="none" style={{
         opacity: phase >= 1 ? 1 : 0,
         transition: 'opacity 400ms ease',

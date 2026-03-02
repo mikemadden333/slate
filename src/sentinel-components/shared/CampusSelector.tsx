@@ -1,6 +1,6 @@
 /**
  * CampusSelector — Full-screen campus selection on first visit of the day.
- * Noble navy background, gold accents.
+ * Slate branded campus selector.
  * Option 1: Select a campus from searchable dropdown → My Campus view
  * Option 2: Go to Network view
  * Remembers selection in localStorage.
@@ -77,21 +77,18 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
       padding: 24,
       overflowY: 'auto',
     }}>
-      {/* Noble shield */}
-      <svg width="56" height="68" viewBox="0 0 80 96" fill="none" style={{ marginBottom: 20 }}>
-        <path
-          d="M40 4L8 20v28c0 22.4 13.6 43.2 32 52 18.4-8.8 32-29.6 32-52V20L40 4z"
-          fill="#F0B429" stroke="rgba(255,255,255,0.9)" strokeWidth="3"
-        />
-        <text x="40" y="56" textAnchor="middle" fill="#0D1117"
-          fontFamily="system-ui" fontSize="18" fontWeight="800">N</text>
+      {/* Slate mark */}
+      <svg width="60" height="45" viewBox="0 0 40 30" fill="none" style={{ marginBottom: 20 }}>
+        <path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.12)" />
+        <line x1="10" y1="13" x2="30" y2="13" stroke="#E8EDF2" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="10" y1="19" x2="22" y2="19" stroke="#E8EDF2" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
       </svg>
 
       <div style={{ fontSize: 28, fontWeight: 800, color: '#fff', marginBottom: 6, textAlign: 'center' }}>
-        Welcome to PULSE
+        Slate Sentinel
       </div>
       <div style={{ fontSize: 18, color: '#F0B429', marginBottom: 32, textAlign: 'center' }}>
-        Select your campus or view the Noble network
+        Select your campus or view the network
       </div>
 
       <div style={{
@@ -214,7 +211,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           </button>
         </div>
 
-        {/* Option 2: Noble Network */}
+        {/* Option 2: Network View */}
         <div style={{
           flex: '1 1 300px',
           background: '#fff',
@@ -233,11 +230,11 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
             paddingLeft: 12,
             borderLeft: '3px solid #F0B429',
           }}>
-            Noble Network
+            Network View
           </div>
 
           <div style={{ fontSize: 15, color: '#374151', lineHeight: 1.6, flex: 1 }}>
-            View all 18 campuses &mdash; network intelligence, maps, analytics, and command center.
+            View all 17 campuses &mdash; network intelligence, maps, analytics, and command center.
           </div>
 
           <div style={{

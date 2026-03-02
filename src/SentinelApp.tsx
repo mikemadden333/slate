@@ -1,5 +1,5 @@
 /**
- * PULSE 2.0 — Main Application
+ * Slate Sentinel — Safety Intelligence
  * Splash screen, risk-colored header, all 10 campus sections in narrative scroll.
  */
 
@@ -532,7 +532,7 @@ export default function App() {
       )}
 
       <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: '#4A5568', borderTop: '1px solid #E8EDF2' }}>
-        <div>Slate Sentinel — Noble Schools — Chicago, Illinois — {weather.temperature.toFixed(0)}°F</div>
+        <div>Slate Sentinel — Chicago, Illinois — {weather.temperature.toFixed(0)}°F</div>
         <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, LLC · Madden Advisory Group · 2026</div>
       </footer>
     </div>

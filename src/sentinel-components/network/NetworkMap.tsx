@@ -408,7 +408,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
           padding: '0 20px', color: '#fff', zIndex: 10001,
         }}>
           <span style={{ fontWeight: 700, fontSize: 14, letterSpacing: 2, color: '#F0B429' }}>
-            PULSE COMMAND CENTER — NOBLE SCHOOLS
+            Sentinel COMMAND CENTER — NOBLE SCHOOLS
           </span>
           <span style={{ fontSize: 13 }}>
             {new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}

@@ -1,5 +1,5 @@
 /**
- * PULSE Command Center — Full operational command interface.
+ * Sentinel Command Center — Full operational command interface.
  * Dark mode only. CSS Grid fixed-panel layout. Every pixel serves a purpose.
  *
  * Two users on one screen:
@@ -249,7 +249,7 @@ export default function CommandCenter({
 
   const generateExportReport = useCallback(() => {
     const lines: string[] = [];
-    lines.push('NOBLE SCHOOLS — PULSE SITUATION REPORT');
+    lines.push('NOBLE SCHOOLS — Sentinel SITUATION REPORT');
     lines.push(`Generated: ${new Date().toLocaleString()}`);
     lines.push('═'.repeat(50));
     lines.push('');
@@ -630,7 +630,7 @@ export default function CommandCenter({
             <text x="14" y="20" textAnchor="middle" fill={BG} fontSize="9" fontWeight="800" fontFamily="system-ui">N</text>
           </svg>
           <span style={{ fontFamily: MONO, fontSize: 13, fontWeight: 700, color: GOLD, letterSpacing: 2 }}>
-            PULSE COMMAND CENTER &mdash; NOBLE SCHOOLS
+            Sentinel COMMAND CENTER &mdash; NOBLE SCHOOLS
           </span>
         </div>
 
@@ -852,7 +852,7 @@ export default function CommandCenter({
           {feedIncidents.length === 0 ? (
             <div style={{ padding: 20, textAlign: 'center' }}>
               <div style={{ fontSize: 13, color: '#16A34A', fontWeight: 600, marginBottom: 4 }}>
-                No incidents reported near Noble campuses in the last {incidentWindow} hours.
+                No incidents reported near campuses in the last {incidentWindow} hours.
               </div>
               <div style={{ fontSize: 11, color: TEXT2 }}>Network quiet.</div>
             </div>

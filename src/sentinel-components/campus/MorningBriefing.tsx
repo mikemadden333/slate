@@ -237,7 +237,7 @@ export default function MorningBriefing({
         </div>
       </div>
 
-      {/* Ask PULSE + View data */}
+      {/* Ask Sentinel + View data */}
       <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         {onAskPulse && (
           <button onClick={onAskPulse} style={{
@@ -245,7 +245,7 @@ export default function MorningBriefing({
             fontSize: 14, color: '#0D1117', fontWeight: 600, textDecoration: 'underline',
             textUnderlineOffset: 3,
           }}>
-            Ask PULSE anything
+            Ask Sentinel anything
           </button>
         )}
         <button onClick={() => setShowDataInputs(!showDataInputs)} style={{
@@ -329,7 +329,7 @@ function buildDeterministicSentences(
   } else {
     const isFriday = new Date().getDay() === 5;
     if (isFriday) {
-      parts.push(`It's Friday — dismissal windows on Fridays show the highest violence concentration near Noble campuses, so give dismissal a little extra attention today.`);
+      parts.push(`It's Friday — dismissal windows on Fridays show the highest violence concentration near campuses, so give dismissal a little extra attention today.`);
     } else {
       parts.push(`Nothing on the horizon requires special preparation — check back after your morning meeting for any overnight updates from CPD.`);
     }
@@ -344,7 +344,7 @@ function getOneAction(risk: CampusRisk, iceAlerts: IceAlert[]): string {
     return 'Brief your security team before first bell and position someone at each primary entrance during arrival and dismissal.';
   }
   if (iceAlerts.length > 0) {
-    return 'Verify all exterior doors are locked and contact Noble Legal to report ICE activity near campus.';
+    return 'Verify all exterior doors are locked and contact Network Legal to report ICE activity near campus.';
   }
   if (risk.label === 'CRITICAL') {
     return 'Implement Code Yellow immediately — lock exterior doors, position security at all entrances, and prepare modified dismissal.';

@@ -113,7 +113,7 @@ function AcuteFirstSeen({ risk }: { risk: CampusRisk }) {
       </div>
       <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.7 }}>
         This is the most serious phase of the violence contagion model developed by Professor Andrew Papachristos at Yale.
-        When a homicide occurs near a campus, PULSE tracks the 125-day window of elevated risk it creates — with the first
+        When a homicide occurs near a campus, Sentinel tracks the 125-day window of elevated risk it creates — with the first
         72 hours being the most dangerous. This is peer-reviewed science, not speculation.
       </div>
     </EducationCard>
@@ -183,7 +183,7 @@ function IceFirstSeen({ iceAlerts, dataLoaded }: { iceAlerts: IceAlert[]; dataLo
         </div>
 
         <div style={{ fontSize: 15, color: '#374151', lineHeight: 1.7, marginBottom: 16 }}>
-          <strong>Noble Schools follows Chicago's Welcoming City Ordinance.</strong> This means
+          <strong>The network follows Chicago's Welcoming City Ordinance.</strong> This means
           ICE agents must present a criminal judicial warrant signed by a federal judge to enter
           our buildings. Administrative warrants are NOT sufficient.
         </div>
@@ -198,8 +198,8 @@ function IceFirstSeen({ iceAlerts, dataLoaded }: { iceAlerts: IceAlert[]; dataLo
         </div>
         <ol style={{ paddingLeft: 20, fontSize: 14, lineHeight: 1.8, color: '#374151', marginBottom: 16 }}>
           <li>Lock all exterior doors immediately</li>
-          <li>No one enters without Noble School ID</li>
-          <li>Contact Noble Legal immediately</li>
+          <li>No one enters without school ID</li>
+          <li>Contact Network Legal immediately</li>
           <li>Do NOT mention ICE or immigration in PA announcements</li>
           <li>Prepare family notification (carefully worded)</li>
         </ol>
@@ -209,7 +209,7 @@ function IceFirstSeen({ iceAlerts, dataLoaded }: { iceAlerts: IceAlert[]; dataLo
           padding: '12px 14px', background: '#FEF2F2', borderRadius: 8, marginBottom: 16,
         }}>
           Critical: Never mention ICE, immigration, or the nature of the alert in any
-          PA announcement or family communication. Many Noble families include undocumented
+          PA announcement or family communication. Many our families include undocumented
           individuals who could be endangered by such information.
         </div>
 
@@ -260,7 +260,7 @@ function FridayAfternoonFirstSeen() {
       animation: 'slideInBottom 300ms ease',
       fontSize: 14, color: '#92400E', lineHeight: 1.6,
     }}>
-      Friday afternoons have the highest violence concentration near Noble campuses — 3.2× the Monday morning rate.
+      Friday afternoons have the highest violence concentration near campuses — 3.2× the Monday morning rate.
       Dismissal protocols deserve extra attention today.
     </div>
   );

@@ -57,7 +57,7 @@ ABSOLUTE REQUIREMENT: Do NOT mention ICE, immigration, immigration enforcement, 
 This is a legal requirement to protect student and family safety.
 Parents may include undocumented individuals who could be harmed if the nature of the threat is identified in a message.
 Write: calm, brief, reassuring. 3 sentences max.
-Start with: 'Dear Noble Families,'
+Start with: 'Dear Families,'
 Mention: students are safe inside the building.
 Mention: normal dismissal may be modified — await notification.
 DO NOT mention: any details about what is happening outside.
@@ -67,7 +67,7 @@ DO NOT mention: the reason for the protocol.`
       : `Write a brief parent notification for ${campus.name}.
 We are implementing ${ec.name}.
 Write: calm, brief, reassuring. 3 sentences max.
-Start with: 'Dear Noble Families,'
+Start with: 'Dear Families,'
 Mention: students are safe.
 Mention: staff are following safety procedures.
 Mention: further updates will follow.
@@ -89,7 +89,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
       setFamilyMessage(data.content[0]?.text ?? '');
     } catch {
       setFamilyMessage(
-        `Dear Noble Families,\n\nWe are implementing a safety protocol at ${campus.name}. ` +
+        `Dear Families,\n\nWe are implementing a safety protocol at ${campus.name}. ` +
         `All students are safe inside the building. Please await further communication.`,
       );
     } finally {
@@ -310,7 +310,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
             )}
           </div>
 
-          {/* Noble leadership notification data */}
+          {/* Leadership notification data */}
           <div style={{
             background: '#F8F9FA',
             border: '1px solid #E5E7EB',
@@ -320,7 +320,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
             color: '#6B7280',
           }}>
             <div style={{ fontWeight: 700, color: '#374151', marginBottom: 4 }}>
-              Noble Leadership Notification Data
+              Leadership Notification Data
             </div>
             <div>Campus: {campus.name}</div>
             <div>Code: {ec.name}</div>
