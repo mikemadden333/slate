@@ -74,7 +74,7 @@ type NetworkTab = 'dashboard' | 'map' | 'news' | 'intelligence';
 
 export default function App() {
   // --- Navigation ---
-  const [view, setView] = useState<View>('campus');
+  const [view, setView] = useState<View>('network');
   const [networkTab, setNetworkTab] = useState<NetworkTab>('dashboard');
   const [selectedCampusId, setSelectedCampusId] = useState(() => getLastCampusId() ?? 1);
 
@@ -355,534 +355,240 @@ export default function App() {
     : undefined;
 
   // --- Render ---
+
+  const riskAccent = selectedRisk?.label === 'CRITICAL' ? '#DC2626'
+    : selectedRisk?.label === 'HIGH' ? '#EA580C'
+    : selectedRisk?.label === 'ELEVATED' ? '#D97706'
+    : '#0EA5E9';
+
   return (
-    <div style={{ fontFamily: "system-ui, -apple-system, sans-serif", color: '#111827' }}>
-      {/* Campus Selector — after splash, before onboarding */}
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: '#0D1117' }}>
       {showCampusSelector && (
         <CampusSelector
-          onSelectCampus={(id) => {
-            setSelectedCampusId(id);
-            saveSelectedCampus(id);
-            setShowCampusSelector(false);
-            setView('campus');
-          }}
-          onSelectNetwork={() => {
-            markSelectorDismissed();
-            setShowCampusSelector(false);
-            setView('network');
-          }}
+          onSelectCampus={(id) => { setSelectedCampusId(id); saveSelectedCampus(id); setShowCampusSelector(false); setView('campus'); }}
+          onSelectNetwork={() => { markSelectorDismissed(); setShowCampusSelector(false); setView('network'); }}
         />
       )}
-
-      {/* Onboarding */}
       {showOnboarding && (
-        <OnboardingRevelation
-          campus={selectedCampus}
-          incidents30d={incidents30d1mi}
+        <OnboardingRevelation campus={selectedCampus} incidents30d={incidents30d1mi}
           contagionZoneCount={selectedRisk?.contagionZones.length ?? 0}
           inContagionZone={(selectedRisk?.contagionZones.length ?? 0) > 0}
-          onComplete={handleCompleteOnboarding}
-        />
+          onComplete={handleCompleteOnboarding} />
       )}
-
-      {/* Protocol Modal */}
       {activeProtocol && (
-        <ProtocolModal
-          code={activeProtocol}
-          campus={selectedCampus}
-          risk={selectedRisk}
-          onClose={() => setActiveProtocol(null)}
-        />
+        <ProtocolModal code={activeProtocol} campus={selectedCampus} risk={selectedRisk}
+          onClose={() => setActiveProtocol(null)} />
       )}
-
-      {/* Command Center */}
       {showCommandCenter && (
-        <CommandCenter
-          risks={allRisks}
-          incidents={incidents}
-          acuteIncidents={acuteIncidents}
-          shotSpotterEvents={shotSpotterEvents}
-          zones={zones}
-          newsItems={newsItems}
-          iceAlerts={iceAlerts}
-          forecast={networkForecast}
-          networkSummary={networkSummary}
-          onClose={() => setShowCommandCenter(false)}
-          onSelectCampus={handleSelectCampusFromNetwork}
-        />
+        <CommandCenter risks={allRisks} incidents={incidents} acuteIncidents={acuteIncidents}
+          shotSpotterEvents={shotSpotterEvents} zones={zones} newsItems={newsItems}
+          iceAlerts={iceAlerts} forecast={networkForecast} networkSummary={networkSummary}
+          onClose={() => setShowCommandCenter(false)} onSelectCampus={handleSelectCampusFromNetwork} />
       )}
 
-      {/* 72px Risk-Colored Header */}
-      <nav style={{
-        height: 72,
-        background: headerBg,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 20px',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        transition: 'background 600ms ease',
-      }}>
-        {/* Left: PULSE + view toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ color: '#fff', fontWeight: 800, fontSize: 22, letterSpacing: 3 }}>
-            Sentinel<span style={{ color: '#F0B429' }}>.</span>
-          </div>
-          <div style={{ display: 'flex', gap: 4 }}>
-            <NavBtn label="My Campus" active={view === 'campus'} onClick={() => setView('campus')} />
-            <NavBtn label="Network" active={view === 'network'} onClick={() => setView('network')} />
-            {view === 'network' && (
-              <NavBtn label="Command" active={showCommandCenter} onClick={() => setShowCommandCenter(true)} />
-            )}
-            <NavBtn label="How It Works" active={view === 'howItWorks'} onClick={() => setView('howItWorks')} />
-          </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {[
+            { label: 'Network', v: 'network' },
+            { label: 'My Campus', v: 'campus' },
+            { label: 'How It Works', v: 'howItWorks' },
+          ].map(t => (
+            <button key={t.v} onClick={() => setView(t.v as View)} style={{
+              padding: '9px 20px', borderRadius: 10, border: 'none', cursor: 'pointer',
+              fontSize: 13, fontWeight: view === t.v ? 700 : 500,
+              color: view === t.v ? '#0D1117' : '#4A5568',
+              background: view === t.v ? '#E8EDF2' : 'transparent',
+              transition: 'all 0.15s ease',
+            }}>{t.label}</button>
+          ))}
+          {view === 'network' && (
+            <button onClick={() => setShowCommandCenter(true)} style={{
+              padding: '9px 20px', borderRadius: 10, border: '1px solid #EF444440',
+              cursor: 'pointer', fontSize: 13, fontWeight: 600,
+              color: '#EF4444', background: '#FEF2F2',
+            }}>Command Center</button>
+          )}
         </div>
 
-        {/* Center: Campus switcher */}
-        {view === 'campus' ? (
-          <NavCampusSelector
-            campuses={CAMPUSES}
-            selectedId={selectedCampusId}
-            onSelect={setSelectedCampusId}
-          />
-        ) : view === 'network' ? (
-          <div style={{ color: '#fff', fontWeight: 600, fontSize: 16 }}>
-            Noble Network
-          </div>
-        ) : (
-          <div style={{ color: '#fff', fontWeight: 600, fontSize: 16 }}>
-            How Sentinel Works
-          </div>
+        {view === 'campus' && (
+          <SlateCampusDropdown campuses={CAMPUSES} selectedId={selectedCampusId} onSelect={setSelectedCampusId} />
         )}
 
-        {/* Right: Updated timestamp — green flash on refresh */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 6,
-          color: justRefreshed ? '#86EFAC' : 'rgba(255,255,255,0.8)',
-          fontSize: 13,
-          transition: 'color 0.5s ease',
-        }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M23 4v6h-6M1 20v-6h6" />
-            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
-          </svg>
-          Updated {updatedAgoText}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 12 }}>
+          {view === 'campus' && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '4px 12px', borderRadius: 20,
+              background: riskAccent + '12', color: riskAccent,
+              fontWeight: 700, fontSize: 11, letterSpacing: '1px',
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: riskAccent }} />
+              {selectedRisk?.label ?? 'LOW'}
+            </span>
+          )}
+          <span style={{ color: justRefreshed ? '#0EA5E9' : '#4A5568', transition: 'color 0.5s' }}>
+            ⟳ Updated {updatedAgoText}
+          </span>
         </div>
-      </nav>
+      </div>
 
-      {/* Retaliation window banner — persistent, always visible during active window */}
       {view === 'campus' && (
-        <RetaliationBanner
-          retWin={retWin}
-          campusName={selectedCampus.name}
-          onBeginProtocol={handleBeginProtocol}
-        />
+        <RetaliationBanner retWin={retWin} campusName={selectedCampus.name} onBeginProtocol={handleBeginProtocol} />
       )}
 
-      {/* Sub-navigation for network view */}
       {view === 'network' && (
-        <div style={{
-          position: 'fixed',
-          top: 72,
-          left: 0,
-          right: 0,
-          height: 48,
-          background: '#fff',
-          borderBottom: '1px solid #E5E7EB',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-          padding: '0 16px',
-          zIndex: 999,
-        }}>
+        <div style={{ display: 'flex', gap: 0, marginBottom: 24, borderBottom: '1px solid #E8EDF2' }}>
           {(['dashboard', 'map', 'news', 'intelligence'] as NetworkTab[]).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setNetworkTab(tab)}
-              style={{
-                padding: '6px 16px',
-                borderRadius: 6,
-                fontSize: 14,
-                fontWeight: networkTab === tab ? 700 : 400,
-                color: networkTab === tab ? '#1B3A6B' : '#6B7280',
-                background: networkTab === tab ? '#F3F4F6' : 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                textTransform: 'capitalize',
-                minHeight: 44,
-              }}
-            >
-              {tab}
-            </button>
+            <button key={tab} onClick={() => setNetworkTab(tab)} style={{
+              padding: '12px 22px', border: 'none', cursor: 'pointer',
+              fontSize: 13, fontWeight: networkTab === tab ? 700 : 500,
+              color: networkTab === tab ? '#0D1117' : '#4A5568',
+              background: 'transparent',
+              borderBottom: networkTab === tab ? '2px solid #EF4444' : '2px solid transparent',
+              textTransform: 'capitalize', transition: 'all 0.15s',
+            }}>{tab}</button>
           ))}
         </div>
       )}
 
-      {/* Main content */}
-      <main style={{
-        marginTop: view === 'network' ? 120 : (72 + retBannerHeight),
-        minHeight: 'calc(100vh - 72px)',
-        background: view === 'howItWorks' ? 'transparent' : '#fff',
-        transition: 'margin-top 200ms ease',
-      }}>
-        {view === 'howItWorks' ? (
-          <IntelligencePage />
-        ) : view === 'campus' ? (
-          <div style={{ padding: '24px 16px', maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {initialLoading && <CampusSkeleton />}
-
-            {/* Since you were last here */}
-            {campusMemory.sinceLastVisit && (
-              <SinceLastVisitCard
-                data={campusMemory.sinceLastVisit}
-                onDismiss={campusMemory.dismissCard}
-              />
-            )}
-
-            {/* 1. The Situation */}
-            <SituationCard
-              risk={selectedRisk}
-              campusName={selectedCampus.name}
-              onBeginProtocol={handleBeginProtocol}
-            />
-
-            {/* Contextual education moments */}
-            <ContextualEducation
-              risk={selectedRisk}
-              iceAlerts={iceAlerts}
-              dataLoaded={!initialLoading}
-            />
-
-            {/* 2. School Day Bar */}
-            <RightNowBar
-              schoolPeriod={schoolPeriod}
-              minutesToArrival={minutesToArrival(now, selectedCampus)}
-              minutesToDismissal={minutesToDismissal(now, selectedCampus)}
-              riskLabel={selectedRisk.label as 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL'}
-              incidents6h={incidents6h}
-            />
-
-            {/* 2.5. Last Night summary — only visible before 8am */}
-            <LastNight
-              campus={selectedCampus}
-              incidents={acuteIncidents}
-              citizenIncidents={citizenIncidents}
-              schoolPeriod={schoolPeriod}
-            />
-
-            {/* 3. Morning Intelligence Briefing */}
-            <div ref={briefingRef}>
-              <MorningBriefing
-                campus={selectedCampus}
-                risk={selectedRisk}
-                iceAlerts={iceAlerts}
-                incidents={allIncidents}
-                newsItems={newsItems}
-                tempF={tempF}
-                onAskPulse={scrollToIntelQuery}
-              />
-            </div>
-
-            {/* 4. Contagion Intelligence */}
-            <ContagionPanel
-              zones={selectedRisk.contagionZones}
-              inRetaliationWindow={selectedRisk.inRetaliationWindow}
-              campusName={selectedCampus.name}
-              campusId={selectedCampusId}
-              allRisks={allRisks}
-              forecast={forecast}
-              onOpenForecast={scrollToForecast}
-              onBeginProtocol={handleBeginProtocol}
-            />
-
-            {/* 5. ICE Intelligence — informational, not emergency */}
-            <IceIntelligence iceAlerts={iceAlerts} onInitiateCodeWhite={handleInitiateCodeWhite} />
-
-            {/* 6. Campus Map */}
-            <CampusMap
-              campus={selectedCampus}
-              risk={selectedRisk}
-              incidents={allIncidents}
-              shotSpotterEvents={shotSpotterEvents}
-              contagionZones={selectedRisk.contagionZones}
-              corridors={corridors}
-            />
-
-            {/* 5. 7-Day Forecast */}
-            <div ref={forecastRef}>
-              <WeekForecast
-                forecast={forecast}
-                onScrollToBriefing={scrollToBriefing}
-              />
-            </div>
-
-            {/* 6. Recent Incidents */}
-            <IncidentList
-              campus={selectedCampus}
-              incidents={allIncidents}
-              contagionZones={selectedRisk.contagionZones}
-            />
-
-            {/* 7. Safe Corridors */}
-            <SafeCorridorMap campus={selectedCampus} corridors={corridors} schoolPeriod={schoolPeriod} />
-
-            {/* 9. Emergency Response */}
-            <EmergencyResponse
-              onSelectCode={setActiveProtocol}
-              recommendedCode={recommendedCode}
-            />
-
-            {/* 10. Ask Sentinel */}
-            <div ref={intelQueryRef}>
-              <IntelQuery campus={selectedCampus} risk={selectedRisk} />
-            </div>
-
-            {/* 11. Data Freshness */}
-            <DataFreshness
-              cpdLastUpdate={dataFreshness.cpdLastUpdate}
-              cpdCount={dataFreshness.cpdCount}
-              citizenLastUpdate={dataFreshness.citizenLastUpdate}
-              citizenCount={dataFreshness.citizenCount}
-              shotSpotterStatus={dataFreshness.shotSpotterStatus}
-              newsLastUpdate={dataFreshness.newsLastUpdate}
-              newsSourceCount={dataFreshness.newsSourceCount}
-              iceAlertCount={iceAlerts.length}
-              realtimeCount={dataFreshness.realtimeCount}
-              realtimeLastUpdate={dataFreshness.realtimeLastUpdate}
-              newsIncidentCount={dataFreshness.newsIncidentCount}
-            />
-
-            {/* 12. Data Source Footer */}
-            <div style={{
-              fontSize: 11, color: '#9CA3AF', lineHeight: 1.6,
-              padding: '16px 0', borderTop: '1px solid #E5E7EB',
-              textAlign: 'center',
-            }}>
-              Data: Chicago Police Department (CPD), ShotSpotter acoustic sensors, Citizen app scanner feed,
-              RSS news (Block Club, WGN, ABC7, NBC, Sun-Times, WBEZ, Chalkbeat), Open-Meteo weather.
-              <br />
-              Contagion model: Papachristos et al., Yale/UChicago. Risk engine updates every 90 seconds.
-            </div>
+      {view === 'howItWorks' ? (
+        <IntelligencePage />
+      ) : view === 'campus' ? (
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {initialLoading && <CampusSkeleton />}
+          {campusMemory.sinceLastVisit && (
+            <SinceLastVisitCard data={campusMemory.sinceLastVisit} onDismiss={campusMemory.dismissCard} />
+          )}
+          <SituationCard risk={selectedRisk} campusName={selectedCampus.name} onBeginProtocol={handleBeginProtocol} />
+          <ContextualEducation risk={selectedRisk} iceAlerts={iceAlerts} dataLoaded={!initialLoading} />
+          <RightNowBar schoolPeriod={schoolPeriod} minutesToArrival={minutesToArrival(now, selectedCampus)}
+            minutesToDismissal={minutesToDismissal(now, selectedCampus)}
+            riskLabel={selectedRisk.label as 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL'}
+            incidents6h={incidents6h} />
+          <LastNight campus={selectedCampus} incidents={acuteIncidents}
+            citizenIncidents={citizenIncidents} schoolPeriod={schoolPeriod} />
+          <div ref={briefingRef}>
+            <MorningBriefing campus={selectedCampus} risk={selectedRisk} iceAlerts={iceAlerts}
+              incidents={allIncidents} newsItems={newsItems} tempF={tempF}
+              onAskPulse={scrollToIntelQuery} />
           </div>
-        ) : (
-          <div>
-            {networkTab === 'dashboard' && (
-              <NetworkDashboard
-                risks={allRisks}
-                summary={networkSummary}
-                forecast={networkForecast}
-                iceAlerts={iceAlerts}
-                shotSpotterEvents={shotSpotterEvents}
-                acuteIncidents={acuteIncidents}
-                onSelectCampus={handleSelectCampusFromNetwork}
-              />
-            )}
-            {networkTab === 'map' && (
-              <div style={{ padding: 16 }}>
-                <NetworkMap
-                  risks={allRisks}
-                  zones={zones}
-                  incidents24h={acuteIncidents}
-                  iceAlerts={iceAlerts}
-                  onSelectCampus={handleSelectCampusFromNetwork}
-                />
-              </div>
-            )}
-            {networkTab === 'news' && (
-              <div style={{ padding: 16, maxWidth: 900, margin: '0 auto' }}>
-                <NewsView newsItems={newsItems} campusName={selectedCampus.short} />
-              </div>
-            )}
-            {networkTab === 'intelligence' && (
-              <div style={{ padding: 16, maxWidth: 1000, margin: '0 auto' }}>
-                <Intelligence risks={allRisks} incidents={incidents} zones={zones} />
-              </div>
-            )}
+          <ContagionPanel zones={selectedRisk.contagionZones}
+            inRetaliationWindow={selectedRisk.inRetaliationWindow}
+            campusName={selectedCampus.name} campusId={selectedCampusId}
+            allRisks={allRisks} forecast={forecast}
+            onOpenForecast={scrollToForecast} onBeginProtocol={handleBeginProtocol} />
+          <IceIntelligence iceAlerts={iceAlerts} onInitiateCodeWhite={handleInitiateCodeWhite} />
+          <CampusMap campus={selectedCampus} risk={selectedRisk} incidents={allIncidents}
+            shotSpotterEvents={shotSpotterEvents}
+            contagionZones={selectedRisk.contagionZones} corridors={corridors} />
+          <div ref={forecastRef}>
+            <WeekForecast forecast={forecast} onScrollToBriefing={scrollToBriefing} />
           </div>
-        )}
-      </main>
-
-      {/* Floating help button */}
-      {!showCampusSelector && (
-        <button
-          onClick={() => setView('howItWorks')}
-          style={{
-            position: 'fixed', bottom: 24, right: 24, zIndex: 900,
-            width: 48, height: 48, borderRadius: '50%',
-            background: '#1B3A6B', color: '#F0B429', border: 'none',
-            fontSize: 22, fontWeight: 700, cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'transform 200ms ease, box-shadow 200ms ease',
-          }}
-          title="How Sentinel Works"
-          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
-        >
-          ?
-        </button>
+          <IncidentList campus={selectedCampus} incidents={allIncidents}
+            contagionZones={selectedRisk.contagionZones} />
+          <SafeCorridorMap campus={selectedCampus} corridors={corridors} schoolPeriod={schoolPeriod} />
+          <EmergencyResponse onSelectCode={setActiveProtocol} recommendedCode={recommendedCode} />
+          <div ref={intelQueryRef}>
+            <IntelQuery campus={selectedCampus} risk={selectedRisk} />
+          </div>
+          <DataFreshness
+            cpdLastUpdate={dataFreshness.cpdLastUpdate} cpdCount={dataFreshness.cpdCount}
+            citizenLastUpdate={dataFreshness.citizenLastUpdate} citizenCount={dataFreshness.citizenCount}
+            shotSpotterStatus={dataFreshness.shotSpotterStatus}
+            newsLastUpdate={dataFreshness.newsLastUpdate} newsSourceCount={dataFreshness.newsSourceCount}
+            iceAlertCount={iceAlerts.length}
+            realtimeCount={dataFreshness.realtimeCount} realtimeLastUpdate={dataFreshness.realtimeLastUpdate}
+            newsIncidentCount={dataFreshness.newsIncidentCount} />
+          <div style={{ fontSize: 11, color: '#4A5568', lineHeight: 1.6, padding: '16px 0', borderTop: '1px solid #E8EDF2', textAlign: 'center' }}>
+            Data: Chicago Police Department (CPD), ShotSpotter acoustic sensors, Citizen app scanner feed,
+            RSS news (Block Club, WGN, ABC7, NBC, Sun-Times, WBEZ, Chalkbeat), Open-Meteo weather.
+            <br />Contagion model: Papachristos et al., Yale/UChicago. Risk engine updates every 90 seconds.
+          </div>
+        </div>
+      ) : (
+        <div>
+          {networkTab === 'dashboard' && (
+            <NetworkDashboard risks={allRisks} summary={networkSummary} forecast={networkForecast}
+              iceAlerts={iceAlerts} shotSpotterEvents={shotSpotterEvents}
+              acuteIncidents={acuteIncidents} onSelectCampus={handleSelectCampusFromNetwork} />
+          )}
+          {networkTab === 'map' && (
+            <div style={{ borderRadius: 12, overflow: 'hidden' }}>
+              <NetworkMap risks={allRisks} zones={zones} incidents24h={acuteIncidents}
+                iceAlerts={iceAlerts} onSelectCampus={handleSelectCampusFromNetwork} />
+            </div>
+          )}
+          {networkTab === 'news' && (
+            <div style={{ maxWidth: 900, margin: '0 auto' }}>
+              <NewsView newsItems={newsItems} campusName={selectedCampus.short} />
+            </div>
+          )}
+          {networkTab === 'intelligence' && (
+            <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+              <Intelligence risks={allRisks} incidents={incidents} zones={zones} />
+            </div>
+          )}
+        </div>
       )}
 
-      {/* Footer */}
-      <footer style={{
-        textAlign: 'center',
-        padding: '16px',
-        fontSize: 12,
-        color: '#1B3A6B',
-        borderTop: '1px solid #E5E7EB',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 6,
-      }}>
-        <svg width="14" height="17" viewBox="0 0 28 34" style={{ flexShrink: 0 }}>
-          <path d="M14 1L2 7v12c0 9.3 5.1 17.9 12 21.5 6.9-3.6 12-12.2 12-21.5V7L14 1z"
-            fill="#1B3A6B" stroke="#F0B429" strokeWidth="1.5"/>
-          <text x="14" y="20" textAnchor="middle" fill="#fff" fontSize="9"
-            fontWeight="800" fontFamily="system-ui">N</text>
-        </svg>
-        <span>Slate Sentinel — Noble Schools — Chicago, Illinois — {weather.temperature.toFixed(0)}°F</span>
+      <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: '#4A5568', borderTop: '1px solid #E8EDF2' }}>
+        <div>Slate Sentinel — Noble Schools — Chicago, Illinois — {weather.temperature.toFixed(0)}°F</div>
+        <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, LLC · Madden Advisory Group · 2026</div>
       </footer>
     </div>
   );
 }
 
-function NavBtn({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        background: active ? 'rgba(255,255,255,0.22)' : 'transparent',
-        color: '#fff',
-        border: '1px solid rgba(255,255,255,0.3)',
-        borderRadius: 8,
-        padding: '8px 16px',
-        cursor: 'pointer',
-        fontSize: 14,
-        fontWeight: active ? 700 : 400,
-        minHeight: 44,
-        borderBottom: active ? '3px solid #F0B429' : '3px solid transparent',
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
-function NavCampusSelector({ campuses, selectedId, onSelect }: {
-  campuses: typeof CAMPUSES;
-  selectedId: number;
-  onSelect: (id: number) => void;
+function SlateCampusDropdown({ campuses, selectedId, onSelect }: {
+  campuses: typeof CAMPUSES; selectedId: number; onSelect: (id: number) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const ref = useRef<HTMLDivElement>(null);
-
   const selected = campuses.find(c => c.id === selectedId);
   const sorted = [...campuses].sort((a, b) => a.name.localeCompare(b.name));
   const filtered = search.trim()
-    ? sorted.filter(c =>
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.short.toLowerCase().includes(search.toLowerCase()) ||
-        c.communityArea.toLowerCase().includes(search.toLowerCase())
-      )
+    ? sorted.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.short.toLowerCase().includes(search.toLowerCase()) || c.communityArea.toLowerCase().includes(search.toLowerCase()))
     : sorted;
-
   useEffect(() => {
     if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
+    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
-
   return (
     <div ref={ref} style={{ position: 'relative' }}>
-      <button
-        onClick={() => { setOpen(!open); setSearch(''); }}
-        style={{
-          background: 'rgba(255,255,255,0.18)',
-          color: '#fff',
-          border: '1px solid rgba(255,255,255,0.35)',
-          borderRadius: 8,
-          padding: '8px 16px',
-          fontSize: 15,
-          fontWeight: 600,
-          cursor: 'pointer',
-          minHeight: 44,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-        }}
-      >
+      <button onClick={() => { setOpen(!open); setSearch(''); }} style={{
+        background: '#F0F4F8', border: '1px solid #E8EDF2', borderRadius: 10,
+        padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+        color: '#0D1117', display: 'flex', alignItems: 'center', gap: 8,
+      }}>
         {selected?.short ?? 'Select campus'}
-        <span style={{ fontSize: 10, opacity: 0.7 }}>▼</span>
+        <span style={{ fontSize: 10, opacity: 0.5 }}>▼</span>
       </button>
       {open && (
         <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          marginTop: 4,
-          width: 280,
-          background: '#fff',
-          borderRadius: 10,
-          boxShadow: '0 8px 30px rgba(0,0,0,0.25)',
-          zIndex: 2000,
-          overflow: 'hidden',
+          position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+          marginTop: 4, width: 300, background: '#fff', borderRadius: 12,
+          boxShadow: '0 8px 30px rgba(0,0,0,0.15)', zIndex: 2000,
+          overflow: 'hidden', border: '1px solid #E8EDF2',
         }}>
-          <input
-            autoFocus
-            type="text"
-            placeholder="Search campuses..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '10px 14px',
-              border: 'none',
-              borderBottom: '1px solid #E5E7EB',
-              fontSize: 14,
-              outline: 'none',
-              color: '#111827',
-              boxSizing: 'border-box',
-            }}
-          />
-          <div style={{ maxHeight: 260, overflowY: 'auto' }}>
+          <input autoFocus type="text" placeholder="Search campuses..." value={search} onChange={e => setSearch(e.target.value)}
+            style={{ width: '100%', padding: '10px 14px', border: 'none', borderBottom: '1px solid #E8EDF2', fontSize: 13, outline: 'none', color: '#0D1117', boxSizing: 'border-box' }} />
+          <div style={{ maxHeight: 280, overflowY: 'auto' }}>
             {filtered.map(c => (
-              <button
-                key={c.id}
-                onClick={() => { onSelect(c.id); setOpen(false); }}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  padding: '10px 14px',
-                  border: 'none',
-                  borderBottom: '1px solid #F3F4F6',
-                  background: c.id === selectedId ? '#EEF2F9' : '#fff',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  fontSize: 14,
-                  color: c.id === selectedId ? '#1B3A6B' : '#374151',
-                  fontWeight: c.id === selectedId ? 700 : 400,
-                  minHeight: 44,
-                }}
-              >
+              <button key={c.id} onClick={() => { onSelect(c.id); setOpen(false); }} style={{
+                display: 'block', width: '100%', padding: '10px 14px', border: 'none',
+                borderBottom: '1px solid #F5F7FA',
+                background: c.id === selectedId ? '#E0F2FE' : '#fff',
+                cursor: 'pointer', textAlign: 'left', fontSize: 13,
+                color: c.id === selectedId ? '#0D1117' : '#2D3748',
+                fontWeight: c.id === selectedId ? 700 : 400,
+              }}>
                 <div>{c.short}</div>
-                <div style={{ fontSize: 11, color: '#9CA3AF' }}>{c.communityArea}</div>
+                <div style={{ fontSize: 11, color: '#4A5568', marginTop: 2 }}>{c.communityArea}</div>
               </button>
             ))}
-            {filtered.length === 0 && (
-              <div style={{ padding: '16px 14px', color: '#9CA3AF', fontSize: 13, textAlign: 'center' }}>
-                No campuses match "{search}"
-              </div>
-            )}
           </div>
         </div>
       )}
@@ -890,49 +596,21 @@ function NavCampusSelector({ campuses, selectedId, onSelect }: {
   );
 }
 
-const SKEL_SHIMMER = `
-@keyframes pulseShimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-`;
-
+const SKEL_SHIMMER = `@keyframes pulseShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }`;
 function SkeletonBar({ width, height = 16 }: { width: string; height?: number }) {
-  return (
-    <div style={{
-      width, height, borderRadius: 4,
-      background: 'linear-gradient(90deg, #E5E7EB 0%, #F3F4F6 50%, #E5E7EB 100%)',
-      backgroundSize: '800px 100%',
-      animation: 'pulseShimmer 1.5s infinite linear',
-    }} />
-  );
+  return (<div style={{ width, height, borderRadius: 6, background: 'linear-gradient(90deg, #E8EDF2 0%, #F5F7FA 50%, #E8EDF2 100%)', backgroundSize: '800px 100%', animation: 'pulseShimmer 1.5s infinite linear' }} />);
 }
-
 function CampusSkeleton() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 8 }}>
       <style>{SKEL_SHIMMER}</style>
-      {/* Situation card skeleton */}
-      <div style={{ padding: 20, borderRadius: 12, borderLeft: '6px solid #E5E7EB', background: '#FAFAFA' }}>
+      <div style={{ padding: 20, borderRadius: 12, borderLeft: '4px solid #E8EDF2', background: '#F5F7FA' }}>
         <SkeletonBar width="85%" height={22} />
         <div style={{ marginTop: 10 }}><SkeletonBar width="60%" /></div>
         <div style={{ marginTop: 16 }}><SkeletonBar width="100%" height={44} /></div>
-        <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <SkeletonBar width="60px" height={48} />
-          <SkeletonBar width="80px" height={24} />
-        </div>
-        <div style={{ marginTop: 12 }}><SkeletonBar width="100%" height={12} /></div>
       </div>
-      {/* School day bar skeleton */}
-      <div style={{ padding: '14px 20px', borderRadius: 12, background: '#FAFAFA' }}>
+      <div style={{ padding: '14px 20px', borderRadius: 12, background: '#F5F7FA' }}>
         <SkeletonBar width="100%" height={48} />
-      </div>
-      {/* Briefing skeleton */}
-      <div style={{ padding: 20, borderRadius: 12, borderLeft: '4px solid #E5E7EB', background: '#FEF9EC' }}>
-        <SkeletonBar width="60%" height={20} />
-        <div style={{ marginTop: 16 }}><SkeletonBar width="90%" height={18} /></div>
-        <div style={{ marginTop: 12 }}><SkeletonBar width="80%" height={18} /></div>
-        <div style={{ marginTop: 12 }}><SkeletonBar width="70%" height={18} /></div>
       </div>
     </div>
   );
