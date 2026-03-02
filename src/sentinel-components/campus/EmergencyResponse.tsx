@@ -16,7 +16,7 @@ export default function EmergencyResponse({ onSelectCode, recommendedCode }: Pro
   return (
     <div style={{ border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, marginBottom: 24 }}>
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#1B3A6B', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#0D1117', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
           Safety Protocols
         </div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
@@ -53,7 +53,7 @@ export default function EmergencyResponse({ onSelectCode, recommendedCode }: Pro
               {isRecommended && (
                 <div style={{
                   position: 'absolute', top: -8, right: -4,
-                  fontSize: 9, fontWeight: 800, color: '#1B3A6B', background: '#F0B429',
+                  fontSize: 9, fontWeight: 800, color: '#0D1117', background: '#F0B429',
                   padding: '2px 8px', borderRadius: 4, letterSpacing: 0.5,
                 }}>
                   RECOMMENDED

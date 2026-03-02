@@ -206,7 +206,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
             style={{
               width: '100%',
               padding: '14px 20px',
-              background: '#1B3A6B',
+              background: '#0D1117',
               color: '#fff',
               border: 'none',
               borderRadius: 10,
@@ -342,7 +342,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
               paddingTop: 16,
               borderTop: '1px solid #E5E7EB',
             }}>
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#1B3A6B', marginBottom: 4 }}>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#0D1117', marginBottom: 4 }}>
                 Your score of {risk.score} is made up of three things.
               </div>
               <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 12 }}>
@@ -408,12 +408,12 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
       {/* ---- Action modal: What does this mean for me today? ---- */}
       {showActionModal && (
         <ExplainModal title="What This Means For You Today" onClose={() => setShowActionModal(false)}>
-          <p style={{ marginTop: 0, fontSize: 16, fontWeight: 600, color: '#1B3A6B' }}>
+          <p style={{ marginTop: 0, fontSize: 16, fontWeight: 600, color: '#0D1117' }}>
             Current Situation
           </p>
           <p style={{ lineHeight: 1.7 }}>{headline} {context}</p>
 
-          <p style={{ fontWeight: 600, color: '#1B3A6B', marginTop: 20 }}>
+          <p style={{ fontWeight: 600, color: '#0D1117', marginTop: 20 }}>
             What the research says:
           </p>
           <p style={{ lineHeight: 1.7 }}>
@@ -426,7 +426,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
                   : 'Seasonal patterns and recent incident activity are contributing to elevated risk. These patterns are well-documented in Chicago violence research.'}
           </p>
 
-          <p style={{ fontWeight: 700, fontSize: 18, color: '#1B3A6B', marginTop: 20, marginBottom: 8 }}>
+          <p style={{ fontWeight: 700, fontSize: 18, color: '#0D1117', marginTop: 20, marginBottom: 8 }}>
             What you should do right now:
           </p>
           <ol style={{ paddingLeft: 24, margin: 0 }}>
@@ -448,7 +448,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
               style={{
                 width: '100%',
                 padding: '14px 20px',
-                background: '#1B3A6B',
+                background: '#0D1117',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 10,
@@ -492,7 +492,7 @@ function ScoreComponent({
         <span style={{
           fontSize: 14,
           fontWeight: 600,
-          color: '#1B3A6B',
+          color: '#0D1117',
           width: 160,
           flexShrink: 0,
         }}>

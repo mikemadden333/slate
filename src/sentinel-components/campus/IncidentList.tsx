@@ -120,7 +120,7 @@ export default function IncidentList({ campus, incidents, contagionZones }: Prop
     <div style={{ border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, marginBottom: 24 }}>
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#1B3A6B' }}>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#0D1117' }}>
           What's Happened Near Your Campus
         </div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
@@ -349,7 +349,7 @@ function FilterBtn({ label, active, onClick }: { label: string; active: boolean;
     <button onClick={onClick} style={{
       padding: '4px 12px', borderRadius: 4, fontSize: 12,
       fontWeight: active ? 700 : 400, color: active ? '#fff' : '#374151',
-      background: active ? '#1B3A6B' : '#fff', border: '1px solid #D1D5DB',
+      background: active ? '#0D1117' : '#fff', border: '1px solid #D1D5DB',
       cursor: 'pointer', minHeight: 44,
     }}>
       {label}

@@ -126,7 +126,7 @@ export default function ContagionPanel({
     <div style={{ marginBottom: 16 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 20, color: '#1B3A6B', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 20, color: '#0D1117', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
             Violence Spread Monitor
             <Explainer title="Violence Contagion Model">
               <p style={{ margin: '0 0 12px' }}>Based on research by Yale sociologist Andrew Papachristos, gun violence spreads through social networks like an infectious disease. A person's risk of being shot increases by <strong>900%</strong> if someone in their social network was recently shot.</p>
@@ -283,7 +283,7 @@ export default function ContagionPanel({
             <button
               onClick={() => onBeginProtocol('YELLOW')}
               style={{
-                width: '100%', padding: '14px 16px', background: '#1B3A6B',
+                width: '100%', padding: '14px 16px', background: '#0D1117',
                 border: 'none', borderRadius: 8, color: '#fff',
                 fontSize: 16, fontWeight: 700, cursor: 'pointer', marginBottom: 8,
               }}
@@ -326,7 +326,7 @@ export default function ContagionPanel({
               {/* Campus marker */}
               <div style={{
                 position: 'absolute', width: 16, height: 16, borderRadius: '50%',
-                background: '#1B3A6B', border: '3px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                background: '#0D1117', border: '3px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
                 zIndex: 2,
               }} />
               {/* Incident marker */}
@@ -546,7 +546,7 @@ function NetworkContagionSection({ corridors }: { corridors: CorridorGroup[]; ca
   if (corridors.length === 0) return null;
   return (
     <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: 16, marginTop: 16 }}>
-      <div style={{ fontWeight: 700, fontSize: 14, color: '#1B3A6B', marginBottom: 8 }}>Noble Network Alert</div>
+      <div style={{ fontWeight: 700, fontSize: 14, color: '#0D1117', marginBottom: 8 }}>Noble Network Alert</div>
       {corridors.map(group => {
         const names = group.campuses.map(c => c.name);
         return (
@@ -599,7 +599,7 @@ function PapachristosModal({ onClose }: { onClose: () => void }) {
         PULSE tracks every homicide near your campus and calculates where you are in that risk window.
         This science has never been applied to school safety before. <strong>Noble Schools is the first.</strong>
       </p>
-      <p style={{ fontWeight: 600, color: '#1B3A6B', fontSize: 16 }}>The three phases:</p>
+      <p style={{ fontWeight: 600, color: '#0D1117', fontSize: 16 }}>The three phases:</p>
       <ul style={{ paddingLeft: 20, fontSize: 15, lineHeight: 1.8 }}>
         <li><strong style={{ color: '#DC2626' }}>ACUTE (0-72 hours):</strong> Highest danger. 0.5-mile radius. The 18-72 hour window is when retaliatory violence is most likely.</li>
         <li><strong style={{ color: '#D97706' }}>ACTIVE (3-14 days):</strong> Elevated risk continues. 1-mile radius. Community tension may still be high.</li>

@@ -48,7 +48,7 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
       <div style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 20, color: '#1B3A6B', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 20, color: '#0D1117', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
               The Week Ahead
               <Explainer title="How the Forecast Works">
                 <p style={{ margin: '0 0 12px' }}>The 7-day forecast projects campus risk forward using three inputs: <strong>contagion trajectories</strong> (how existing zones will age), <strong>seasonal patterns</strong> (day-of-week and monthly violence trends), and <strong>weather forecasts</strong> (high temperatures correlate with increased violence).</p>
@@ -67,8 +67,8 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
       <div
         onClick={() => setExpandedDay(expandedDay === today.date ? null : today.date)}
         style={{
-          background: '#EEF2F9',
-          border: '2px solid #1B3A6B',
+          background: '#E0F2FE',
+          border: '2px solid #0D1117',
           borderRadius: 10,
           padding: '16px 20px',
           cursor: 'pointer',
@@ -77,7 +77,7 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: '#1B3A6B' }}>TODAY</div>
+            <div style={{ fontSize: 16, fontWeight: 800, color: '#0D1117' }}>TODAY</div>
             {todayPc && (
               <span style={{
                 fontSize: 10, fontWeight: 800, color: todayPc.color, background: todayPc.bg,
@@ -110,7 +110,7 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
           </div>
         )}
         {onScrollToBriefing && (
-          <div style={{ fontSize: 13, color: '#1B3A6B', fontWeight: 600, marginTop: 8 }}>
+          <div style={{ fontSize: 13, color: '#0D1117', fontWeight: 600, marginTop: 8 }}>
             Full briefing ↓
           </div>
         )}
@@ -129,8 +129,8 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
               key={day.date}
               onClick={() => setExpandedDay(isExpanded ? null : day.date)}
               style={{
-                background: isExpanded ? '#EEF2F9' : '#F8F9FA',
-                border: hasContagion ? `2px solid ${pc!.color}55` : isExpanded ? '2px solid #1B3A6B' : '1px solid #E5E7EB',
+                background: isExpanded ? '#E0F2FE' : '#F8F9FA',
+                border: hasContagion ? `2px solid ${pc!.color}55` : isExpanded ? '2px solid #0D1117' : '1px solid #E5E7EB',
                 borderRadius: 8,
                 padding: '10px 12px',
                 textAlign: 'center',
@@ -194,7 +194,7 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
             borderRadius: 10, border: `1px solid ${lc.color}33`,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <span style={{ fontWeight: 700, fontSize: 16, color: '#1B3A6B' }}>
+              <span style={{ fontWeight: 700, fontSize: 16, color: '#0D1117' }}>
                 {day.dayName}, {new Date(day.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} — {day.label}
               </span>
               {hasContagion && (
@@ -235,8 +235,8 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
 
             {recommendation && (
               <div style={{
-                fontSize: 14, fontWeight: 600, color: '#1B3A6B', padding: '10px 14px',
-                background: '#EEF2F9', borderRadius: 6,
+                fontSize: 14, fontWeight: 600, color: '#0D1117', padding: '10px 14px',
+                background: '#E0F2FE', borderRadius: 6,
               }}>
                 Recommended preparation: {recommendation}
               </div>
@@ -245,7 +245,7 @@ export default function WeekForecast({ forecast, onScrollToBriefing }: Props) {
             {isToday && onScrollToBriefing && (
               <button onClick={onScrollToBriefing} style={{
                 marginTop: 8, background: 'none', border: 'none', padding: 0,
-                cursor: 'pointer', fontSize: 13, color: '#1B3A6B', fontWeight: 600,
+                cursor: 'pointer', fontSize: 13, color: '#0D1117', fontWeight: 600,
                 textDecoration: 'underline', textUnderlineOffset: 3,
               }}>
                 View today&apos;s full briefing above

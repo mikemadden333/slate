@@ -95,7 +95,7 @@ export default function Explainer({ title, children, size = 18 }: ExplainerProps
                 gap: 8,
               }}>
                 <HelpCircle size={18} style={{ color: '#F0B429' }} />
-                <div style={{ fontWeight: 700, fontSize: 17, color: '#1B3A6B' }}>
+                <div style={{ fontWeight: 700, fontSize: 17, color: '#0D1117' }}>
                   {title}
                 </div>
               </div>

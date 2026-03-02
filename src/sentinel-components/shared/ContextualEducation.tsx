@@ -128,8 +128,8 @@ function ScoreJumpFirstSeen({ risk, lastScore }: { risk: CampusRisk; lastScore?:
   if (jump < 15) return null;
 
   return (
-    <EducationCard borderColor="#1B3A6B" onGotIt={markSeen} onDismiss={markDismissed}>
-      <div style={{ fontSize: 16, fontWeight: 700, color: '#1B3A6B', marginBottom: 8 }}>
+    <EducationCard borderColor="#0D1117" onGotIt={markSeen} onDismiss={markDismissed}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: '#0D1117', marginBottom: 8 }}>
         Your score just jumped {jump} points.
       </div>
       <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.7 }}>

@@ -48,7 +48,7 @@ function Tip({ text }: { text: string }) {
       {show && (
         <div style={{
           position: 'absolute', bottom: 20, left: -100, width: 240,
-          background: '#1B3A6B', color: '#fff', padding: '8px 12px',
+          background: '#0D1117', color: '#fff', padding: '8px 12px',
           borderRadius: 8, fontSize: 11, lineHeight: 1.5, zIndex: 100,
           boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
         }}>
@@ -72,7 +72,7 @@ export default function DataFreshness({
       marginBottom: 24, background: '#FAFAFA',
     }}>
       <div style={{
-        fontWeight: 700, fontSize: 14, color: '#1B3A6B', marginBottom: 4,
+        fontWeight: 700, fontSize: 14, color: '#0D1117', marginBottom: 4,
         paddingLeft: 10, borderLeft: '3px solid #F0B429',
       }}>
         Data Sources & Freshness
@@ -100,7 +100,7 @@ export default function DataFreshness({
         <Row
           label="CPD Verified"
           value={`Updated ${minutesAgo(cpdLastUpdate)} — ${cpdCount} incidents loaded`}
-          badge={{ text: 'VERIFIED', color: '#1B3A6B' }}
+          badge={{ text: 'VERIFIED', color: '#0D1117' }}
           tip="Chicago Police Department verified incident reports. CPD publishes with a 5-10 day delay — this is a CPD limitation, not a PULSE issue."
           warning={cpdCount === 0 && !showLagMessage ? "CPD portal has a 5-10 day publication lag" : undefined}
         />

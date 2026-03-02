@@ -129,8 +129,8 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-          <Brain size={22} style={{ color: '#1B3A6B' }} />
-          <span style={{ fontSize: 22, fontWeight: 800, color: '#1B3A6B' }}>Network Intelligence</span>
+          <Brain size={22} style={{ color: '#0D1117' }} />
+          <span style={{ fontSize: 22, fontWeight: 800, color: '#0D1117' }}>Network Intelligence</span>
           <Explainer title="Intelligence Dashboard">
             <p style={{ margin: '0 0 12px' }}>This dashboard provides five interconnected views of network safety data, auto-generated from real-time incident feeds and the Papachristos contagion model.</p>
             <p style={{ margin: 0 }}>Insights at the top are generated automatically from the current data. All visualizations update every 90 seconds.</p>
@@ -139,12 +139,12 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
 
         {/* Auto-generated insights */}
         <div style={{
-          padding: '14px 18px', background: '#EEF2F9', borderRadius: 10,
-          borderLeft: '4px solid #1B3A6B',
+          padding: '14px 18px', background: '#E0F2FE', borderRadius: 10,
+          borderLeft: '4px solid #0D1117',
         }}>
           {insights.map((line, i) => (
             <div key={i} style={{
-              fontSize: 14, color: '#1B3A6B', lineHeight: 1.6,
+              fontSize: 14, color: '#0D1117', lineHeight: 1.6,
               fontWeight: i === 0 ? 600 : 400,
             }}>
               {line}
@@ -211,7 +211,7 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
                   {r.label}
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: '#1B3A6B' }}>{r.campus.short}</div>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: '#0D1117' }}>{r.campus.short}</div>
                   <div style={{ height: 4, background: '#F3F4F6', borderRadius: 2, marginTop: 3, overflow: 'hidden' }}>
                     <div style={{
                       height: '100%', width: `${barWidth}%`,
@@ -293,14 +293,14 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
                   );
                 }}
               />
-              <Line type="monotone" dataKey="score" stroke="#1B3A6B" strokeWidth={2} dot={{ r: 3, fill: '#1B3A6B' }} />
+              <Line type="monotone" dataKey="score" stroke="#0D1117" strokeWidth={2} dot={{ r: 3, fill: '#0D1117' }} />
               <Line type="monotone" dataKey="base" stroke="#6B7280" strokeWidth={1} strokeDasharray="4 4" dot={false} />
               <Line type="monotone" dataKey="acute" stroke="#DC2626" strokeWidth={1} strokeDasharray="4 4" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 8, fontSize: 11, color: '#6B7280' }}>
-          <span><span style={{ color: '#1B3A6B', fontWeight: 700 }}>—</span> Total Score</span>
+          <span><span style={{ color: '#0D1117', fontWeight: 700 }}>—</span> Total Score</span>
           <span><span style={{ color: '#6B7280' }}>- -</span> Base</span>
           <span><span style={{ color: '#DC2626' }}>- -</span> Acute</span>
         </div>
@@ -419,7 +419,7 @@ function Section({ title, subtitle, children }: { title: string; subtitle: strin
       border: '1px solid #E5E7EB', borderRadius: 12,
       padding: 16, marginBottom: 16,
     }}>
-      <div style={{ fontWeight: 700, fontSize: 15, color: '#1B3A6B', marginBottom: 2, paddingLeft: 10, borderLeft: '3px solid #F0B429' }}>{title}</div>
+      <div style={{ fontWeight: 700, fontSize: 15, color: '#0D1117', marginBottom: 2, paddingLeft: 10, borderLeft: '3px solid #F0B429' }}>{title}</div>
       <div style={{ fontSize: 12, color: '#9CA3AF', marginBottom: 12 }}>{subtitle}</div>
       {children}
     </div>

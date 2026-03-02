@@ -124,14 +124,14 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", maxWidth: 1100, margin: "0 auto" }}>
       {/* Header */}
       <div style={{
-        background: "linear-gradient(135deg, #064E3B 0%, #065F46 100%)",
+        background: "linear-gradient(135deg, #0D1117 0%, #1C2333 100%)",
         borderRadius: 16, padding: "32px 36px", marginBottom: 24, position: "relative", overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", right: -20, top: -20, width: 160, height: 160, borderRadius: "50%", background: COLORS.accent, opacity: 0.08 }} />
+        
         <div style={{ fontSize: 22, fontWeight: 700, color: COLORS.white, marginBottom: 4 }}>
           Slate Brief
         </div>
-        <div style={{ fontSize: 13, color: "#A7F3D0", lineHeight: 1.5 }}>
+        <div style={{ fontSize: 13, color: "rgba(16, 185, 129, 0.7)", lineHeight: 1.5 }}>
           AI-powered communications grounded in Noble Schools data. Every draft draws from live platform intelligence.
         </div>
       </div>
@@ -148,8 +148,8 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
               {QUICK_PROMPTS.map((qp, i) => (
                 <button key={i} onClick={() => setPrompt(qp.prompt)} style={{
                   padding: "6px 14px", borderRadius: 8, border: "1px solid " + COLORS.chalk,
-                  background: prompt === qp.prompt ? "#D1FAE5" : COLORS.white,
-                  color: prompt === qp.prompt ? "#065F46" : COLORS.mid,
+                  background: prompt === qp.prompt ? "#E0F2FE" : COLORS.white,
+                  color: prompt === qp.prompt ? "#0D1117" : COLORS.mid,
                   fontSize: 12, fontWeight: 500, cursor: "pointer",
                   transition: "all 0.15s ease",
                 }}>
@@ -244,7 +244,7 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
             disabled={loading || !prompt.trim()}
             style={{
               width: "100%", padding: "14px 24px", borderRadius: 10, border: "none",
-              background: loading ? COLORS.mid : (!prompt.trim() ? COLORS.chalk : "linear-gradient(135deg, #059669, #10B981)"),
+              background: loading ? COLORS.mid : (!prompt.trim() ? COLORS.chalk : "linear-gradient(135deg, #0D1117, #1C2333)"),
               color: !prompt.trim() ? COLORS.lightText : COLORS.white,
               fontSize: 15, fontWeight: 600, cursor: loading || !prompt.trim() ? "default" : "pointer",
               transition: "all 0.2s ease",
@@ -256,8 +256,8 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
 
           {/* Data Badge */}
           <div style={{
-            marginTop: 12, padding: "10px 14px", background: "#F0FDF4", borderRadius: 8,
-            fontSize: 11, color: "#065F46", lineHeight: 1.5,
+            marginTop: 12, padding: "10px 14px", background: "#F0F4F8", borderRadius: 8,
+            fontSize: 11, color: "#0D1117", lineHeight: 1.5,
           }}>
             <strong>Grounded in Slate data:</strong> 17 campuses, 12,120 students, $240M budget, live safety status, FY26 financials. Every draft references real Noble intelligence.
           </div>
@@ -271,16 +271,16 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
               overflow: "hidden",
             }}>
               <div style={{
-                padding: "12px 16px", background: "#F0FDF4",
+                padding: "12px 16px", background: "#F0F4F8",
                 display: "flex", justifyContent: "space-between", alignItems: "center",
                 borderBottom: "1px solid " + COLORS.chalk,
               }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#065F46" }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#0D1117" }}>
                   Generated Draft — {voiceConfig.label} / {channel}
                 </div>
                 <button onClick={copyToClipboard} style={{
-                  padding: "4px 12px", borderRadius: 6, border: "1px solid #A7F3D0",
-                  background: copied ? "#059669" : COLORS.white,
+                  padding: "4px 12px", borderRadius: 6, border: "1px solid #E8EDF2",
+                  background: copied ? "#0D1117" : COLORS.white,
                   color: copied ? COLORS.white : "#065F46",
                   fontSize: 11, fontWeight: 600, cursor: "pointer",
                 }}>

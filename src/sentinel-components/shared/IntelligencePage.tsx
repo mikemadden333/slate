@@ -7,7 +7,7 @@
  * Premium research publication feel. Mobile-first.
  */
 
-const NAVY = '#1B3A6B';
+const NAVY = '#0D1117';
 const GOLD = '#F0B429';
 const WHITE = '#FFFFFF';
 
@@ -231,7 +231,7 @@ function ScienceSection() {
           desc="Peak retaliation window"
           marker={<span style={{
             fontSize: 10, fontWeight: 800, color: GOLD,
-            background: '#1B3A6B', padding: '2px 8px', borderRadius: 4, marginLeft: 8,
+            background: '#0D1117', padding: '2px 8px', borderRadius: 4, marginLeft: 8,
             whiteSpace: 'nowrap',
           }}>&#9668; You are here</span>}
         />

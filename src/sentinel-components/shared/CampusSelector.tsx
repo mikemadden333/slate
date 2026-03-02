@@ -69,7 +69,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
       position: 'fixed',
       inset: 0,
       zIndex: 9999,
-      background: '#1B3A6B',
+      background: '#0D1117',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -83,7 +83,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           d="M40 4L8 20v28c0 22.4 13.6 43.2 32 52 18.4-8.8 32-29.6 32-52V20L40 4z"
           fill="#F0B429" stroke="rgba(255,255,255,0.9)" strokeWidth="3"
         />
-        <text x="40" y="56" textAnchor="middle" fill="#1B3A6B"
+        <text x="40" y="56" textAnchor="middle" fill="#0D1117"
           fontFamily="system-ui" fontSize="18" fontWeight="800">N</text>
       </svg>
 
@@ -108,7 +108,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           background: '#fff',
           borderRadius: 16,
           padding: 24,
-          border: '2px solid #1B3A6B',
+          border: '2px solid #0D1117',
           boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
           display: 'flex',
           flexDirection: 'column',
@@ -117,7 +117,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           <div style={{
             fontSize: 20,
             fontWeight: 700,
-            color: '#1B3A6B',
+            color: '#0D1117',
             paddingLeft: 12,
             borderLeft: '3px solid #F0B429',
           }}>
@@ -170,7 +170,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
                   padding: '10px 14px',
                   border: 'none',
                   borderBottom: '1px solid #F3F4F6',
-                  background: selectedId === c.id ? '#EEF2F9' : '#fff',
+                  background: selectedId === c.id ? '#E0F2FE' : '#fff',
                   cursor: 'pointer',
                   textAlign: 'left',
                 }}
@@ -179,7 +179,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
                   <div style={{
                     fontSize: 14,
                     fontWeight: selectedId === c.id ? 700 : 500,
-                    color: selectedId === c.id ? '#1B3A6B' : '#374151',
+                    color: selectedId === c.id ? '#0D1117' : '#374151',
                   }}>
                     {c.name}
                   </div>
@@ -200,7 +200,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
             disabled={selectedId == null}
             style={{
               padding: '14px 20px',
-              background: selectedId != null ? '#1B3A6B' : '#9CA3AF',
+              background: selectedId != null ? '#0D1117' : '#9CA3AF',
               color: '#fff',
               border: 'none',
               borderRadius: 10,
@@ -220,7 +220,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           background: '#fff',
           borderRadius: 16,
           padding: 24,
-          border: '2px solid #1B3A6B',
+          border: '2px solid #0D1117',
           boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
           display: 'flex',
           flexDirection: 'column',
@@ -229,7 +229,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           <div style={{
             fontSize: 20,
             fontWeight: 700,
-            color: '#1B3A6B',
+            color: '#0D1117',
             paddingLeft: 12,
             borderLeft: '3px solid #F0B429',
           }}>
@@ -245,7 +245,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
             background: '#FEF9EC',
             borderRadius: 8,
             fontSize: 13,
-            color: '#1B3A6B',
+            color: '#0D1117',
             lineHeight: 1.5,
           }}>
             Network dashboard, campus ranking, contagion map, and executive intelligence.
@@ -255,7 +255,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
             onClick={handleGoNetwork}
             style={{
               padding: '14px 20px',
-              background: '#1B3A6B',
+              background: '#0D1117',
               color: '#fff',
               border: 'none',
               borderRadius: 10,

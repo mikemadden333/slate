@@ -77,7 +77,7 @@ export default function OnboardingRevelation({
         <h2 style={{
           fontSize: 22,
           fontWeight: 800,
-          color: '#1B3A6B',
+          color: '#0D1117',
           marginBottom: 16,
           lineHeight: 1.2,
         }}>
@@ -101,7 +101,7 @@ export default function OnboardingRevelation({
                 width: i === step ? 24 : 8,
                 height: 8,
                 borderRadius: 4,
-                background: i === step ? '#1B3A6B' : '#D1D5DB',
+                background: i === step ? '#0D1117' : '#D1D5DB',
                 transition: 'width 0.3s ease',
               }}
             />
@@ -111,7 +111,7 @@ export default function OnboardingRevelation({
         <button
           onClick={() => isLast ? onComplete() : setStep(s => s + 1)}
           style={{
-            background: '#1B3A6B',
+            background: '#0D1117',
             color: '#fff',
             border: 'none',
             borderRadius: 12,

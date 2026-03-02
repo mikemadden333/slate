@@ -25,11 +25,11 @@ export default function SinceLastVisitCard({ data, onDismiss }: Props) {
   return (
     <div style={{
       border: '1px solid #E5E7EB',
-      borderLeft: '4px solid #1B3A6B',
+      borderLeft: '4px solid #0D1117',
       borderRadius: 12,
       padding: '16px 18px',
       marginBottom: 16,
-      background: '#EEF2F9',
+      background: '#E0F2FE',
       position: 'relative',
       animation: 'slideInBottom 300ms ease',
     }}>
@@ -42,7 +42,7 @@ export default function SinceLastVisitCard({ data, onDismiss }: Props) {
         ✕
       </button>
 
-      <div style={{ fontSize: 15, fontWeight: 700, color: '#1B3A6B', marginBottom: 10 }}>
+      <div style={{ fontSize: 15, fontWeight: 700, color: '#0D1117', marginBottom: 10 }}>
         Since you last checked ({timeLabel})
       </div>
 

@@ -58,7 +58,7 @@ export default function SafeCorridorMap({ corridors, schoolPeriod }: Props) {
   return (
     <div style={{ border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, marginBottom: 24 }}>
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#1B3A6B' }}>Student Walking Routes</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#0D1117' }}>Student Walking Routes</div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
           Recommended routes to and from campus based on current incident locations
         </div>
