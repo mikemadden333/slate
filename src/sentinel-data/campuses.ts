@@ -1,29 +1,36 @@
-export const CAMPUSES = [
-  { name: 'Baker', ehh: 287, preTiltBudget: 2911, perPupil: 10144, deltaFromAvg: -146, mlFund: 0, applications: 378, conversionRate: 0.44, retention: 0.84 },
-  { name: 'Bulls', ehh: 699, preTiltBudget: 7071, perPupil: 10116, deltaFromAvg: -174, mlFund: 62, applications: 1247, conversionRate: 0.56, retention: 0.93 },
-  { name: 'Butler', ehh: 576, preTiltBudget: 5559, perPupil: 9650, deltaFromAvg: -640, mlFund: 75, applications: 982, conversionRate: 0.58, retention: 0.91 },
-  { name: 'Comer', ehh: 704, preTiltBudget: 8373, perPupil: 11894, deltaFromAvg: 1603, mlFund: 0, applications: 1156, conversionRate: 0.61, retention: 0.92 },
-  { name: 'DRW', ehh: 305, preTiltBudget: 3093, perPupil: 10142, deltaFromAvg: -148, mlFund: 45, applications: 563, conversionRate: 0.59, retention: 0.89 },
-  { name: 'Golder', ehh: 767, preTiltBudget: 7443, perPupil: 9703, deltaFromAvg: -587, mlFund: 92, applications: 1345, conversionRate: 0.57, retention: 0.93 },
-  { name: 'Hansberry', ehh: 673, preTiltBudget: 6518, perPupil: 9685, deltaFromAvg: -605, mlFund: 88, applications: 1089, conversionRate: 0.62, retention: 0.92 },
-  { name: 'ITW Speer', ehh: 734, preTiltBudget: 7732, perPupil: 10534, deltaFromAvg: 244, mlFund: 0, applications: 1312, conversionRate: 0.56, retention: 0.94 },
-  { name: 'Johnson', ehh: 594, preTiltBudget: 5834, perPupil: 9823, deltaFromAvg: -467, mlFund: 72, applications: 987, conversionRate: 0.60, retention: 0.91 },
-  { name: 'Mansueto', ehh: 825, preTiltBudget: 8329, perPupil: 10096, deltaFromAvg: -194, mlFund: 55, applications: 1456, conversionRate: 0.57, retention: 0.94 },
-  { name: 'Muchin', ehh: 750, preTiltBudget: 7755, perPupil: 10340, deltaFromAvg: 50, mlFund: 0, applications: 1289, conversionRate: 0.58, retention: 0.93 },
-  { name: 'Noble Academy', ehh: 501, preTiltBudget: 5539, perPupil: 11055, deltaFromAvg: 765, mlFund: 0, applications: 845, conversionRate: 0.59, retention: 0.90 },
-  { name: 'Pritzker', ehh: 794, preTiltBudget: 7787, perPupil: 9803, deltaFromAvg: -487, mlFund: 95, applications: 1378, conversionRate: 0.58, retention: 0.94 },
-  { name: 'Rauner', ehh: 807, preTiltBudget: 8195, perPupil: 10155, deltaFromAvg: -135, mlFund: 60, applications: 1402, conversionRate: 0.58, retention: 0.94 },
-  { name: 'Rowe-Clark', ehh: 313, preTiltBudget: 3478, perPupil: 11113, deltaFromAvg: 822, mlFund: 0, applications: 747, conversionRate: 0.45, retention: 0.88 },
-  { name: 'TNA', ehh: 876, preTiltBudget: 8953, perPupil: 10220, deltaFromAvg: -70, mlFund: 48, applications: 1534, conversionRate: 0.57, retention: 0.94 },
-  { name: 'UIC', ehh: 920, preTiltBudget: 9340, perPupil: 10152, deltaFromAvg: -138, mlFund: 50, applications: 1612, conversionRate: 0.57, retention: 0.95 },
-];
+export interface Campus {
+  id: number;
+  name: string;
+  short: string;
+  addr: string;
+  lat: number;
+  lng: number;
+  communityArea: string;
+  areaNumber: number;
+  enroll: number;
+  arrH: number;
+  arrM: number;
+  dH: number;
+  dM: number;
+}
 
-export const CAMPUS_STATS = {
-  networkAvgPerPupil: 10290,
-  totalEHH: 12125.5,
-  totalPreTilt: 124.9,  // millions
-  perPupilSpread: 2244,
-  highestPerPupil: { name: 'Gary Comer', value: 11894 },
-  lowestPerPupil: { name: 'Butler', value: 9650 },
-  mlFundTotal: 1.1,  // millions
-};
+export const CAMPUSES: Campus[] = [
+  { id: 1,  name: 'Baker College Prep',            short: 'Baker',       addr: '7801 S. Ingleside Ave',     lat: 41.7217, lng: -87.6073, communityArea: 'Burnside',        areaNumber: 47, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 2,  name: 'Chicago Bulls College Prep',    short: 'Bulls',       addr: '2040 W. Adams St',          lat: 41.8731, lng: -87.6726, communityArea: 'Near West Side',  areaNumber: 28, enroll: 600, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 3,  name: 'Butler College Prep',           short: 'Butler',      addr: '1231 W. 122nd St',          lat: 41.7043, lng: -87.6366, communityArea: 'Roseland',        areaNumber: 49, enroll: 450, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 4,  name: 'Gary Comer College Prep',       short: 'Comer',       addr: '7131 S. South Chicago Ave', lat: 41.7652, lng: -87.5844, communityArea: 'South Shore',     areaNumber: 43, enroll: 550, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 5,  name: 'Gary Comer Middle School',      short: 'Comer MS',    addr: '7131 S. South Chicago Ave', lat: 41.7648, lng: -87.5850, communityArea: 'South Shore',     areaNumber: 43, enroll: 350, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 6,  name: 'DRW College Prep',              short: 'DRW',         addr: '931 S. Homan Ave',          lat: 41.8687, lng: -87.7172, communityArea: 'North Lawndale',  areaNumber: 29, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 7,  name: 'Golder College Prep',           short: 'Golder',      addr: '1454 W. Superior St',       lat: 41.8947, lng: -87.6676, communityArea: 'West Town',       areaNumber: 24, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 8,  name: 'Hansberry College Prep',        short: 'Hansberry',   addr: '8748 S. Aberdeen St',       lat: 41.7444, lng: -87.6512, communityArea: 'Auburn Gresham',  areaNumber: 71, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 9,  name: 'Johnson College Prep',          short: 'Johnson',     addr: '1 N. Damen Ave',            lat: 41.7794, lng: -87.6406, communityArea: 'Englewood',       areaNumber: 68, enroll: 600, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 10, name: 'Mansueto High School',          short: 'Mansueto',    addr: '2911 W. 47th St',           lat: 41.8090, lng: -87.7012, communityArea: 'Brighton Park',   areaNumber: 58, enroll: 400, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 11, name: 'Muchin College Prep',           short: 'Muchin',      addr: '1 N. Dearborn St',          lat: 41.8826, lng: -87.6290, communityArea: 'Loop',            areaNumber: 32, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 12, name: 'Noble Street College Prep',     short: 'Noble St',    addr: '1010 N. Noble St',          lat: 41.8963, lng: -87.6676, communityArea: 'West Town',       areaNumber: 24, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 13, name: 'Pritzker College Prep',         short: 'Pritzker',    addr: '4351 W. Wrightwood Ave',    lat: 41.9175, lng: -87.7145, communityArea: 'Hermosa',         areaNumber: 20, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 14, name: 'Rauner College Prep',           short: 'Rauner',      addr: '1337 W. Ohio St',           lat: 41.8847, lng: -87.6726, communityArea: 'Near West Side',  areaNumber: 28, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 15, name: 'Rowe-Clark Math & Science',     short: 'Rowe-Clark',  addr: '3645 W. Chicago Ave',       lat: 41.9003, lng: -87.7440, communityArea: 'Humboldt Park',   areaNumber: 23, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 16, name: 'ITW David Speer Academy',       short: 'Speer',       addr: '5935 W. Bloomingdale Ave',  lat: 41.9178, lng: -87.7631, communityArea: 'Belmont Cragin',  areaNumber: 19, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 17, name: 'The Noble Academy',             short: 'Noble Acad',  addr: '17 E. 71st St',             lat: 41.8780, lng: -87.6320, communityArea: 'West Town',       areaNumber: 24, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 18, name: 'UIC College Prep',              short: 'UIC',         addr: '2235 S. Millard Ave',       lat: 41.8502, lng: -87.7183, communityArea: 'South Lawndale',  areaNumber: 30, enroll: 480, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+];
