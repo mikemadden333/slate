@@ -277,30 +277,31 @@ export default function SlatePlatform() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const now = ctx.currentTime;
+        // Note 1: E5 — bright, clean entry
         const o1 = ctx.createOscillator(); const g1 = ctx.createGain();
-        o1.type = 'triangle'; o1.frequency.setValueAtTime(110, now);
-        o1.frequency.exponentialRampToValueAtTime(82, now + 0.8);
-        g1.gain.setValueAtTime(0.18, now);
-        g1.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-        o1.connect(g1); g1.connect(ctx.destination); o1.start(now); o1.stop(now + 1.2);
+        o1.type = 'sine'; o1.frequency.value = 659.25;
+        g1.gain.setValueAtTime(0, now);
+        g1.gain.linearRampToValueAtTime(0.15, now + 0.015);
+        g1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        o1.connect(g1); g1.connect(ctx.destination);
+        o1.start(now); o1.stop(now + 0.7);
+        // Note 2: B5 — perfect fifth up, the lift
         const o2 = ctx.createOscillator(); const g2 = ctx.createGain();
-        o2.type = 'sine'; o2.frequency.value = 220;
-        g2.gain.setValueAtTime(0.08, now);
-        g2.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
-        o2.connect(g2); g2.connect(ctx.destination); o2.start(now + 0.02); o2.stop(now + 0.9);
-        const buf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
-        const d = buf.getChannelData(0);
-        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.008));
-        const cl = ctx.createBufferSource(); const gC = ctx.createGain(); cl.buffer = buf;
-        gC.gain.setValueAtTime(0.12, now);
-        gC.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-        cl.connect(gC); gC.connect(ctx.destination); cl.start(now);
+        o2.type = 'sine'; o2.frequency.value = 987.77;
+        g2.gain.setValueAtTime(0, now + 0.08);
+        g2.gain.linearRampToValueAtTime(0.12, now + 0.095);
+        g2.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        o2.connect(g2); g2.connect(ctx.destination);
+        o2.start(now + 0.08); o2.stop(now + 0.9);
+        // Shimmer: E6 — octave harmonic, barely there
         const o3 = ctx.createOscillator(); const g3 = ctx.createGain();
-        o3.type = 'sine'; o3.frequency.value = 55;
-        g3.gain.setValueAtTime(0.06, now + 0.05);
-        g3.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
-        o3.connect(g3); g3.connect(ctx.destination); o3.start(now + 0.05); o3.stop(now + 2.0);
-        setTimeout(() => ctx.close(), 3000);
+        o3.type = 'sine'; o3.frequency.value = 1318.5;
+        g3.gain.setValueAtTime(0, now + 0.12);
+        g3.gain.linearRampToValueAtTime(0.04, now + 0.14);
+        g3.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+        o3.connect(g3); g3.connect(ctx.destination);
+        o3.start(now + 0.12); o3.stop(now + 0.8);
+        setTimeout(() => ctx.close(), 1500);
       } catch (e) {}
     }
     setActiveModule(mod);
