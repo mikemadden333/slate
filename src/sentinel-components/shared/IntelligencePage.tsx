@@ -103,10 +103,10 @@ function HeroSection() {
     }}>
       {/* Slate mark */}
       <div style={{ marginBottom: 32 }}>
-        <svg width="72" height="86" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M40 0L0 16V48C0 72 20 88 40 96C60 88 80 72 80 48V16L40 0Z" fill={GOLD} />
-          <path d="M40 8L8 22V48C8 68 24 82 40 88C56 82 72 68 72 48V22L40 8Z" fill={NAVY} />
-          <text x="40" y="58" textAnchor="middle" fill={GOLD} fontSize="32" fontWeight="800" fontFamily="system-ui">N</text>
+        <svg width="72" height="54" viewBox="0 0 40 30" fill="none">
+          <path d="M8 2 L36 2 L32 28 L4 28 Z" fill={GOLD} opacity="0.9" />
+          <line x1="11" y1="13" x2="31" y2="13" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" />
+          <line x1="11" y1="19" x2="23" y2="19" stroke={NAVY} strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
         </svg>
       </div>
 
@@ -121,7 +121,7 @@ function HeroSection() {
         fontSize: 18, fontWeight: 700, color: WHITE,
         margin: '0 0 16px', letterSpacing: 1,
       }}>
-        Violence Intelligence for the network
+        Safety Intelligence for School Systems
       </div>
       <div style={{
         fontSize: 15, fontWeight: 300, color: '#CBD5E1',
@@ -713,7 +713,9 @@ function CommitmentSection() {
           <svg width="64" height="76" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M40 0L0 16V48C0 72 20 88 40 96C60 88 80 72 80 48V16L40 0Z" fill={GOLD} />
             <path d="M40 8L8 22V48C8 68 24 82 40 88C56 82 72 68 72 48V22L40 8Z" fill={NAVY} />
-            <text x="40" y="58" textAnchor="middle" fill={GOLD} fontSize="32" fontWeight="800" fontFamily="system-ui">N</text>
+            <path d="M28 20 L52 20 L49 76 L25 76 Z" fill={GOLD} opacity="0.9" />
+          <line x1="30" y1="42" x2="50" y2="42" stroke={NAVY} strokeWidth="3" strokeLinecap="round" />
+          <line x1="30" y1="54" x2="42" y2="54" stroke={NAVY} strokeWidth="3" strokeLinecap="round" opacity="0.5" />
           </svg>
         </div>
 
@@ -726,7 +728,7 @@ function CommitmentSection() {
           margin: '0 0 32px', fontWeight: 300,
         }}>
           Sentinel was built by the network for the network. Not as a surveillance tool.
-          Not as a punitive instrument. As a shield. 12,000 students cross our thresholds
+          Not as a punitive instrument. As protection. 12,000 students cross our thresholds
           every day in neighborhoods where violence is a real and present danger. They deserve
           every advantage we can give them. Sentinel is one of those advantages.
         </p>
