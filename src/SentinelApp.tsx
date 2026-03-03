@@ -17,6 +17,8 @@ import { buildSafeCorridors } from './sentinel-engine/corridors';
 import { getSchoolPeriod, minutesToArrival, minutesToDismissal } from './sentinel-engine/time';
 import { haversine, ageInHours } from './sentinel-engine/geo';
 import { fetchIncidents, fetchShotSpotter } from './sentinel-api/cpd';
+import { fetchScannerActivity } from './sentinel-api/scanner';
+import type { ScannerSummary } from './sentinel-api/scanner';
 import { fetchCitizenIncidents } from './sentinel-api/citizen';
 import type { CitizenIncident } from './sentinel-api/citizen';
 import { fetchWeather, fetchWeatherForecast } from './sentinel-api/weather';
@@ -116,6 +118,7 @@ export default function App() {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [iceAlerts, setIceAlerts] = useState<IceAlert[]>([]);
   const [citizenIncidents, setCitizenIncidents] = useState<CitizenIncident[]>([]);
+  const [scannerData, setScannerData] = useState<ScannerSummary | null>(null);
   const [realtimeIncidents, setRealtimeIncidents] = useState<Incident[]>([]);
   const [newsIncidents, setNewsIncidents] = useState<Incident[]>([]);
   const [dataFreshness, setDataFreshness] = useState({
@@ -306,17 +309,23 @@ export default function App() {
       citizenCount: citizen.length,
     }));
   }, [selectedCampusId]);
+  const refreshScanner = useCallback(async () => {
+    const data = await fetchScannerActivity(120);
+    setScannerData(data);
+    console.log('Scanner: ' + data.totalCalls + ' calls, ' + data.spikeZones.length + ' spike zones');
+  }, []);
 
   useEffect(() => {
-    void Promise.all([refresh90s(), refresh10min(), refresh30min(), refresh5min(), refreshCitizen()])
+    void Promise.all([refresh90s(), refresh10min(), refresh30min(), refresh5min(), refreshCitizen(), refreshScanner()])
       .finally(() => setInitialLoading(false));
     const t90s = setInterval(() => void refresh90s(), 90_000);
     const t10m = setInterval(() => void refresh10min(), 600_000);
     const t30m = setInterval(() => void refresh30min(), 1_800_000);
     const t5m = setInterval(() => void refresh5min(), 300_000);
     const tCit = setInterval(() => void refreshCitizen(), 300_000);
-    return () => { clearInterval(t90s); clearInterval(t10m); clearInterval(t30m); clearInterval(t5m); clearInterval(tCit); };
-  }, [refresh90s, refresh10min, refresh30min, refresh5min, refreshCitizen]);
+    const tScan = setInterval(() => void refreshScanner(), 300_000);
+    return () => { clearInterval(t90s); clearInterval(t10m); clearInterval(t30m); clearInterval(t5m); clearInterval(tCit); clearInterval(tScan); };
+  }, [refresh90s, refresh10min, refresh30min, refresh5min, refreshCitizen, refreshScanner]);
 
   // --- Handlers ---
   const handleSelectCampusFromNetwork = (id: number) => {
