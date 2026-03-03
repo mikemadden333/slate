@@ -28,6 +28,37 @@ const GlobalCSS = () => (<style>{`
   * { box-sizing: border-box; }
   body { margin: 0; padding: 0; overflow: hidden; }
   .slate-module-box { overflow: visible; }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes subtleGlow {
+    0%, 100% { box-shadow: 0 0 0 0 transparent; }
+    50% { box-shadow: 0 0 12px 2px var(--glow-color, rgba(240,180,41,0.15)); }
+  }
+  .slate-module-box > * {
+    animation: fadeIn 0.4s ease both;
+  }
+  .dash-card {
+    animation: fadeSlideUp 0.5s ease both;
+  }
+  .dash-card:nth-child(1) { animation-delay: 0.05s; }
+  .dash-card:nth-child(2) { animation-delay: 0.1s; }
+  .dash-card:nth-child(3) { animation-delay: 0.15s; }
+  .dash-card:nth-child(4) { animation-delay: 0.2s; }
+  .mod-card {
+    animation: fadeSlideUp 0.5s ease both;
+  }
+  .mod-card:nth-child(1) { animation-delay: 0.15s; }
+  .mod-card:nth-child(2) { animation-delay: 0.2s; }
+  .mod-card:nth-child(3) { animation-delay: 0.25s; }
+  .mod-card:nth-child(4) { animation-delay: 0.3s; }
+  .mod-card:nth-child(5) { animation-delay: 0.35s; }
+  .mod-card:nth-child(6) { animation-delay: 0.4s; }
   .slate-scroll::-webkit-scrollbar { width: 6px; }
   .slate-scroll::-webkit-scrollbar-track { background: transparent; }
   .slate-scroll::-webkit-scrollbar-thumb { background: ${C.chalk}; border-radius: 3px; }
@@ -225,23 +256,23 @@ const Dashboard = ({ onModuleClick }) => {
   const g = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-      <div style={{ marginBottom: 32 }}>
+      <div style={{ marginBottom: 32, animation: "fadeSlideUp 0.6s ease both" }}>
         <div style={{ fontSize: 30, fontWeight: 900, color: C.deep, letterSpacing: "-0.03em" }}>{g}, Mike.</div>
-        <div style={{ fontSize: 14, color: C.light, marginTop: 8 }}>Noble Schools — 17 campuses · 12,120 students · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</div>
+        <div style={{ fontSize: 14, color: C.light, marginTop: 8 }}>17 Campuses · 12,120 Students · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
         {[{ l: "Campuses", v: "17", s: "All operational", c: MOD.sentinel }, { l: "Students", v: "12,120", s: "98.4% of capacity", c: MOD.roster }, { l: "YTD Budget", v: "+$5.9M", s: "Surplus — tracking ahead", c: MOD.ledger }, { l: "DSCR", v: "3.47x", s: "Covenant: 1.0x", c: MOD.brief }].map((k, i) => (
-          <div key={i} style={{ background: C.white, borderRadius: 14, padding: "22px 24px", borderTop: `3px solid ${k.c}`, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
+          <div key={i} className="dash-card" style={{ background: C.white, borderRadius: 14, padding: "22px 24px", borderTop: \`3px solid \${k.c}\`, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 6 }}>{k.l}</div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 28, fontWeight: 700, color: C.deep }}>{k.v}</div>
             <div style={{ fontSize: 12, color: C.light, marginTop: 4 }}>{k.s}</div>
           </div>
         ))}
       </div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "3px", marginBottom: 18 }}>Six Intelligences · One Platform</div>
+      <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "3px", marginBottom: 18, animation: "fadeSlideUp 0.5s ease 0.12s both" }}>Six Intelligences · One Platform</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
         {MODULES.map((m, idx) => (
-          <div key={m.id} onClick={() => onModuleClick(m.id)} style={{ background: C.white, borderRadius: 16, cursor: "pointer", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "transform 0.2s ease, box-shadow 0.2s ease" }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 32px ${m.color}15`; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"; }}>
+          <div key={m.id} className="mod-card" onClick={() => onModuleClick(m.id)} style={{ background: C.white, borderRadius: 16, cursor: "pointer", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "transform 0.2s ease, box-shadow 0.2s ease" }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 32px ${m.color}15`; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"; }}>
             <div style={{ height: 3, background: m.color }} />
             <div style={{ padding: "22px 24px 18px" }}>
               <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: m.color, marginBottom: 12 }}>Module {String(idx + 1).padStart(2, "0")}</div>
@@ -256,9 +287,9 @@ const Dashboard = ({ onModuleClick }) => {
           </div>
         ))}
       </div>
-      <div style={{ marginTop: 48, padding: "24px 0 16px", borderTop: `1px solid ${C.chalk}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ marginTop: 48, padding: "24px 0 16px", borderTop: \`1px solid \${C.chalk}\`, animation: "fadeIn 1s ease 0.5s both", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 13, fontWeight: 600, color: C.mid }}>Every campus. Every morning. <span style={{ color: C.gold, fontWeight: 800 }}>Start with the facts.</span></span>
-        <span style={{ fontSize: 9, color: "rgba(0,0,0,0.22)", letterSpacing: "1px", textTransform: "uppercase" }}>Slate Systems, Inc. · Madden Advisory Group · 2026</span>
+        <span style={{ fontSize: 9, color: "rgba(0,0,0,0.22)", letterSpacing: "1px", textTransform: "uppercase" }}>Slate Systems, Inc. · 2026</span>
       </div>
     </div>
   );
