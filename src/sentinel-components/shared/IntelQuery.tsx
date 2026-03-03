@@ -38,7 +38,7 @@ export default function IntelQuery({ campus, risk }: Props) {
     const acuteCount = risk.contagionZones.filter(z => z.phase === 'ACUTE').length;
     const activeCount = risk.contagionZones.filter(z => z.phase === 'ACTIVE').length;
 
-    const systemPrompt = `You are Sentinel, a violence intelligence system for Noble Schools in Chicago.
+    const systemPrompt = `You are Sentinel, a violence intelligence system for the network in Chicago.
 You are answering a question from the principal of ${campus.name} in ${campus.communityArea}.
 
 Current data:

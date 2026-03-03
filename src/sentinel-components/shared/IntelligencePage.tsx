@@ -2,7 +2,7 @@
  * IntelligencePage — "How Sentinel Works"
  *
  * Nine sections: Hero, Science, Scoring, Labels, Sources, Retaliation,
- * For Principals, Research, Noble Commitment.
+ * For Principals, Research, Our Commitment.
  * Dark navy / white alternating. Gold accent. Pure CSS animations.
  * Premium research publication feel. Mobile-first.
  */
@@ -101,7 +101,7 @@ function HeroSection() {
       padding: '80px 20px 64px',
       textAlign: 'center',
     }}>
-      {/* Noble shield */}
+      {/* Slate mark */}
       <div style={{ marginBottom: 32 }}>
         <svg width="72" height="86" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M40 0L0 16V48C0 72 20 88 40 96C60 88 80 72 80 48V16L40 0Z" fill={GOLD} />
@@ -121,7 +121,7 @@ function HeroSection() {
         fontSize: 18, fontWeight: 700, color: WHITE,
         margin: '0 0 16px', letterSpacing: 1,
       }}>
-        Violence Intelligence for Noble Network
+        Violence Intelligence for the network
       </div>
       <div style={{
         fontSize: 15, fontWeight: 300, color: '#CBD5E1',
@@ -185,7 +185,7 @@ function ScienceSection() {
         </p>
         <p style={{ margin: '0 0 20px' }}>
           Sentinel operationalizes this research in real time. When a homicide occurs within two miles
-          of a Noble campus, Sentinel immediately calculates the contagion zone &mdash; the geographic
+          of a campus, Sentinel immediately calculates the contagion zone &mdash; the geographic
           and temporal space where retaliatory violence is most likely to occur. The model tracks
           four phases: <strong>ACUTE</strong> (0&ndash;18 hours, highest risk),{' '}
           <strong>ACTIVE</strong> (18&ndash;72 hours, peak retaliation window),{' '}
@@ -248,7 +248,7 @@ function ScienceSection() {
           marginTop: 20, fontSize: 13, color: '#64748B', lineHeight: 1.6,
           borderTop: '1px solid #E2E8F0', paddingTop: 16,
         }}>
-          Noble Network campuses in the <strong>ACTIVE</strong> window receive a{' '}
+          the network campuses in the <strong>ACTIVE</strong> window receive a{' '}
           <strong style={{ color: '#DC2626' }}>CRITICAL</strong> risk designation regardless of other factors.
         </div>
       </div>
@@ -372,7 +372,7 @@ function LabelsSection() {
       }}>
         <LabelCard
           label="LOW" color="#16A34A"          pulsing={false}
-          body="Your campus neighborhood is quiet. No contagion-level crimes in recent history. Standard safety protocols. This is where Noble Network campuses are most of the time."
+          body="Your campus neighborhood is quiet. No contagion-level crimes in recent history. Standard safety protocols. This is where the network campuses are most of the time."
         />
         <LabelCard
           label="ELEVATED" color="#D97706"          pulsing={false}
@@ -431,12 +431,12 @@ function SourcesSection() {
         <SourceCard
           icon="&#128737;" title="CPD Verified"
           badge="Updated every 10 min"
-          body="Chicago Police Department incident reports. Every homicide, weapons violation, battery, assault, robbery, and narcotics arrest filed within Noble Network geography. 5,000 most recent incidents. Note: CPD publishes reports with a 5–10 day lag. Sentinel displays all available verified data."
+          body="Chicago Police Department incident reports. Every homicide, weapons violation, battery, assault, robbery, and narcotics arrest filed within the network geography. 5,000 most recent incidents. Note: CPD publishes reports with a 5–10 day lag. Sentinel displays all available verified data."
         />
         <SourceCard
           icon="&#128065;" title="Citizen App"
           badge="Near real-time"
-          body="Community-sourced incident reports from Citizen's scanner monitoring network. Near real-time — incidents appear within minutes of emergency dispatch. Covers all Noble Network neighborhoods."
+          body="Community-sourced incident reports from Citizen's scanner monitoring network. Near real-time — incidents appear within minutes of emergency dispatch. Covers all the network neighborhoods."
         />
         <SourceCard
           icon="&#9178;" title="ShotSpotter"
@@ -446,7 +446,7 @@ function SourcesSection() {
         <SourceCard
           icon="&#128240;" title="Block Club Chicago"
           badge="~20 min latency"
-          body="Hyperlocal Chicago journalism. Block Club reporters cover shootings and homicides in Noble Network neighborhoods within 20–30 minutes. Sentinel parses breaking news headlines and plots them as real-time incident markers."
+          body="Hyperlocal Chicago journalism. Block Club reporters cover shootings and homicides in the network neighborhoods within 20–30 minutes. Sentinel parses breaking news headlines and plots them as real-time incident markers."
         />
         <SourceCard
           icon="&#9729;" title="Open-Meteo Weather"
@@ -457,7 +457,7 @@ function SourcesSection() {
           icon="&#128737;" title="ICE Monitoring"
           badge="Separate from violence score"
           iconColor="#7C3AED"
-          body="Sentinel monitors news sources for confirmed ICE enforcement activity near Network campuses. Noble follows Chicago's Welcoming City Ordinance. Confirmed local enforcement activity triggers a separate Code White advisory — independent of the violence risk score."
+          body="Sentinel monitors news sources for confirmed ICE enforcement activity near Network campuses. The network follows Chicago's Welcoming City Ordinance. Confirmed local enforcement activity triggers a separate Code White advisory — independent of the violence risk score."
         />
       </div>
     </DarkSection>
@@ -508,7 +508,7 @@ function RetaliationSection() {
           between is when principals need to be most alert.
         </p>
         <p style={{ margin: 0 }}>
-          When Sentinel detects that a Noble Network campus has entered a retaliation window, the entire
+          When Sentinel detects that a the network campus has entered a retaliation window, the entire
           app responds: the header deepens in color, a persistent banner appears counting down the
           hours remaining, the morning briefing leads with the situation, and the campus map zooms to
           show the homicide location relative to the school&rsquo;s front door.
@@ -672,7 +672,7 @@ function ResearchSection() {
         lineHeight: 1.6, maxWidth: 600, margin: '32px auto 0',
       }}>
         Sentinel is not affiliated with Dr. Papachristos or Yale University. We have operationalized
-        publicly available peer-reviewed research to protect Noble Network students and staff.
+        publicly available peer-reviewed research to protect the network students and staff.
       </div>
     </LightSection>
   );
@@ -718,14 +718,14 @@ function CommitmentSection() {
         </div>
 
         <h2 style={{ fontSize: 32, fontWeight: 800, color: GOLD, margin: '0 0 24px' }}>
-          Noble Efforts Save Lives.
+          Every Effort Saves Lives.
         </h2>
 
         <p style={{
           fontSize: 17, color: '#CBD5E1', lineHeight: 1.85,
           margin: '0 0 32px', fontWeight: 300,
         }}>
-          Sentinel was built by Noble Schools for Noble Schools. Not as a surveillance tool.
+          Sentinel was built by the network for the network. Not as a surveillance tool.
           Not as a punitive instrument. As a shield. 12,000 students cross our thresholds
           every day in neighborhoods where violence is a real and present danger. They deserve
           every advantage we can give them. Sentinel is one of those advantages.

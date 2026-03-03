@@ -1,6 +1,6 @@
 /**
- * NetworkMap — Executive intelligence map for the entire Noble network.
- * All 18 campus shields, contagion zones, incidents, shared zone lines.
+ * NetworkMap — Executive intelligence map for the entire the network.
+ * All 17 campus shields, contagion zones, incidents, shared zone lines.
  * Time scrubber with play/stop, corridor overlays, fullscreen command center mode.
  * Intelligence overlay panel with network status and corridor stats.
  */
@@ -614,7 +614,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Elevated:</span>
-                  <span style={{ fontWeight: 700 }}>{intelStats.elevated} of 18</span>
+                  <span style={{ fontWeight: 700 }}>{intelStats.elevated} of 17</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>ACUTE Zones:</span>

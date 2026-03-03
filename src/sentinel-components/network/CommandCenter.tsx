@@ -255,7 +255,7 @@ export default function CommandCenter({
     lines.push('');
     lines.push('NETWORK STATUS');
     lines.push(`  Average Risk Score: ${networkSummary.avgScore}`);
-    lines.push(`  Campuses Elevated+: ${elevatedCount} of 18`);
+    lines.push(`  Campuses Elevated+: ${elevatedCount} of 17`);
     lines.push(`  Active Contagion Zones: ${contagionCount}`);
     lines.push(`  ICE Status: ${iceAlerts.length > 0 ? `${iceAlerts.length} ACTIVE` : 'CLEAR'}`);
     lines.push('');
@@ -419,8 +419,8 @@ export default function CommandCenter({
               <button style={btnClose} onClick={close}>&times;</button>
               <div style={heading}>CONTACT PRINCIPAL</div>
               <div style={{ fontSize: 12, color: TEXT2, marginBottom: 12 }}>Pre-written message:</div>
-              {preBlock(`This is the Noble central office calling regarding a safety situation near ${activeCampus.short}. Can you give me a status update?`)}
-              {copyBtn(`This is the Noble central office calling regarding a safety situation near ${activeCampus.short}. Can you give me a status update?`, 'Copy Message')}
+              {preBlock(`This is the central office calling regarding a safety situation near ${activeCampus.short}. Can you give me a status update?`)}
+              {copyBtn(`This is the central office calling regarding a safety situation near ${activeCampus.short}. Can you give me a status update?`, 'Copy Message')}
               <div style={{ marginTop: 16, maxHeight: 360, overflowY: 'auto' }} className="cc-scroll">
                 {CAMPUSES.map(c => (
                   <div key={c.id} style={{
@@ -446,7 +446,7 @@ export default function CommandCenter({
         );
       }
       case 'cps': {
-        const situationMsg = `This is Noble Schools calling. We have a ${activeRisk?.label ?? 'ELEVATED'} situation near ${activeCampus.name} at ${activeCampus.addr}. ${generateSituationSummary()}`;
+        const situationMsg = `This is the network calling. We have a ${activeRisk?.label ?? 'ELEVATED'} situation near ${activeCampus.name} at ${activeCampus.addr}. ${generateSituationSummary()}`;
         return (
           <div style={overlay} onClick={e => { if (e.target === e.currentTarget) close(); }}>
             <div style={{ ...modal, position: 'relative' }}>
@@ -518,9 +518,9 @@ export default function CommandCenter({
         );
       }
       case 'comms': {
-        const familyMsg = `Dear Noble Families,\n\nWe want to update you on a situation near ${activeCampus.name}. ${activeRisk?.label === 'CRITICAL' || activeRisk?.label === 'HIGH' ? 'Out of an abundance of caution, we have activated enhanced safety protocols at our campus.' : 'We are aware of an incident in the surrounding area and are closely monitoring the situation.'} Your student's safety is our priority. ${activeRisk?.label === 'CRITICAL' ? 'Please do not come to the school at this time. We will notify you when it is safe to do so.' : 'We will provide updates as the situation develops.'}\n\n— Noble Schools`;
-        const staffMsg = `Noble Staff Alert — ${activeCampus.short} — ${ts}\nSituation: ${generateSituationSummary()}\nAction required: Follow established safety protocols. Await further instructions from campus leadership.\nReport concerns to: Senior Director of Safety & Security`;
-        const mediaMsg = `Noble Schools is aware of an incident in the vicinity of ${activeCampus.name}. The safety of our students and staff is our top priority. We are working closely with Chicago Police Department and have implemented appropriate safety protocols. We will provide updates as more information becomes available.`;
+        const familyMsg = `Dear Families,\n\nWe want to update you on a situation near ${activeCampus.name}. ${activeRisk?.label === 'CRITICAL' || activeRisk?.label === 'HIGH' ? 'Out of an abundance of caution, we have activated enhanced safety protocols at our campus.' : 'We are aware of an incident in the surrounding area and are closely monitoring the situation.'} Your student's safety is our priority. ${activeRisk?.label === 'CRITICAL' ? 'Please do not come to the school at this time. We will notify you when it is safe to do so.' : 'We will provide updates as the situation develops.'}\n\n— the network`;
+        const staffMsg = `Staff Alert — ${activeCampus.short} — ${ts}\nSituation: ${generateSituationSummary()}\nAction required: Follow established safety protocols. Await further instructions from campus leadership.\nReport concerns to: Senior Director of Safety & Security`;
+        const mediaMsg = `the network is aware of an incident in the vicinity of ${activeCampus.name}. The safety of our students and staff is our top priority. We are working closely with Chicago Police Department and have implemented appropriate safety protocols. We will provide updates as more information becomes available.`;
         const msgs = { family: familyMsg, staff: staffMsg, media: mediaMsg };
         const labels = { family: 'Family Message', staff: 'Staff Message', media: 'Media/Public Statement' };
         return (
@@ -703,7 +703,7 @@ export default function CommandCenter({
         borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`,
         display: 'flex', flexDirection: 'column', overflow: 'hidden',
       }}>
-        <PanelHeader title="CAMPUS STATUS" sub={`18 campuses — ${elevatedCount} elevated`} />
+        <PanelHeader title="CAMPUS STATUS" sub={`17 campuses — ${elevatedCount} elevated`} />
         <div style={{ flex: 1, overflowY: 'auto', padding: 8 }} className="cc-scroll">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
             {sorted.map(r => {

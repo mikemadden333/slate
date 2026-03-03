@@ -80,7 +80,7 @@ export default function RoleSelector({ onSelectNetwork, onSelectCampus }: RoleSe
                 icon={Building2}
                 title="Network Leadership"
                 subtitle="CFO, President & Senior Leaders"
-                description="Full network financial intelligence across all 18 campuses, scenario modeling, covenant analysis, and enterprise-wide metrics."
+                description="Full network financial intelligence across all 17 campuses, scenario modeling, covenant analysis, and enterprise-wide metrics."
                 onClick={onSelectNetwork}
               />
               <RoleCard

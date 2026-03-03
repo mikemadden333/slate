@@ -121,9 +121,9 @@ export default function NetworkDashboard({
         background: '#FEF9EC', borderRadius: 12,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 700, color: '#0D1117', marginBottom: 12, paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
-          Noble Network
-          <Explainer title="Noble Network">
-            <p style={{ margin: '0 0 12px' }}>The Network Intelligence view provides a holistic picture across all 18 campuses. Campuses are ranked by risk score and tagged with badges for active conditions.</p>
+          Network
+          <Explainer title="Network">
+            <p style={{ margin: '0 0 12px' }}>The Network Intelligence view provides a holistic picture across all 17 campuses. Campuses are ranked by risk score and tagged with badges for active conditions.</p>
             <p style={{ margin: '0 0 12px' }}><strong>RET</strong> = active retaliation window. <strong>ICE</strong> = ICE enforcement activity nearby. <strong>SHOT</strong> = ShotSpotter gunfire detected nearby.</p>
             <p style={{ margin: 0 }}>Use the metric tiles to filter campuses by condition. Tap any campus row to switch to its detailed view.</p>
           </Explainer>
@@ -216,7 +216,7 @@ export default function NetworkDashboard({
       {/* Campus Intelligence Grid */}
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: '#6B7280' }}>
-          {filter === 'all' ? 'All 18 campuses' : `Showing ${filtered.length} campus${filtered.length !== 1 ? 'es' : ''}`}
+          {filter === 'all' ? 'All 17 campuses' : `Showing ${filtered.length} campus${filtered.length !== 1 ? 'es' : ''}`}
           {filter !== 'all' && (
             <button onClick={() => setFilter('all')} style={{
               marginLeft: 8, background: 'none', border: 'none', color: '#0D1117',
@@ -319,7 +319,7 @@ function generateExecBriefing(
   const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const parts: string[] = [];
 
-  parts.push(`Good morning. As of ${timeStr}, ${calmCount} of 18 campuses are operating in normal conditions.`);
+  parts.push(`Good morning. As of ${timeStr}, ${calmCount} of 17 campuses are operating in normal conditions.`);
 
   if (elevated.length > 0) {
     const names = elevated.slice(0, 3).map(r => CAMPUSES.find(c => c.id === r.campusId)?.short ?? '?');
@@ -332,9 +332,9 @@ function generateExecBriefing(
   }
 
   if (iceAlerts.length > 0) {
-    parts.push(`ICE activity has been reported near ${iceAlerts.length} Noble campus${iceAlerts.length !== 1 ? 'es' : ''}.`);
+    parts.push(`ICE activity has been reported near ${iceAlerts.length} campus${iceAlerts.length !== 1 ? 'es' : ''}.`);
   } else {
-    parts.push(`No ICE activity near any Noble campus.`);
+    parts.push(`No ICE activity near any campus.`);
   }
 
   if (summary.trends.incidentsVsLastWeek < 0) {

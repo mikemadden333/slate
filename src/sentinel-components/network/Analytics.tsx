@@ -100,7 +100,7 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
     const acuteZones = zones.filter(z => z.phase === 'ACUTE').length;
 
     if (low === 18) {
-      lines.push('All 18 campuses are at LOW risk. No contagion-level events detected across the network.');
+      lines.push('All 17 campuses are at LOW risk. No contagion-level events detected across the network.');
     } else {
       if (critical > 0) lines.push(`${critical} campus${critical > 1 ? 'es' : ''} at CRITICAL risk — active retaliation window${critical > 1 ? 's' : ''}.`);
       if (high > 0) lines.push(`${high} campus${high > 1 ? 'es' : ''} at HIGH risk — recent homicide${high > 1 ? 's' : ''} within 1 mile.`);
@@ -186,7 +186,7 @@ export default function Intelligence({ risks, incidents, zones }: Props) {
       </Section>
 
       {/* 2. Campus Risk Ranking */}
-      <Section title="Campus Risk Ranking" subtitle="All 18 campuses ranked by current risk score">
+      <Section title="Campus Risk Ranking" subtitle="All 17 campuses ranked by current risk score">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {rankedCampuses.map((r, idx) => {
             const colors = RISK_COLORS[r.label];
