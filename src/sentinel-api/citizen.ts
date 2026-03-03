@@ -140,4 +140,3 @@ function classifyCitizenCategory(text: string): string {
   if (t.includes('assault') || t.includes('battery') || t.includes('fight')) return 'BATTERY';
   return 'OTHER';
 }
-```
