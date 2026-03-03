@@ -152,17 +152,21 @@ const SplashScreen = ({ onComplete }) => {
       </div>
 
       <div style={{ position: "relative", marginTop: 64, fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.50)", letterSpacing: "1.5px", opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease" }}>
-        Intelligence Platform for Charter School Networks — Chicago · National
+        Intelligence for School Systems
       </div>
-
       <div style={{ position: "absolute", bottom: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 10, opacity: p >= 3 ? 1 : 0, transition: "opacity 1s ease 0.4s" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 24, fontSize: 10, color: "rgba(255,255,255,0.45)", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 600 }}>
-          <span>Slate Systems, LLC</span>
-          <span style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(255,255,255,0.25)" }} />
-          <span>Madden Advisory Group</span>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.50)', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 700 }}>
+            Slate Systems, Inc.
+          </div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 500 }}>
+            Founded by Mike Madden
+          </div>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', letterSpacing: '1px', textTransform: 'uppercase' }}>
+            Proprietary &amp; Confidential · All Rights Reserved · 2026
+          </div>
         </div>
-        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1px" }}>
-          Proprietary & Confidential · All Rights Reserved · 2026
         </div>
       </div>
     </div>
@@ -203,7 +207,7 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
         {MODULES.map(m => <NI key={m.id} label={m.label} icon={m.icon} color={m.color} active={activeModule === m.id} collapsed={collapsed} onClick={() => setActiveModule(m.id)} />)}
       </div>
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", flexShrink: 0 }}>
-        {!collapsed && <div style={{ padding: "14px 24px 4px" }}><div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1.5px", lineHeight: 1.8, textTransform: "uppercase", fontWeight: 600 }}>Slate Systems, LLC</div><div style={{ fontSize: 8, color: "rgba(255,255,255,0.14)", letterSpacing: "1px" }}>Madden Advisory Group</div></div>}
+        {!collapsed && <div style={{ padding: "14px 24px 4px" }}><div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1.5px", lineHeight: 1.8, textTransform: "uppercase", fontWeight: 600 }}>Slate Systems, Inc.</div><div style={{ fontSize: 8, color: "rgba(255,255,255,0.14)", letterSpacing: "1px" }}>Madden Advisory Group</div></div>}
         <div onClick={() => setCollapsed(!collapsed)} style={{ padding: "14px 24px", display: "flex", justifyContent: collapsed ? "center" : "flex-end", cursor: "pointer", color: "rgba(255,255,255,0.32)", fontSize: 12 }}>{collapsed ? "▸" : "◂"}</div>
       </div>
     </div>
@@ -255,7 +259,7 @@ const Dashboard = ({ onModuleClick }) => {
       </div>
       <div style={{ marginTop: 48, padding: "24px 0 16px", borderTop: `1px solid ${C.chalk}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 13, fontWeight: 600, color: C.mid }}>Every campus. Every morning. <span style={{ color: C.gold, fontWeight: 800 }}>Start with the facts.</span></span>
-        <span style={{ fontSize: 9, color: "rgba(0,0,0,0.22)", letterSpacing: "1px", textTransform: "uppercase" }}>Slate Systems, LLC · Madden Advisory Group · 2026</span>
+        <span style={{ fontSize: 9, color: "rgba(0,0,0,0.22)", letterSpacing: "1px", textTransform: "uppercase" }}>Slate Systems, Inc. · Madden Advisory Group · 2026</span>
       </div>
     </div>
   );
