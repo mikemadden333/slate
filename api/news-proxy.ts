@@ -10,8 +10,6 @@ const NEWS_FEEDS = [
   { name: 'Chalkbeat Chicago',  url: 'https://www.chalkbeat.org/chicago/feed/', priority: 2 },
   { name: 'Fox 32 Chicago',     url: 'https://www.fox32chicago.com/rss/category/news', priority: 2 },
   { name: 'Chicago Tribune',    url: 'https://www.chicagotribune.com/arcio/rss/', priority: 1 },
-  { name: 'Reddit r/chicago',        url: 'https://www.reddit.com/r/chicago/new/.rss', priority: 3 },
-  { name: 'Reddit r/CrimeInChicago', url: 'https://www.reddit.com/r/CrimeInChicago/new/.rss', priority: 2 },
 ];
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');

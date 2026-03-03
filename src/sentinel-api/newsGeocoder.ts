@@ -39,6 +39,12 @@ function cacheKey(items: NewsItem[]): string {
 // MAIN EXPORT — same signature as v1
 // ---------------------------------------------------------------------------
 export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incident[]> {
+  if ((geocodeNewsIncidents as any)._running) {
+    console.log('News geocoder v2: already running, skipping');
+    return [];
+  }
+  (geocodeNewsIncidents as any)._running = true;
+  try {
   const candidates = newsItems.filter(item =>
     REALTIME_NEWS_SOURCES.includes(item.source) &&
     VIOLENCE_KEYWORDS.some(k =>
@@ -67,6 +73,10 @@ export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incid
     const batch = candidates.slice(i, i + BATCH_SIZE);
     console.log(`News geocoder v2: batch ${Math.floor(i / BATCH_SIZE) + 1} (${batch.length} headlines)`);
     const result = await geocodeBatch(batch);
+    // Rate-limit: pause 1.5s between batches to avoid 429s
+    if (i + BATCH_SIZE < candidates.length) {
+      await new Promise(r => setTimeout(r, 1500));
+    }
     allIncidents.push(...result);
   }
 
@@ -78,7 +88,10 @@ export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incid
     if (firstKey) geocodeCache.delete(firstKey);
   }
 
-  return allIncidents;
+ return allIncidents;
+  } finally {
+    (geocodeNewsIncidents as any)._running = false;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -233,4 +246,3 @@ ${candidates.map((item, i) => {
     console.error('News geocoder v2 batch failed:', err);
     return [];
   }
-}
