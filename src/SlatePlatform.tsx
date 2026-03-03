@@ -262,7 +262,7 @@ const Dashboard = ({ onModuleClick }) => {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
         {[{ l: "Campuses", v: "17", s: "All operational", c: MOD.sentinel }, { l: "Students", v: "12,120", s: "98.4% of capacity", c: MOD.roster }, { l: "YTD Budget", v: "+$5.9M", s: "Surplus — tracking ahead", c: MOD.ledger }, { l: "DSCR", v: "3.47x", s: "Covenant: 1.0x", c: MOD.brief }].map((k, i) => (
-          <div key={i} className="dash-card" style={{ background: C.white, borderRadius: 14, padding: "22px 24px", borderTop: \`3px solid \${k.c}\`, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
+          <div key={i} className="dash-card" style={{ background: C.white, borderRadius: 14, padding: "22px 24px", borderTop: `3px solid ${k.c}`, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 6 }}>{k.l}</div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 28, fontWeight: 700, color: C.deep }}>{k.v}</div>
             <div style={{ fontSize: 12, color: C.light, marginTop: 4 }}>{k.s}</div>
@@ -287,7 +287,7 @@ const Dashboard = ({ onModuleClick }) => {
           </div>
         ))}
       </div>
-      <div style={{ marginTop: 48, padding: "24px 0 16px", borderTop: \`1px solid \${C.chalk}\`, animation: "fadeIn 1s ease 0.5s both", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ marginTop: 48, padding: "24px 0 16px", borderTop: `1px solid ${C.chalk}`, animation: "fadeIn 1s ease 0.5s both", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 13, fontWeight: 600, color: C.mid }}>Every campus. Every morning. <span style={{ color: C.gold, fontWeight: 800 }}>Start with the facts.</span></span>
         <span style={{ fontSize: 9, color: "rgba(0,0,0,0.22)", letterSpacing: "1px", textTransform: "uppercase" }}>Slate Systems, Inc. · 2026</span>
       </div>
