@@ -33,6 +33,7 @@ export async function fetchCitizenIncidents(
     // DIAGNOSTIC: log what Citizen actually returns
     const topKeys = Object.keys(obj);
     console.log(`Citizen API response keys: [${topKeys.join(', ')}]`);
+    if (obj.error) console.log(`Citizen API error: ${JSON.stringify(obj.error)}`);
 
     // Try every known response format
     let raw: unknown[] = [];
