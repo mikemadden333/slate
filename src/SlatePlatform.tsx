@@ -379,17 +379,17 @@ export default function SlatePlatform() {
     <div style={{ display: "flex", height: "100vh", width: "100vw", fontFamily: "'Inter', system-ui, sans-serif", background: C.bg, overflow: "hidden" }}>
       <GlobalCSS />
       <Sidebar activeModule={activeModule} setActiveModule={handleModuleClick} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0, transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)" }}>
         <div style={{ height: 52, minHeight: 52, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 28px", borderBottom: `1px solid ${C.chalk}`, background: C.white }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             {activeModule !== "dashboard" && activeModuleData ? (<><div style={{ width: 8, height: 8, borderRadius: "50%", background: activeModuleData.color, boxShadow: `0 0 8px ${activeModuleData.color}40` }} /><span style={{ fontSize: 13, fontWeight: 700, color: C.deep }}>Slate {activeModuleData.label}</span><span style={{ fontSize: 10, fontWeight: 600, color: C.light, textTransform: "uppercase", letterSpacing: "1px", marginLeft: 8 }}>{activeModuleData.category}</span></>) : (<span style={{ fontSize: 13, fontWeight: 700, color: C.deep }}>Slate Dashboard</span>)}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <span style={{ fontSize: 11, color: C.light }}>Noble Schools</span>
+            
             <div style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg, ${C.gold}, ${C.deep})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: C.white, boxShadow: `0 2px 8px ${C.gold}30` }}>MM</div>
           </div>
         </div>
-        <div className="slate-scroll" style={{ flex: 1, overflow: "auto", padding: activeModule === "dashboard" ? "32px 36px" : "24px 28px" }}>
+        <div className="slate-scroll" style={{ flex: 1, overflow: "auto", padding: activeModule === "dashboard" ? "32px 36px" : "24px 28px", background: "linear-gradient(180deg, #F5F7FA 0%, #EEF1F5 100%)" }}>
           {activeModule === "dashboard" ? <Dashboard onModuleClick={handleModuleClick} /> : renderModule()}
         </div>
       </div>
