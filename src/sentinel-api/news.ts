@@ -10,7 +10,6 @@
  */
 
 import type { NewsItem, NewsTier, Incident } from '../sentinel-engine/types';
-import { fetchRedditPosts } from './reddit';
 import { CAMPUSES } from '../sentinel-data/campuses';
 import { haversine } from '../sentinel-engine/geo';
 
@@ -231,15 +230,6 @@ export async function fetchAllFeeds(): Promise<NewsItem[]> {
   }
 
  // Reddit as Citizen replacement
-  try {
-    const redditPosts = await fetchRedditPosts();
-    if (redditPosts.length > 0) {
-      console.log(`Reddit: ${redditPosts.length} violence-related posts`);
-      all.push(...redditPosts);
-    }
-  } catch (err) {
-    console.log('Reddit fetch failed:', err);
-  }
   const seen = new Set<string>();
   const unique = all.filter(item => {
     if (seen.has(item.link)) return false;
