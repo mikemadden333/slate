@@ -82,6 +82,8 @@ const GlobalCSS = () => (<style>{`
   .slate-scroll::-webkit-scrollbar { width: 6px; }
   .slate-scroll::-webkit-scrollbar-track { background: transparent; }
   .slate-scroll::-webkit-scrollbar-thumb { background: ${C.chalk}; border-radius: 3px; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+  * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
   @keyframes slateGlow { 0%,100%{opacity:0.04;transform:scale(1)} 50%{opacity:0.08;transform:scale(1.05)} }
   @keyframes slateDotPulse { 0%,100%{box-shadow:0 0 12px currentColor} 50%{box-shadow:0 0 22px currentColor} }
 `}</style>);
@@ -246,7 +248,7 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
   const w = collapsed ? 64 : 232;
   return (
     <div style={{ width: w, minWidth: w, height: "100vh", background: C.deep, borderRight: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", transition: "width 0.25s ease, min-width 0.25s ease", overflow: "hidden", flexShrink: 0, zIndex: 200 }}>
-      <div onClick={() => setActiveModule("dashboard")} style={{ padding: collapsed ? "22px 0" : "22px 24px", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", gap: 10, cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.06)", minHeight: 72, flexShrink: 0 }}>
+      <div onClick={() => setActiveModule("dashboard")} style={{ padding: collapsed ? "22px 0" : "22px 24px", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", gap: 10, cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.06)", minHeight: 72, flexShrink: 0, transition: "opacity 0.2s", }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
         <svg width={collapsed ? 24 : 26} height={collapsed ? 18 : 19.5} viewBox="0 0 40 30" fill="none"><path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.12)" /><line x1="10" y1="13" x2="30" y2="13" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" /><line x1="10" y1="19" x2="22" y2="19" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" opacity="0.5" /></svg>
         {!collapsed && <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 900, fontSize: 18, color: C.white, letterSpacing: "-0.02em" }}>Slate<span style={{ color: C.gold }}>.</span></span>}
       </div>
