@@ -3,24 +3,12 @@
  * Sends violence headlines + descriptions to Claude for location extraction,
  * then plots them as real-time map incidents.
  *
- * v2 UPGRADES:
- *   - 77 Chicago community area centroids (was 20 neighborhoods)
- *   - 20+ major intersections with precise coordinates (was 16)
- *   - All 17 Noble campuses as geographic anchor points
- *   - Full Chicago numbered street grid reference
- *   - Includes item.description in prompt (not just headline)
- *   - New BLOCK confidence level (between INTERSECTION and NEIGHBORHOOD)
- *   - Geocoding cache — same headline never re-processed
- *   - Expanded to all 8 news sources (was 4)
- *   - Better JSON parsing with error recovery
+ * v2: 77 community areas, street grid, batched processing (10 per call)
  */
 
 import { CAMPUSES } from '../sentinel-data/campuses';
 import type { Incident, NewsItem } from '../sentinel-engine/types';
 
-// ---------------------------------------------------------------------------
-// All 8 Slate news sources (was 4 in v1)
-// ---------------------------------------------------------------------------
 const REALTIME_NEWS_SOURCES = [
   'Block Club Chicago',
   'ABC7 Chicago',
@@ -32,9 +20,6 @@ const REALTIME_NEWS_SOURCES = [
   'Chalkbeat Chicago',
 ];
 
-// ---------------------------------------------------------------------------
-// Expanded violence keywords
-// ---------------------------------------------------------------------------
 const VIOLENCE_KEYWORDS = [
   'shot', 'shooting', 'shoot', 'homicide', 'killed', 'kill',
   'stabbed', 'stab', 'stabbing', 'murder', 'wounded', 'fatal', 'weapon',
@@ -43,9 +28,6 @@ const VIOLENCE_KEYWORDS = [
   'critical condition', 'assault', 'attacked',
 ];
 
-// ---------------------------------------------------------------------------
-// Geocoding cache — don't re-process the same headline
-// ---------------------------------------------------------------------------
 const geocodeCache = new Map<string, Incident[]>();
 const CACHE_MAX = 300;
 
@@ -69,7 +51,6 @@ export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incid
     return [];
   }
 
-  // Check cache
   const key = cacheKey(candidates);
   if (geocodeCache.has(key)) {
     console.log('News geocoder v2: returning cached results');
@@ -78,27 +59,48 @@ export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incid
 
   console.log(`News geocoder v2: ${candidates.length} violence headlines to geocode`);
 
-  // ---------------------------------------------------------------------------
-  // THE PROMPT — This is where accuracy lives.
-  // ---------------------------------------------------------------------------
-  const prompt = `You are a Chicago geography expert geocoding crime news for a school safety system. For each numbered item below, extract the MOST PRECISE location from the headline AND the description text, then return coordinates.
+  // BATCH: 10 headlines per API call (96 at once overwhelms Claude)
+  const BATCH_SIZE = 10;
+  const allIncidents: Incident[] = [];
 
-CHICAGO STREET GRID REFERENCE:
-- Chicago uses a numbered grid. Madison St is 0 N/S. State St is 0 E/W.
-- Each block = 100 in the address. 6300 S = 63rd Street. 800 W = Halsted.
-- "block of" means the hundred-block: "6300 block of S Halsted" = 63rd & Halsted
-- Key N/S streets (west to east): Cicero(4800W), Pulaski(4000W), Kedzie(3200W), California(2800W), Western(2400W), Ashland(1600W), Halsted(800W), State(0), Cottage Grove(800E), Stony Island(1600E), Jeffrey(2000E)
-- Key E/W streets: North Ave(1600N), Chicago Ave(800N), Madison(0), Roosevelt(1200S), Cermak(2200S), 31st, 35th, Pershing(3900S), 43rd, 47th, 51st, 55th/Garfield(5500S), 59th, 63rd, 67th, 71st, 75th, 79th, 83rd, 87th, 91st, 95th, 99th, 103rd, 107th, 111th, 115th
+  for (let i = 0; i < candidates.length; i += BATCH_SIZE) {
+    const batch = candidates.slice(i, i + BATCH_SIZE);
+    console.log(`News geocoder v2: batch ${Math.floor(i / BATCH_SIZE) + 1} (${batch.length} headlines)`);
+    const result = await geocodeBatch(batch);
+    allIncidents.push(...result);
+  }
 
-NOBLE SCHOOL CAMPUSES (use as reference anchors):
-Butler: 41.890,-87.669 | Comer: 41.764,-87.605 | DRW: 41.856,-87.719
-Gary Comer: 41.720,-87.604 | Golder: 41.777,-87.644 | Hansberry: 41.879,-87.702
-IIT: 41.835,-87.627 | Johnson: 41.746,-87.642 | Muchin: 41.882,-87.630
-Pritzker: 41.848,-87.661 | Rauner: 41.890,-87.669 | Rowe-Clark: 41.909,-87.753
-Baker: 41.825,-87.653 | Bulls: 41.869,-87.707 | Mansueto: 41.788,-87.663
-Speer: 41.851,-87.725 | TIC: 41.883,-87.650
+  console.log(`News geocoder v2: ${allIncidents.length} total incidents from ${candidates.length} headlines`);
 
-ALL 77 CHICAGO COMMUNITY AREAS:
+  geocodeCache.set(key, allIncidents);
+  if (geocodeCache.size > CACHE_MAX) {
+    const firstKey = geocodeCache.keys().next().value;
+    if (firstKey) geocodeCache.delete(firstKey);
+  }
+
+  return allIncidents;
+}
+
+// ---------------------------------------------------------------------------
+// BATCH GEOCODER — 10 headlines at a time
+// ---------------------------------------------------------------------------
+async function geocodeBatch(candidates: NewsItem[]): Promise<Incident[]> {
+  const prompt = `You are a Chicago geography expert geocoding crime news for a school safety system. For each numbered item, extract the MOST PRECISE location and return coordinates.
+
+CHICAGO STREET GRID:
+- Numbered grid: Madison=0 N/S, State=0 E/W. Each block=100. "6300 S"=63rd St.
+- N/S streets W→E: Cicero(4800W), Pulaski(4000W), Kedzie(3200W), California(2800W), Western(2400W), Ashland(1600W), Halsted(800W), State(0), Cottage Grove(800E), Stony Island(1600E), Jeffrey(2000E)
+- E/W streets: North Ave(1600N), Chicago Ave(800N), Madison(0), Roosevelt(1200S), Cermak(2200S), 35th, Pershing(3900S), 47th, 51st, 55th, 59th, 63rd, 67th, 71st, 75th, 79th, 83rd, 87th, 91st, 95th, 103rd, 111th, 115th
+
+NOBLE CAMPUSES:
+Butler:41.890,-87.669 | Comer:41.764,-87.605 | DRW:41.856,-87.719
+Gary Comer:41.720,-87.604 | Golder:41.777,-87.644 | Hansberry:41.879,-87.702
+IIT:41.835,-87.627 | Johnson:41.746,-87.642 | Muchin:41.882,-87.630
+Pritzker:41.848,-87.661 | Rauner:41.890,-87.669 | Rowe-Clark:41.909,-87.753
+Baker:41.825,-87.653 | Bulls:41.869,-87.707 | Mansueto:41.788,-87.663
+Speer:41.851,-87.725 | TIC:41.883,-87.650
+
+77 COMMUNITY AREAS:
 Rogers Park:42.009,-87.670 | West Ridge:41.998,-87.692 | Uptown:41.966,-87.654
 Lincoln Square:41.968,-87.689 | North Center:41.955,-87.679 | Lakeview:41.943,-87.654
 Lincoln Park:41.922,-87.647 | Near North:41.900,-87.633 | Edison Park:42.009,-87.814
@@ -119,54 +121,41 @@ Roseland:41.714,-87.624 | Pullman:41.706,-87.609 | South Deering:41.709,-87.564
 East Side:41.714,-87.535 | West Pullman:41.690,-87.636 | Riverdale:41.649,-87.624
 Hegewisch:41.656,-87.546 | Garfield Ridge:41.791,-87.768 | Archer Heights:41.809,-87.729
 Brighton Park:41.819,-87.701 | McKinley Park:41.832,-87.674 | Bridgeport:41.838,-87.651
-New City/Back of Yards:41.808,-87.657 | West Elsdon:41.795,-87.725 | Gage Park:41.795,-87.696
+New City:41.808,-87.657 | West Elsdon:41.795,-87.725 | Gage Park:41.795,-87.696
 Clearing:41.782,-87.767 | West Lawn:41.775,-87.723 | Chicago Lawn:41.773,-87.694
 West Englewood:41.779,-87.666 | Englewood:41.779,-87.645 | Greater Grand Crossing:41.763,-87.615
 Ashburn:41.750,-87.718 | Auburn Gresham:41.749,-87.655 | Beverly:41.722,-87.673
 Washington Heights:41.722,-87.650 | Mount Greenwood:41.698,-87.706 | Morgan Park:41.693,-87.668
 
-MAJOR INTERSECTIONS:
-63rd/Halsted:41.779,-87.645 | 71st/Halsted:41.764,-87.645 | 79th/Halsted:41.751,-87.645
-87th/Halsted:41.736,-87.645 | 95th/Halsted:41.722,-87.645 | 63rd/King Dr:41.779,-87.615
-79th/Cottage Grove:41.751,-87.606 | 87th/Cottage Grove:41.736,-87.606
-79th/Ashland:41.751,-87.664 | 87th/Dan Ryan:41.737,-87.631 | 95th/Western:41.722,-87.684
-47th/King Dr:41.810,-87.615 | 55th/Cottage:41.794,-87.607 | 71st/Jeffrey:41.765,-87.576
-Garfield/Pulaski:41.794,-87.726 | Chicago/Western:41.896,-87.687 | Roosevelt/Cicero:41.867,-87.745
-Madison/Pulaski:41.881,-87.726 | 35th/Michigan:41.831,-87.623 | 51st/State:41.801,-87.626
-Cermak/Wentworth:41.852,-87.632 | North/Damen:41.910,-87.678 | 103rd/Halsted:41.707,-87.644
-111th/Michigan:41.693,-87.623 | Midway area:41.787,-87.752 | 115th/Ashland:41.684,-87.664
+INTERSECTIONS:
+63rd/Halsted:41.779,-87.645 | 79th/Halsted:41.751,-87.645 | 87th/Halsted:41.736,-87.645
+95th/Halsted:41.722,-87.645 | 79th/Cottage:41.751,-87.606 | 87th/Dan Ryan:41.737,-87.631
+95th/Western:41.722,-87.684 | 47th/King Dr:41.810,-87.615 | 71st/Jeffrey:41.765,-87.576
+Chicago/Western:41.896,-87.687 | Madison/Pulaski:41.881,-87.726 | North/Damen:41.910,-87.678
+103rd/Halsted:41.707,-87.644 | 111th/Michigan:41.693,-87.623 | Cermak/Wentworth:41.852,-87.632
 
-CONFIDENCE LEVELS (be precise about what you found):
-- INTERSECTION: Two streets or a specific address found (e.g. "63rd and Halsted", "4521 S Drexel")
-- BLOCK: A block number mentioned (e.g. "6300 block of S Halsted") — use midpoint of that block
-- NEIGHBORHOOD: Only a neighborhood name (e.g. "in Englewood") — use centroid above
-- AREA: Only a general area (e.g. "South Side", "West Side") — use general center
-- UNKNOWN: Cannot determine a Chicago location or not a Chicago incident
+CONFIDENCE:
+- INTERSECTION: two streets or specific address → precise coords
+- BLOCK: "6300 block of S Halsted" → midpoint of that block
+- NEIGHBORHOOD: only neighborhood name → centroid from list above
+- AREA: "South Side" → general center
+- UNKNOWN: not Chicago or no location
 
-CRIME TYPE CLASSIFICATION:
-- HOMICIDE: fatal, killed, dead, murder, homicide, slain, dies
-- SHOOTING: shot, shooting, gunfire, gunshot, wounded by gunfire
-- WEAPONS VIOLATION: weapon, firearm, gun recovered, armed (but not a shooting)
-- BATTERY: stabbed, stabbing, assault, attacked, beaten
-- ROBBERY: robbery, robbed, carjack, holdup, mugging
-- UNKNOWN: cannot classify
+CRIME TYPE: HOMICIDE | SHOOTING | WEAPONS VIOLATION | BATTERY | ROBBERY | UNKNOWN
 
-Return ONLY a JSON array. No markdown. No backticks. No explanation. Start with [ end with ]:
+Return ONLY a JSON array. No markdown. No backticks. Start with [ end with ]:
 [{"id": NUMBER, "lat": NUMBER, "lng": NUMBER, "confidence": "STRING", "type": "STRING"}]
 
-If not a Chicago crime or no location found, use confidence "UNKNOWN" and lat/lng of 0.
+For UNKNOWN confidence, use lat 0 and lng 0.
 
-NEWS ITEMS TO GEOCODE:
+HEADLINES:
 ${candidates.map((item, i) => {
     let text = `${i}: [${item.source}] ${item.title}`;
-    // v2: Include description for better location extraction
     if (item.description && item.description.length > 20) {
       text += `\n   DETAILS: ${item.description.slice(0, 400)}`;
     }
     return text;
-  }).join('\n\n')}
-
-Respond with ONLY the JSON array:`;
+  }).join('\n\n')}`;
 
   try {
     const response = await fetch('/api/anthropic-proxy', {
@@ -187,62 +176,48 @@ Respond with ONLY the JSON array:`;
     const data = await response.json();
     const text = (data.content?.[0]?.text ?? '').trim();
 
-    // Strip any accidental markdown fences
-    const clean = text.replace(/```json\s*|```\s*/g, '').trim();
+    console.log(`News geocoder v2 raw (${text.length} chars): ${text.slice(0, 200)}`);
 
-    // Find the JSON array in the response
+    const clean = text.replace(/```json\s*|```\s*/g, '').trim();
     const arrayStart = clean.indexOf('[');
     const arrayEnd = clean.lastIndexOf(']');
     if (arrayStart === -1 || arrayEnd === -1) {
-      console.error('News geocoder v2: no JSON array found in response');
+      console.error('News geocoder v2: no JSON array. Response:', text.slice(0, 500));
       return [];
     }
 
-    const jsonStr = clean.slice(arrayStart, arrayEnd + 1);
     const results: Array<{
-      id: number;
-      lat: number;
-      lng: number;
-      confidence: string;
-      type: string;
-    }> = JSON.parse(jsonStr);
+      id: number; lat: number; lng: number; confidence: string; type: string;
+    }> = JSON.parse(clean.slice(arrayStart, arrayEnd + 1));
 
     const incidents: Incident[] = [];
 
-    for (const result of results) {
-      if (result.confidence === 'UNKNOWN') continue;
-      if (isNaN(result.lat) || isNaN(result.lng)) continue;
-      if (result.lat === 0 || result.lng === 0) continue;
-      // Sanity: must be within Chicago metro bounds
-      if (result.lat < 41.6 || result.lat > 42.1) continue;
-      if (result.lng < -87.95 || result.lng > -87.5) continue;
+    for (const r of results) {
+      if (r.confidence === 'UNKNOWN' || r.lat === 0 || r.lng === 0) continue;
+      if (isNaN(r.lat) || isNaN(r.lng)) continue;
+      if (r.lat < 41.6 || r.lat > 42.1 || r.lng < -87.95 || r.lng > -87.5) continue;
 
-      // Must be within 3 miles of at least one Noble campus
       const nearCampus = CAMPUSES.some(c => {
-        const dlat = (c.lat - result.lat) * 69;
-        const dlng = (c.lng - result.lng) * 55;
+        const dlat = (c.lat - r.lat) * 69;
+        const dlng = (c.lng - r.lng) * 55;
         return Math.sqrt(dlat * dlat + dlng * dlng) <= 3.0;
       });
       if (!nearCampus) continue;
 
-      const item = candidates[result.id];
+      const item = candidates[r.id];
       if (!item) continue;
 
-      // Jitter based on confidence — tighter for precise locations
-      const jitter = result.confidence === 'INTERSECTION' ? 0.0008
-        : result.confidence === 'BLOCK' ? 0.0015
-        : result.confidence === 'NEIGHBORHOOD' ? 0.004
-        : 0.008;
-      const lat = result.lat + (Math.random() - 0.5) * jitter;
-      const lng = result.lng + (Math.random() - 0.5) * jitter;
+      const jitter = r.confidence === 'INTERSECTION' ? 0.0008
+        : r.confidence === 'BLOCK' ? 0.0015
+        : r.confidence === 'NEIGHBORHOOD' ? 0.004 : 0.008;
 
       incidents.push({
         id: `news_${item.id ?? item.title.slice(0, 20).replace(/\s/g, '_')}`,
-        type: result.type === 'UNKNOWN' ? 'BATTERY' : result.type,
+        type: r.type === 'UNKNOWN' ? 'BATTERY' : r.type,
         date: item.pubDate ?? new Date().toISOString(),
-        block: `~${result.confidence} — ${item.source}`,
-        lat,
-        lng,
+        block: `~${r.confidence} — ${item.source}`,
+        lat: r.lat + (Math.random() - 0.5) * jitter,
+        lng: r.lng + (Math.random() - 0.5) * jitter,
         description: item.title,
         source: 'NEWS' as const,
         confidence: 'NEWS_REPORTED' as const,
@@ -251,19 +226,16 @@ Respond with ONLY the JSON array:`;
       });
     }
 
-    console.log(`News geocoder v2: ${incidents.length} incidents plotted from ${candidates.length} headlines`);
-
-    // Cache the results
-    geocodeCache.set(key, incidents);
-    if (geocodeCache.size > CACHE_MAX) {
-      const firstKey = geocodeCache.keys().next().value;
-      if (firstKey) geocodeCache.delete(firstKey);
-    }
-
+    console.log(`News geocoder v2 batch: ${incidents.length} incidents from ${candidates.length} headlines`);
     return incidents;
 
   } catch (err) {
-    console.error('News geocoder v2 failed:', err);
+    console.error('News geocoder v2 batch failed:', err);
     return [];
   }
 }
+```
+
+After pasting: **Cmd+S** to save, then in the terminal:
+```
+git add . && git commit -m "Geocoder v2 with batching" && git push
