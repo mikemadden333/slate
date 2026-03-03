@@ -91,7 +91,7 @@ export default function RosterApp() {
 
       <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: C.light, borderTop: '1px solid ' + C.chalk }}>
         <div>Slate Roster — Enrollment Intelligence — FY2026 Cycle</div>
-        <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, LLC · Madden Advisory Group · 2026</div>
+        <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, Inc. · 2026</div>
       </footer>
     </div>
   );
