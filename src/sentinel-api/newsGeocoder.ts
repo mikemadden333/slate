@@ -234,8 +234,3 @@ ${candidates.map((item, i) => {
     return [];
   }
 }
-```
-
-After pasting: **Cmd+S** to save, then in the terminal:
-```
-git add . && git commit -m "Geocoder v2 with batching" && git push
