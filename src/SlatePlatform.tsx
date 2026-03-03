@@ -164,7 +164,7 @@ const SplashScreen = ({ onComplete }) => {
             Founded by Mike Madden
           </div>
           <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', letterSpacing: '1px', textTransform: 'uppercase' }}>
-            Proprietary &amp; Confidential · All Rights Reserved · 2026
+            Proprietary & Confidential · All Rights Reserved · 2026
           </div>
         </div>
         </div>
