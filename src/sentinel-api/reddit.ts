@@ -71,12 +71,6 @@ export async function fetchRedditPosts(): Promise<NewsItem[]> {
   } catch (err) {
     console.log('Reddit fetch failed:', err);
     return [];
+return [];
   }
 }
-```
-
-**Cmd+S**
-
-Now we need to wire it into `src/sentinel-api/news.ts`. Paste this:
-```
-cat src/sentinel-api/news.ts | head -30
