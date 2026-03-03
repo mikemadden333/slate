@@ -167,7 +167,6 @@ const SplashScreen = ({ onComplete }) => {
             Proprietary & Confidential · All Rights Reserved · 2026
           </div>
         </div>
-        </div>
       </div>
     </div>
   );
