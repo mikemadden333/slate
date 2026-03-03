@@ -266,9 +266,9 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
   );
 };
 const NI = ({ label, icon, color, active, collapsed, onClick }) => (
-  <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 12, padding: collapsed ? "11px 0" : "11px 24px", justifyContent: collapsed ? "center" : "flex-start", cursor: "pointer", margin: "1px 10px", borderRadius: 10, background: active ? `${color}12` : "transparent", borderLeft: active ? `3px solid ${color}` : "3px solid transparent", transition: "all 0.15s ease" }} onMouseEnter={e => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }} onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? `${color}12` : "transparent"; }}>
-    <span style={{ fontSize: 15, width: 22, textAlign: "center", flexShrink: 0 }}>{icon}</span>
-    {!collapsed && <span style={{ fontSize: 13, fontWeight: active ? 700 : 500, color: active ? color : "rgba(255,255,255,0.70)", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{label}</span>}
+  <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 12, padding: collapsed ? "11px 0" : "11px 24px", justifyContent: collapsed ? "center" : "flex-start", cursor: "pointer", margin: "1px 10px", borderRadius: 10, background: active ? `${color}12` : "transparent", borderLeft: active ? `3px solid ${color}` : "3px solid transparent", transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)" }} onMouseEnter={e => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }} onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? `${color}12` : "transparent"; }}>
+    <span style={{ fontSize: 15, width: 22, textAlign: "center", flexShrink: 0, filter: active ? `drop-shadow(0 0 6px ${color})` : "none", transform: active ? "scale(1.15)" : "scale(1)", transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)" }}>{icon}</span>
+    {!collapsed && <span style={{ fontSize: 13, fontWeight: active ? 700 : 500, color: active ? "#fff" : "rgba(255,255,255,0.55)", textShadow: active ? `0 0 12px ${color}40` : "none", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{label}</span>}
   </div>
 );
 
@@ -282,8 +282,9 @@ const Dashboard = ({ onModuleClick }) => {
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto" }}>
       <div style={{ marginBottom: 32, animation: "fadeSlideUp 0.6s ease both" }}>
-        <div style={{ fontSize: 30, fontWeight: 900, color: C.deep, letterSpacing: "-0.03em" }}>{g}, Mike.</div>
+        <div style={{ fontSize: 32, fontWeight: 900, color: C.deep, letterSpacing: "-0.03em", lineHeight: 1.2 }}>{g}, Mike.</div>
         <div style={{ fontSize: 14, color: C.light, marginTop: 8 }}>17 Campuses · 12,120 Students · {dayName} · {timeStr}</div>
+        <div style={{ width: 48, height: 3, background: C.gold, borderRadius: 2, marginTop: 14 }} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
         {[{ l: "Campuses", v: "17", s: "All operational", c: MOD.sentinel }, { l: "Students", v: "12,120", s: "98.4% of capacity", c: MOD.roster }, { l: "YTD Budget", v: "+$5.9M", s: "Surplus — tracking ahead", c: MOD.ledger }, { l: "DSCR", v: "3.47x", s: "Covenant: 1.0x", c: MOD.brief }].map((k, i) => (
@@ -294,7 +295,7 @@ const Dashboard = ({ onModuleClick }) => {
           </div>
         ))}
       </div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "3px", marginBottom: 18, animation: "fadeSlideUp 0.5s ease 0.12s both" }}>Six Intelligences · One Platform</div>
+      <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "3px", marginBottom: 18, animation: "fadeSlideUp 0.5s ease 0.12s both" }}>Six Intelligences — One Platform</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
         {MODULES.map((m, idx) => (
           <div key={m.id} className="mod-card" onClick={() => onModuleClick(m.id)} style={{ background: C.white, borderRadius: 16, cursor: "pointer", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "transform 0.2s ease, box-shadow 0.2s ease" }}>
