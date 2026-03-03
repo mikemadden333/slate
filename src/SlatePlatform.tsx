@@ -36,13 +36,33 @@ const GlobalCSS = () => (<style>{`
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  @keyframes subtleGlow {
-    0%, 100% { box-shadow: 0 0 0 0 transparent; }
-    50% { box-shadow: 0 0 12px 2px var(--glow-color, rgba(240,180,41,0.15)); }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
   .slate-module-box > * {
-    animation: fadeIn 0.4s ease both;
+    animation: fadeIn 0.35s ease both;
   }
+  /* Custom scrollbar — thin, dark, elegant */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(45,55,72,0.25); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(45,55,72,0.45); }
+  /* Sidebar nav hover */
+  .nav-item { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; }
+  .nav-item:hover { background: rgba(255,255,255,0.06); }
+  .nav-item.active { background: rgba(255,255,255,0.08); }
+  /* Module card hover lift */
+  .mod-card { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+  .mod-card:hover { transform: translateY(-4px); }
+  .mod-card:active { transform: translateY(-1px); transition-duration: 0.1s; }
+  /* KPI card hover */
+  .dash-card { transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: default; }
+  .dash-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  /* Smooth page transitions */
+  .slate-module-box { transition: opacity 0.3s ease; }
+  /* Selection color */
+  ::selection { background: rgba(240,180,41,0.2); color: #0D1117; }
   .dash-card {
     animation: fadeSlideUp 0.5s ease both;
   }
@@ -237,7 +257,7 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
         {MODULES.map(m => <NI key={m.id} label={m.label} icon={m.icon} color={m.color} active={activeModule === m.id} collapsed={collapsed} onClick={() => setActiveModule(m.id)} />)}
       </div>
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", flexShrink: 0 }}>
-        {!collapsed && <div style={{ padding: "14px 24px 4px" }}><div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1.5px", lineHeight: 1.8, textTransform: "uppercase", fontWeight: 600 }}>Slate Systems, Inc.</div><div style={{ fontSize: 8, color: "rgba(255,255,255,0.14)", letterSpacing: "1px" }}>Madden Advisory Group</div></div>}
+        {!collapsed && <div style={{ padding: "14px 24px 4px" }}><div style={{ fontSize: 9, color: "rgba(255,255,255,0.32)", letterSpacing: "1.5px", lineHeight: 1.8, textTransform: "uppercase", fontWeight: 600 }}>Slate Systems, Inc.</div></div>}
         <div onClick={() => setCollapsed(!collapsed)} style={{ padding: "14px 24px", display: "flex", justifyContent: collapsed ? "center" : "flex-end", cursor: "pointer", color: "rgba(255,255,255,0.32)", fontSize: 12 }}>{collapsed ? "▸" : "◂"}</div>
       </div>
     </div>
@@ -252,13 +272,16 @@ const NI = ({ label, icon, color, active, collapsed, onClick }) => (
 
 /* ═══════════════════════════════════════════════════════════ */
 const Dashboard = ({ onModuleClick }) => {
-  const h = new Date().getHours();
+  const now = new Date();
+  const h = now.getHours();
   const g = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+  const dayName = now.toLocaleDateString("en-US", { weekday: "long" });
+  const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto" }}>
       <div style={{ marginBottom: 32, animation: "fadeSlideUp 0.6s ease both" }}>
         <div style={{ fontSize: 30, fontWeight: 900, color: C.deep, letterSpacing: "-0.03em" }}>{g}, Mike.</div>
-        <div style={{ fontSize: 14, color: C.light, marginTop: 8 }}>17 Campuses · 12,120 Students · {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</div>
+        <div style={{ fontSize: 14, color: C.light, marginTop: 8 }}>17 Campuses · 12,120 Students · {dayName} · {timeStr}</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
         {[{ l: "Campuses", v: "17", s: "All operational", c: MOD.sentinel }, { l: "Students", v: "12,120", s: "98.4% of capacity", c: MOD.roster }, { l: "YTD Budget", v: "+$5.9M", s: "Surplus — tracking ahead", c: MOD.ledger }, { l: "DSCR", v: "3.47x", s: "Covenant: 1.0x", c: MOD.brief }].map((k, i) => (
@@ -272,7 +295,7 @@ const Dashboard = ({ onModuleClick }) => {
       <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "3px", marginBottom: 18, animation: "fadeSlideUp 0.5s ease 0.12s both" }}>Six Intelligences · One Platform</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
         {MODULES.map((m, idx) => (
-          <div key={m.id} className="mod-card" onClick={() => onModuleClick(m.id)} style={{ background: C.white, borderRadius: 16, cursor: "pointer", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "transform 0.2s ease, box-shadow 0.2s ease" }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = `0 12px 32px ${m.color}15`; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"; }}>
+          <div key={m.id} className="mod-card" onClick={() => onModuleClick(m.id)} style={{ background: C.white, borderRadius: 16, cursor: "pointer", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "transform 0.2s ease, box-shadow 0.2s ease" }}>
             <div style={{ height: 3, background: m.color }} />
             <div style={{ padding: "22px 24px 18px" }}>
               <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: m.color, marginBottom: 12 }}>Module {String(idx + 1).padStart(2, "0")}</div>
