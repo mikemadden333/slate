@@ -172,10 +172,9 @@ function parseCall(c: Record<string, unknown>): ScannerCall | null {
 
   if (!time) return null;
 
-  const tgLower = talkgroup.toLowerCase();
   let matchedZone: ZoneInfo | null = null;
   for (const z of CPD_ZONES) {
-    if (z.talkgroupPatterns.some(p => tgLower.includes(p))) {
+    if (z.zone === talkgroupId) {
       matchedZone = z;
       break;
     }
