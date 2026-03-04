@@ -26,6 +26,8 @@ import type { CitizenIncident } from './sentinel-api/citizen';
 import { fetchWeather, fetchWeatherForecast } from './sentinel-api/weather';
 import { fetchAllFeeds, parseNewsAsIncidents } from './sentinel-api/news';
 import { geocodeNewsIncidents } from './sentinel-api/newsGeocoder';
+import { fetchMedicalExaminerHomicides } from './sentinel-api/medicalExaminer';
+import { fetchCPDMajorIncidents } from './sentinel-api/cpdMajorIncidents';
 import { fetchIceSignals } from './sentinel-api/ice';
 import { fetchRealtimeIncidents } from './sentinel-api/cpdRealtime';
 import type {
@@ -128,6 +130,8 @@ export default function App() {
   const [dispatchIncidents, setDispatchIncidents] = useState<DispatchIncident[]>([]);
   const [realtimeIncidents, setRealtimeIncidents] = useState<Incident[]>([]);
   const [newsIncidents, setNewsIncidents] = useState<Incident[]>([]);
+  const [meIncidents, setMeIncidents] = useState<Incident[]>([]);
+  const [majorIncidents, setMajorIncidents] = useState<Incident[]>([]);
   const [dataFreshness, setDataFreshness] = useState({
     cpdLastUpdate: new Date(),
     cpdCount: 0,
@@ -189,7 +193,7 @@ export default function App() {
   // Combined incidents for briefing and map — all sources, deduplicated
   const allIncidents = useMemo(() => {
     // Priority order: CPD acute > CPD full > CPD realtime > news > citizen
-    const merged = [...acuteIncidents, ...incidents, ...realtimeIncidents, ...newsIncidents, ...dispatchIncidents];
+    const merged = [...acuteIncidents, ...incidents, ...realtimeIncidents, ...newsIncidents, ...dispatchIncidents, ...meIncidents, ...majorIncidents];
     // Deduplicate: same type + nearby location + within 1 hour = duplicate
     const seen = new Set<string>();
     const result: Incident[] = [];
@@ -314,6 +318,14 @@ export default function App() {
       parsed = parseNewsAsIncidents(news);
     }
     setNewsIncidents(parsed);
+
+    // Medical Examiner homicides — updates within hours
+    const meData = await fetchMedicalExaminerHomicides(14);
+    setMeIncidents(meData);
+
+    // CPD Major incidents — 72h window, faster than main portal
+    const majorData = await fetchCPDMajorIncidents(72);
+    setMajorIncidents(majorData);
     setDataFreshness(prev => ({
       ...prev,
       newsLastUpdate: new Date(),
