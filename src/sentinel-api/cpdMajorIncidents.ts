@@ -13,12 +13,7 @@ const MAJOR_TYPES = [
 export async function fetchCPDMajorIncidents(hours = 72): Promise<Incident[]> {
   try {
     const since = new Date(Date.now() - hours * 3600000).toISOString().replace('T', ' ').split('.')[0];
-    const params = new URLSearchParams({
-      '$where': `date >= '${since}' AND (${MAJOR_TYPES})`,
-      '$limit': '500',
-      '$order': 'date DESC',
-    });
-    const url = `${CPD_MAJOR}?${params}`;
+    const url = `${CPD_MAJOR}?$where=date >= '${since}' AND (${MAJOR_TYPES})&$limit=500&$order=date DESC`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`CPD Major ${res.status}`);
     const rows = await res.json();
