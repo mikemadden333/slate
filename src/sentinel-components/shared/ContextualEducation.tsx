@@ -84,7 +84,7 @@ function EducationCard({ children, borderColor, onGotIt, onDismiss }: {
 /* ---- Concept 1: First ELEVATED ---- */
 function ElevatedFirstSeen({ risk }: { risk: CampusRisk }) {
   const { seen, markSeen, markDismissed } = useFirstSeen('elevated_label');
-  if (seen || risk.label === 'LOW') return null;
+  if (seen || risk.label !== 'ELEVATED') return null;
 
   return (
     <EducationCard borderColor="#B79145" onGotIt={markSeen} onDismiss={markDismissed}>
