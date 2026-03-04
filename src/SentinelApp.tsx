@@ -69,6 +69,7 @@ import CommandCenter from './sentinel-components/network/CommandCenter';
 // Shared components
 import ProtocolModal from './sentinel-components/shared/ProtocolModal';
 import IntelQuery from './sentinel-components/shared/IntelQuery';
+import CampusToolsDrawer from './sentinel-components/campus/CampusToolsDrawer';
 import OnboardingRevelation from './sentinel-components/shared/OnboardingRevelation';
 import FeedView from './sentinel-components/shared/FeedView';
 import CampusSelector, { shouldShowSelector, getLastCampusId, saveSelectedCampus, markSelectorDismissed } from './sentinel-components/shared/CampusSelector';
@@ -527,45 +528,62 @@ export default function App() {
             campus={selectedCampus}
           />
         ) : (
-        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
           {initialLoading && <CampusSkeleton />}
-          {campusMemory.sinceLastVisit && (
-            <SinceLastVisitCard data={campusMemory.sinceLastVisit} onDismiss={campusMemory.dismissCard} />
-          )}
+
+          {/* ── CHAPTER 1: THE HEADLINE ── */}
           <SituationCard risk={selectedRisk} campusName={selectedCampus.name} onBeginProtocol={handleBeginProtocol} />
-          <ContextualEducation risk={selectedRisk} iceAlerts={iceAlerts} dataLoaded={!initialLoading} />
+
+          {/* ── CHAPTER 2: THE BRIEF — AI summary, first thing they read ── */}
+          <div ref={briefingRef}>
+            <MorningBriefing campus={selectedCampus} risk={selectedRisk} iceAlerts={iceAlerts}
+              incidents={allIncidents} newsItems={newsItems} tempF={tempF}
+              onAskPulse={scrollToIntelQuery} />
+          </div>
+
+          {/* ── CHAPTER 3: RIGHT NOW — only renders if something active ── */}
           <RightNowBar schoolPeriod={schoolPeriod} minutesToArrival={minutesToArrival(now, selectedCampus)}
             minutesToDismissal={minutesToDismissal(now, selectedCampus)}
             riskLabel={selectedRisk.label as 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL'}
             incidents6h={incidents6h}
             scannerCalls={scannerData?.totalCalls}
             scannerSpikeZones={scannerData?.spikeZones.length} />
+          {iceAlerts.length > 0 && (
+            <IceIntelligence iceAlerts={iceAlerts} onInitiateCodeWhite={handleInitiateCodeWhite} />
+          )}
+
+          {/* ── CHAPTER 4: WHAT HAPPENED — violent crime feed, overnight + today ── */}
           <LastNight campus={selectedCampus} incidents={acuteIncidents}
             citizenIncidents={citizenIncidents} schoolPeriod={schoolPeriod} />
-          <div ref={briefingRef}>
-            <MorningBriefing campus={selectedCampus} risk={selectedRisk} iceAlerts={iceAlerts}
-              incidents={allIncidents} newsItems={newsItems} tempF={tempF}
-              onAskPulse={scrollToIntelQuery} />
-          </div>
-          <ContagionPanel zones={selectedRisk.contagionZones}
-            inRetaliationWindow={selectedRisk.inRetaliationWindow}
-            campusName={selectedCampus.name} campusId={selectedCampusId}
-            allRisks={allRisks} forecast={forecast}
-            onOpenForecast={scrollToForecast} onBeginProtocol={handleBeginProtocol} />
-          <IceIntelligence iceAlerts={iceAlerts} onInitiateCodeWhite={handleInitiateCodeWhite} />
+          <IncidentList campus={selectedCampus} incidents={allIncidents}
+            contagionZones={selectedRisk.contagionZones} />
+
+          {/* ── CHAPTER 5: THE MAP ── */}
           <CampusMap campus={selectedCampus} risk={selectedRisk} incidents={allIncidents}
             shotSpotterEvents={shotSpotterEvents}
             contagionZones={selectedRisk.contagionZones} corridors={corridors} />
-          <div ref={forecastRef}>
-            <WeekForecast forecast={forecast} onScrollToBriefing={scrollToBriefing} />
-          </div>
-          <IncidentList campus={selectedCampus} incidents={allIncidents}
-            contagionZones={selectedRisk.contagionZones} />
-          <SafeCorridorMap campus={selectedCampus} corridors={corridors} schoolPeriod={schoolPeriod} />
-          <EmergencyResponse onSelectCode={setActiveProtocol} recommendedCode={recommendedCode} />
-          <div ref={intelQueryRef}>
-            <IntelQuery campus={selectedCampus} risk={selectedRisk} />
-          </div>
+
+          {/* ── CHAPTER 6: TOOLS — collapsed by default ── */}
+          <CampusToolsDrawer>
+            <ContextualEducation risk={selectedRisk} iceAlerts={iceAlerts} dataLoaded={!initialLoading} />
+            <ContagionPanel zones={selectedRisk.contagionZones}
+              inRetaliationWindow={selectedRisk.inRetaliationWindow}
+              campusName={selectedCampus.name} campusId={selectedCampusId}
+              allRisks={allRisks} forecast={forecast}
+              onOpenForecast={scrollToForecast} onBeginProtocol={handleBeginProtocol} />
+            <div ref={forecastRef}>
+              <WeekForecast forecast={forecast} onScrollToBriefing={scrollToBriefing} />
+            </div>
+            <SafeCorridorMap campus={selectedCampus} corridors={corridors} schoolPeriod={schoolPeriod} />
+            <EmergencyResponse onSelectCode={setActiveProtocol} recommendedCode={recommendedCode} />
+            <div ref={intelQueryRef}>
+              <IntelQuery campus={selectedCampus} risk={selectedRisk} />
+            </div>
+          </CampusToolsDrawer>
+
+          {campusMemory.sinceLastVisit && (
+            <SinceLastVisitCard data={campusMemory.sinceLastVisit} onDismiss={campusMemory.dismissCard} />
+          )}
           <DataFreshness
             cpdLastUpdate={dataFreshness.cpdLastUpdate} cpdCount={dataFreshness.cpdCount}
             citizenLastUpdate={dataFreshness.citizenLastUpdate} citizenCount={dataFreshness.citizenCount}
