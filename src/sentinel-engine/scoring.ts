@@ -271,10 +271,21 @@ function determineLabel(
     if (inc.type === 'WEAPONS VIOLATION') weapons14d++;
   }
 
-  // HIGH: homicide within 1mi OR 5+ violent incidents within 0.5mi in 14d
-  if (homicide14d >= 1 || violentClose14d >= 5) return 'HIGH';
-  // ELEVATED: weapons or 2+ violent incidents within 0.5mi in 14d
-  if (weapons14d >= 1 || violentClose14d >= 2) return 'ELEVATED';
+  // Count shootings specifically — higher signal than battery/robbery
+  let shootings14d = 0;
+  for (const inc of allInc) {
+    if (inc.type !== 'SHOOTING' && inc.type !== 'HOMICIDE' && inc.type !== 'MURDER') continue;
+    const dist = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+    if (dist > 1.0) continue;
+    const ageH = (now14 - new Date(inc.date).getTime()) / 3600000;
+    if (ageH > 336) continue;
+    shootings14d++;
+  }
+
+  // HIGH: homicide within 0.5mi OR 3+ shootings within 1mi in 14d OR 20+ violent within 0.5mi
+  if (homicide14d >= 1 || shootings14d >= 3 || violentClose14d >= 20) return 'HIGH';
+  // ELEVATED: weapons violation within 0.5mi OR 2+ shootings within 1mi OR 10+ violent within 0.5mi
+  if (weapons14d >= 1 || shootings14d >= 2 || violentClose14d >= 10) return 'ELEVATED';
 
   return 'LOW';
 }
