@@ -156,7 +156,7 @@ export function scoreCampus(
   // --- FINAL SCORE ---
   const score = Math.min(100, base + acute + seasonal);
   // Remap display score to always fall within label range
-const label = determineLabel(campus, acuteInc, shots, zones);
+const label = determineLabel(campus, acuteInc, shots, zones, incidents);
 const displayScore =
   label === 'LOW'      ? Math.min(24, Math.round(score * 0.24)) :
   label === 'ELEVATED' ? 25 + Math.min(19, Math.round(score * 0.19)) :
@@ -213,6 +213,7 @@ function determineLabel(
   acuteInc: Incident[],
   shots: ShotSpotterEvent[],
   zones: ContagionZone[],
+  allInc: Incident[] = [],
 ): RiskLabel {
   // Check for retaliation window → CRITICAL
   const campusZones = getCampusExposure(campus, zones);
@@ -249,7 +250,32 @@ function determineLabel(
     }
   }
 
-  // Everything else → LOW
+  // Acute data empty (CPD lag) — fall back to 14-day violent baseline
+  const VIOLENT_TYPES = new Set(['HOMICIDE','MURDER','SHOOTING','WEAPONS VIOLATION','BATTERY','ROBBERY','ASSAULT','CRIM SEXUAL ASSAULT']);
+  const now14 = Date.now();
+  const allPassed = [...acuteInc]; // acuteInc may be empty — that's fine, we check allInc below
+
+  // Count violent incidents within 0.5mi in last 14 days from full incident pool
+  // allInc is passed in as a proxy when acute is empty
+  let violentClose14d = 0;
+  let homicide14d = 0;
+  let weapons14d = 0;
+  for (const inc of allInc) {
+    if (!VIOLENT_TYPES.has(inc.type)) continue;
+    const dist = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+    if (dist > 1.0) continue;
+    const ageH = (now14 - new Date(inc.date).getTime()) / 3600000;
+    if (ageH > 336) continue; // 14 days
+    if (dist <= 0.5) violentClose14d++;
+    if (inc.type === 'HOMICIDE' || inc.type === 'MURDER') homicide14d++;
+    if (inc.type === 'WEAPONS VIOLATION') weapons14d++;
+  }
+
+  // HIGH: homicide within 1mi OR 5+ violent incidents within 0.5mi in 14d
+  if (homicide14d >= 1 || violentClose14d >= 5) return 'HIGH';
+  // ELEVATED: weapons or 2+ violent incidents within 0.5mi in 14d
+  if (weapons14d >= 1 || violentClose14d >= 2) return 'ELEVATED';
+
   return 'LOW';
 }
 
