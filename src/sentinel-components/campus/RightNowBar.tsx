@@ -178,9 +178,28 @@ export default function RightNowBar({
             }}>
               {fmtTime(countdownValue)}
             </div>
-          )}
+)}
         </div>
       </div>
+
+      {/* Scanner badge */}
+      {scannerCalls != null && scannerCalls > 0 && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          marginTop: 8, padding: '6px 12px',
+          background: (scannerSpikeZones ?? 0) > 0 ? '#D45B4F12' : '#F7F5F1',
+          borderRadius: 8,
+          border: (scannerSpikeZones ?? 0) > 0 ? '1px solid #D45B4F30' : '1px solid #E7E2D8',
+        }}>
+          <span style={{ fontSize: 11, color: '#6B7280' }}>📻</span>
+          <span style={{
+            fontSize: 11, fontWeight: 600, letterSpacing: '0.3px',
+            color: (scannerSpikeZones ?? 0) > 0 ? '#D45B4F' : '#6B7280',
+          }}>
+            CPD Radio: {scannerCalls} calls{(scannerSpikeZones ?? 0) > 0 ? ` · ${scannerSpikeZones} spike zone${scannerSpikeZones !== 1 ? 's' : ''}` : ' · no spike zones'}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

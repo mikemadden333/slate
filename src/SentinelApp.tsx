@@ -473,7 +473,9 @@ export default function App() {
           <RightNowBar schoolPeriod={schoolPeriod} minutesToArrival={minutesToArrival(now, selectedCampus)}
             minutesToDismissal={minutesToDismissal(now, selectedCampus)}
             riskLabel={selectedRisk.label as 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL'}
-            incidents6h={incidents6h} />
+            incidents6h={incidents6h}
+            scannerCalls={scannerData?.totalCalls}
+            scannerSpikeZones={scannerData?.spikeZones.length} />
           <LastNight campus={selectedCampus} incidents={acuteIncidents}
             citizenIncidents={citizenIncidents} schoolPeriod={schoolPeriod} />
           <div ref={briefingRef}>
