@@ -27,7 +27,7 @@ export async function fetchIncidents(
   try {
     const params = new URLSearchParams({
       $limit: String(limit),
-      $where: `latitude IS NOT NULL AND longitude IS NOT NULL AND latitude > 41.65 AND latitude < 41.97 AND longitude > -87.82 AND longitude < -87.57`,
+      $where: `latitude IS NOT NULL AND longitude IS NOT NULL AND latitude > 41.65 AND latitude < 41.97 AND longitude > -87.82 AND longitude < -87.57 AND date > '${new Date(Date.now() - hours * 3600000).toISOString().slice(0, 19)}'`,
       $order: 'date DESC',
       $select: 'id,date,primary_type,block,latitude,longitude,description',
     });
