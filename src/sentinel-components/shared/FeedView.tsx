@@ -88,10 +88,27 @@ export default function FeedView({ incidents, iceAlerts, campus, allCampuses = [
     const ageH = (now - date.getTime()) / 3600000;
     if (ageH > cutoff) continue;
 
+    // Compute actual distance for campus view
+    let iceDist: number | undefined;
+    if (campus && alert.lat != null && alert.lng != null) {
+      iceDist = haversine(campus.lat, campus.lng, alert.lat, alert.lng);
+      if (iceDist > 3.0) continue;
+    } else if (campus && alert.distanceFromCampus != null) {
+      iceDist = alert.distanceFromCampus;
+      if (iceDist > 3.0) continue;
+    } else if (campus) {
+      // No location data — cannot verify proximity, skip
+      continue;
+    } else {
+      // Network view — use nearest campus distance
+      iceDist = alert.distanceFromCampus;
+      if (iceDist == null || iceDist > 3.0) continue;
+    }
+
     items.push({
       id: alert.id, type: 'ICE', subtype: 'ICE ACTIVITY',
-      block: alert.location ?? '', date,
-      dist: alert.distanceFromCampus,
+      block: alert.location ?? 'Location undisclosed', date,
+      dist: iceDist,
       campusName: isNetwork ? (allCampuses.find(c => c.id === alert.nearestCampusId)?.short) : undefined,
       source: alert.source, confidence: alert.confidence,
       isLive: true,
