@@ -30,7 +30,7 @@ export const CAMPUSES: Campus[] = [
   { id: 14, name: 'Rauner College Prep',           short: 'Rauner',      addr: '1337 W. Ohio St',           lat: 41.8847, lng: -87.6726, communityArea: 'Near West Side',  areaNumber: 28, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
   { id: 15, name: 'Rowe-Clark Math & Science',     short: 'Rowe-Clark',  addr: '3645 W. Chicago Ave',       lat: 41.9003, lng: -87.7440, communityArea: 'Humboldt Park',   areaNumber: 23, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
   { id: 16, name: 'ITW David Speer Academy',       short: 'Speer',       addr: '5935 W. Bloomingdale Ave',  lat: 41.9178, lng: -87.7631, communityArea: 'Belmont Cragin',  areaNumber: 19, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
-  { id: 17, name: 'The Noble Academy',             short: 'Noble Acad',  addr: '17 E. 71st St',             lat: 41.8780, lng: -87.6320, communityArea: 'West Town',       areaNumber: 24, enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
+  { id: 17, name: 'The Noble Academy',             short: 'Noble Acad',  addr: '1443 N. Ogden Ave',         lat: 41.9067, lng: -87.6598, communityArea: 'Near North Side', areaNumber: 8,  enroll: 500, arrH: 7, arrM: 30, dH: 15, dM: 10 },
   { id: 18, name: 'UIC College Prep',              short: 'UIC',         addr: '2235 S. Millard Ave',       lat: 41.8502, lng: -87.7183, communityArea: 'South Lawndale',  areaNumber: 30, enroll: 480, arrH: 7, arrM: 30, dH: 15, dM: 10 },
 ];
 
