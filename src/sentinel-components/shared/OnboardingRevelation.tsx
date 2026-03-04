@@ -53,8 +53,8 @@ export default function OnboardingRevelation({
     },
     {
       icon: <Bell size={48} style={{ color: '#16A34A' }} />,
-      title: 'Watch Briefs You Every Morning',
-      body: 'Every school day, Watch delivers a 3-sentence briefing: what happened, what it means, and what to do. On quiet days, it tells you everything is fine. On high-risk days, it guides you through every step. You\'ll never run school without this information again.',
+      title: 'Always On. Always Current.',
+      body: 'Watch updates continuously — every time you open it, every time you return to it. Before school, during dismissal, after an incident. On quiet days it confirms the quiet. On high-risk days it tells you exactly what is happening and what to do. You will never run a Noble school without this information again.',
       bg: '#DCFCE7',
     },
   ];
