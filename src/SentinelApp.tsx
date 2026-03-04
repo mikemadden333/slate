@@ -70,16 +70,19 @@ import CommandCenter from './sentinel-components/network/CommandCenter';
 import ProtocolModal from './sentinel-components/shared/ProtocolModal';
 import IntelQuery from './sentinel-components/shared/IntelQuery';
 import OnboardingRevelation from './sentinel-components/shared/OnboardingRevelation';
+import FeedView from './sentinel-components/shared/FeedView';
 import CampusSelector, { shouldShowSelector, getLastCampusId, saveSelectedCampus, markSelectorDismissed } from './sentinel-components/shared/CampusSelector';
 import IntelligencePage from './sentinel-components/shared/IntelligencePage';
 
 type View = 'campus' | 'network' | 'howItWorks';
-type NetworkTab = 'dashboard' | 'map' | 'news' | 'intelligence';
+type NetworkTab = 'dashboard' | 'map' | 'news' | 'intelligence' | 'feed';
+type CampusTab = 'watch' | 'feed';
 
 export default function App() {
   // --- Navigation ---
   const [view, setView] = useState<View>('network');
   const [networkTab, setNetworkTab] = useState<NetworkTab>('dashboard');
+  const [campusTab, setCampusTab] = useState<CampusTab>('watch');
   const [selectedCampusId, setSelectedCampusId] = useState(() => getLastCampusId() ?? 1);
 
   // --- UI State ---
@@ -486,7 +489,7 @@ export default function App() {
 
       {view === 'network' && (
         <div style={{ display: 'flex', gap: 0, marginBottom: 24, borderBottom: '1px solid #E7E2D8' }}>
-          {(['dashboard', 'map', 'news', 'intelligence'] as NetworkTab[]).map(tab => (
+          {(['dashboard', 'map', 'news', 'intelligence', 'feed'] as NetworkTab[]).map(tab => (
             <button key={tab} onClick={() => setNetworkTab(tab)} style={{
               padding: '12px 22px', border: 'none', cursor: 'pointer',
               fontSize: 13, fontWeight: networkTab === tab ? 700 : 500,
@@ -499,9 +502,31 @@ export default function App() {
         </div>
       )}
 
+      {view === 'campus' && (
+        <div style={{ display: 'flex', gap: 0, marginBottom: 24, borderBottom: '1px solid #E7E2D8' }}>
+          {(['watch', 'feed'] as CampusTab[]).map(tab => (
+            <button key={tab} onClick={() => setCampusTab(tab)} style={{
+              padding: '12px 22px', border: 'none', cursor: 'pointer',
+              fontSize: 13, fontWeight: campusTab === tab ? 700 : 500,
+              color: campusTab === tab ? '#121315' : '#6B7280',
+              background: 'transparent',
+              borderBottom: campusTab === tab ? '2px solid #B79145' : '2px solid transparent',
+              textTransform: 'capitalize', transition: 'all 0.15s',
+            }}>{tab === 'watch' ? 'Watch' : 'Feed'}</button>
+          ))}
+        </div>
+      )}
+
       {view === 'howItWorks' ? (
         <IntelligencePage />
       ) : view === 'campus' ? (
+        campusTab === 'feed' ? (
+          <FeedView
+            incidents={allIncidents}
+            iceAlerts={iceAlerts}
+            campus={selectedCampus}
+          />
+        ) : (
         <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
           {initialLoading && <CampusSkeleton />}
           {campusMemory.sinceLastVisit && (
@@ -557,6 +582,7 @@ export default function App() {
             <br />Contagion model: Papachristos et al., Yale/UChicago. Risk engine updates every 90 seconds.
           </div>
         </div>
+        )
       ) : (
         <div>
           {networkTab === 'dashboard' && (
@@ -579,6 +605,13 @@ export default function App() {
             <div style={{ maxWidth: 1000, margin: '0 auto' }}>
               <Intelligence risks={allRisks} incidents={incidents} zones={zones} />
             </div>
+          )}
+          {networkTab === 'feed' && (
+            <FeedView
+              incidents={allIncidents}
+              iceAlerts={iceAlerts}
+              allCampuses={CAMPUSES}
+            />
           )}
         </div>
       )}
