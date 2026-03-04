@@ -4,8 +4,9 @@ import type { Campus } from '../../sentinel-data/campuses';
 import { haversine } from '../../sentinel-engine/geo';
 
 const VIOLENT = new Set(['HOMICIDE','MURDER','SHOOTING','BATTERY','ROBBERY','ASSAULT','SEX OFFENSE','KIDNAPPING','ARSON']);
-type SortMode = 'recent' | 'distance';
+type SortMode = 'recent' | 'distance' | 'campus' | 'type';
 type Filter = 'all' | '7d' | '48h';
+type TypeFilter = 'all' | 'HOMICIDE' | 'SHOOTING' | 'BATTERY' | 'ROBBERY' | 'ASSAULT' | 'ICE';
 
 interface FeedItem {
   id: string; type: 'VIOLENT' | 'ICE'; subtype: string;
@@ -49,6 +50,8 @@ export default function FeedView({ incidents, iceAlerts, campus, allCampuses = [
   const isNetwork = !campus;
   const [sort, setSort] = useState<SortMode>('recent');
   const [filter, setFilter] = useState<Filter>('7d');
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  const [campusFilter, setCampusFilter] = useState<string>('all');
 
   const cutoff = filter === '48h' ? 48 : filter === '7d' ? 168 : 99999;
   const now = Date.now();
@@ -115,8 +118,20 @@ export default function FeedView({ incidents, iceAlerts, campus, allCampuses = [
     });
   }
 
-  if (sort === 'recent') items.sort((a, b) => b.date.getTime() - a.date.getTime());
-  else items.sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99));
+  // Apply type filter
+  const visibleItems = items.filter(item => {
+    if (typeFilter !== 'all') {
+      if (typeFilter === 'ICE' && item.type !== 'ICE') return false;
+      if (typeFilter !== 'ICE' && item.subtype !== typeFilter) return false;
+    }
+    if (campusFilter !== 'all' && item.campusName !== campusFilter) return false;
+    return true;
+  });
+
+  if (sort === 'recent') visibleItems.sort((a, b) => b.date.getTime() - a.date.getTime());
+  else if (sort === 'distance') visibleItems.sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99));
+  else if (sort === 'campus') visibleItems.sort((a, b) => (a.campusName ?? '').localeCompare(b.campusName ?? ''));
+  else if (sort === 'type') visibleItems.sort((a, b) => a.subtype.localeCompare(b.subtype));
 
   const btnStyle = (active: boolean) => ({
     padding: '5px 14px', border: `1px solid ${active ? '#B79145' : '#E7E2D8'}`,
@@ -134,7 +149,7 @@ export default function FeedView({ incidents, iceAlerts, campus, allCampuses = [
             {isNetwork ? 'Network Violence & ICE Feed' : `${campus!.name} — Violence & ICE Feed`}
           </div>
           <div style={{ fontSize: 12, color: '#6B7280', marginTop: 3 }}>
-            {items.length} {items.length === 1 ? 'incident' : 'incidents'} · violent crime + ICE only
+            {visibleItems.length} {visibleItems.length === 1 ? 'incident' : 'incidents'} · violent crime + ICE only
             {campus ? ' · within 3 miles' : ' · within 3 miles of any campus'}
           </div>
         </div>
@@ -150,17 +165,52 @@ export default function FeedView({ incidents, iceAlerts, campus, allCampuses = [
           </div>
           <div style={{ width: 1, height: 20, background: '#E7E2D8' }}/>
           {/* Sort */}
-          <div style={{ display: 'flex', gap: 4 }}>
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
             {(['recent','distance'] as SortMode[]).map(s => (
               <button key={s} style={btnStyle(sort === s)} onClick={() => setSort(s)}>
                 {s === 'recent' ? 'Recent' : 'Nearest'}
               </button>
             ))}
+            {isNetwork && (
+              <button style={btnStyle(sort === 'campus')} onClick={() => setSort('campus')}>Campus</button>
+            )}
+            <button style={btnStyle(sort === 'type')} onClick={() => setSort('type')}>Type</button>
           </div>
+          <div style={{ width: 1, height: 20, background: '#E7E2D8' }}/>
+          {/* Type filter */}
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {(['all','HOMICIDE','SHOOTING','BATTERY','ROBBERY','ASSAULT','ICE'] as TypeFilter[]).map(t => (
+              <button key={t} style={btnStyle(typeFilter === t)} onClick={() => setTypeFilter(t)}>
+                {t === 'all' ? 'All Types' : t}
+              </button>
+            ))}
+          </div>
+          {isNetwork && (
+            <>
+              <div style={{ width: 1, height: 20, background: '#E7E2D8' }}/>
+              {/* Campus filter */}
+              <select
+                value={campusFilter}
+                onChange={e => setCampusFilter(e.target.value)}
+                style={{
+                  padding: '5px 10px', borderRadius: 20, fontSize: 11, fontWeight: 500,
+                  border: campusFilter !== 'all' ? '1px solid #B79145' : '1px solid #E7E2D8',
+                  color: campusFilter !== 'all' ? '#B79145' : '#6B7280',
+                  background: campusFilter !== 'all' ? '#FDF9F0' : 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="all">All Campuses</option>
+                {allCampuses.map(c => (
+                  <option key={c.id} value={c.short ?? c.name}>{c.short ?? c.name}</option>
+                ))}
+              </select>
+            </>
+          )}
         </div>
       </div>
 
-      {items.length === 0 ? (
+      {visibleItems.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '64px 24px', color: '#6B7280' }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>✓</div>
           <div style={{ fontSize: 15, fontWeight: 600, color: '#374151', marginBottom: 6 }}>
@@ -173,7 +223,7 @@ export default function FeedView({ incidents, iceAlerts, campus, allCampuses = [
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {items.map(item => (
+          {visibleItems.map(item => (
             <div key={item.id} style={{
               background: typeBg(item),
               border: `1px solid ${typeColor(item)}20`,
