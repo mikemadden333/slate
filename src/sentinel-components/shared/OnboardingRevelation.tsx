@@ -29,8 +29,8 @@ export default function OnboardingRevelation({
       icon: <MapPin size={48} style={{ color: '#D45B4F' }} />,
       title: 'What You Didn\'t Know',
       body: isNetwork
-        ? `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of Noble's ${networkCampusCount} campuses. Principals knew about very few of them. That gap between what happened and what they knew is the problem Watch solves.`
-        : `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of ${campus?.name ?? 'your campus'}. You likely knew about very few of them. That gap between what happened and what you knew is the problem Watch solves.`,
+        ? `In the last 30 days, ${incidents30d} violent incidents occurred within 1 mile of Noble's ${networkCampusCount} campuses. Principals knew about very few of them. That gap between what happened and what they knew is the problem Watch solves.`
+        : `In the last 30 days, ${incidents30d} violent incidents occurred within 1 mile of ${campus?.name ?? 'your campus'}. You likely knew about very few of them. That gap between what happened and what you knew is the problem Watch solves.`,
       bg: '#FEF2F2',
     },
     {

@@ -222,8 +222,10 @@ export default function App() {
   }, [acuteIncidents, selectedCampus]);
 
   // Incidents within 1mi for onboarding count
+  const VIOLENT_TYPES = new Set(['HOMICIDE','MURDER','SHOOTING','BATTERY','ROBBERY','ASSAULT','WEAPONS VIOLATION','CRIM SEXUAL ASSAULT']);
   const incidents30d1mi = useMemo(() => {
     return incidents.filter(inc =>
+      VIOLENT_TYPES.has(inc.type) &&
       haversine(selectedCampus.lat, selectedCampus.lng, inc.lat, inc.lng) <= 1.0,
     ).length;
   }, [incidents, selectedCampus]);
@@ -231,6 +233,7 @@ export default function App() {
   const networkIncidents30d = useMemo(() => {
     return CAMPUSES.reduce((total, campus) => {
       return total + incidents.filter(inc =>
+        VIOLENT_TYPES.has(inc.type) &&
         haversine(campus.lat, campus.lng, inc.lat, inc.lng) <= 1.0
       ).length;
     }, 0);
