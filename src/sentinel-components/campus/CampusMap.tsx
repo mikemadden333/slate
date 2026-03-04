@@ -191,7 +191,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   /* ---- Slider state ---- */
   const [timeSnapIdx, setTimeSnapIdx] = useState(4); // 14d default
   const timeWindowH = SNAP_HOURS[timeSnapIdx];
-  const [distanceRadius, setDistanceRadius] = useState(1.0);
+  const [distanceRadius, setDistanceRadius] = useState(1.5);
   const [zoneOpacity, setZoneOpacity] = useState(60);
 
   /* ---- Type filters ---- */
