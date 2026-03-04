@@ -223,6 +223,19 @@ export default function App() {
       haversine(selectedCampus.lat, selectedCampus.lng, inc.lat, inc.lng) <= 1.0,
     ).length;
   }, [incidents, selectedCampus]);
+  // Network-wide onboarding stats — all campuses
+  const networkIncidents30d = useMemo(() => {
+    return CAMPUSES.reduce((total, campus) => {
+      return total + incidents.filter(inc =>
+        haversine(campus.lat, campus.lng, inc.lat, inc.lng) <= 1.0
+      ).length;
+    }, 0);
+  }, [incidents]);
+  const networkContagionCount = useMemo(() => {
+    return allRisks.reduce((total, risk) => {
+      return total + (risk?.contagionZones?.length ?? 0);
+    }, 0);
+  }, [allRisks]);
 
   // Retaliation window state
   const retWin = useRetaliationWindow(selectedRisk);
@@ -338,6 +351,14 @@ export default function App() {
     const t5m = setInterval(() => void refresh5min(), 300_000);
     const tCit = setInterval(() => void refreshCitizen(), 300_000);
     const tScan = setInterval(() => void refreshScanner(), 300_000);
+    // Refresh on tab focus — always show fresh data on re-entry
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Tab focused — triggering full refresh');
+        void Promise.all([refresh90s(), refresh5min(), refreshCitizen(), refreshScanner()]);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
     return () => { clearInterval(t90s); clearInterval(t10m); clearInterval(t30m); clearInterval(t5m); clearInterval(tCit); clearInterval(tScan); };
   }, [refresh90s, refresh10min, refresh30min, refresh5min, refreshCitizen, refreshScanner]);
 
@@ -393,9 +414,13 @@ export default function App() {
         />
       )}
       {showOnboarding && (
-        <OnboardingRevelation campus={selectedCampus} incidents30d={incidents30d1mi}
-          contagionZoneCount={selectedRisk?.contagionZones.length ?? 0}
-          inContagionZone={(selectedRisk?.contagionZones.length ?? 0) > 0}
+        <OnboardingRevelation
+          campus={view === 'network' ? null : selectedCampus}
+          incidents30d={view === 'network' ? networkIncidents30d : incidents30d1mi}
+          contagionZoneCount={view === 'network' ? networkContagionCount : (selectedRisk?.contagionZones.length ?? 0)}
+          inContagionZone={view === 'network' ? networkContagionCount > 0 : (selectedRisk?.contagionZones.length ?? 0) > 0}
+          isNetwork={view === 'network'}
+          networkCampusCount={CAMPUSES.length}
           onComplete={handleCompleteOnboarding} />
       )}
       {activeProtocol && (

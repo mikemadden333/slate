@@ -9,7 +9,9 @@ import type { Campus } from '../../sentinel-data/campuses';
 import { Shield, MapPin, Activity, Bell } from 'lucide-react';
 
 interface Props {
-  campus: Campus;
+  campus: Campus | null;
+  isNetwork?: boolean;
+  networkCampusCount?: number;
   incidents30d: number;
   contagionZoneCount: number;
   inContagionZone: boolean;
@@ -18,6 +20,7 @@ interface Props {
 
 export default function OnboardingRevelation({
   campus, incidents30d, contagionZoneCount, inContagionZone, onComplete,
+  isNetwork = false, networkCampusCount = 17,
 }: Props) {
   const [step, setStep] = useState(0);
 
@@ -25,15 +28,21 @@ export default function OnboardingRevelation({
     {
       icon: <MapPin size={48} style={{ color: '#D45B4F' }} />,
       title: 'What You Didn\'t Know',
-      body: `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of ${campus.name}. You likely knew about very few of them. That gap between what happened and what you knew is the problem Watch solves.`,
+      body: isNetwork
+        ? `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of Noble's ${networkCampusCount} campuses. Principals knew about very few of them. That gap between what happened and what they knew is the problem Watch solves.`
+        : `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of ${campus?.name ?? 'your campus'}. You likely knew about very few of them. That gap between what happened and what you knew is the problem Watch solves.`,
       bg: '#FEF2F2',
     },
     {
       icon: <Activity size={48} style={{ color: '#B79145' }} />,
       title: 'Your Neighborhood Right Now',
       body: inContagionZone
-        ? `${campus.name} is currently inside ${contagionZoneCount} violence contagion zone${contagionZoneCount > 1 ? 's' : ''}. This means a recent homicide near your campus has created a statistically elevated risk of follow-on violence. Watch tracks these zones continuously.`
-        : `${campus.name} is not currently inside a violence contagion zone. This is good news — and Watch will alert you immediately if that changes. Every homicide within 2 miles creates a 125-day zone that Watch monitors.`,
+        ? isNetwork
+          ? `${contagionZoneCount} active violence contagion zone${contagionZoneCount > 1 ? 's' : ''} exist across Noble campuses right now. These zones mean recent homicides have created statistically elevated risk of follow-on violence near those schools.`
+          : `${campus?.name ?? 'Your campus'} is currently inside ${contagionZoneCount} violence contagion zone${contagionZoneCount > 1 ? 's' : ''}. This means a recent homicide near your campus has created a statistically elevated risk of follow-on violence. Watch tracks these zones continuously.`
+        : isNetwork
+          ? `No Noble campus is currently inside a violence contagion zone. Watch monitors all 17 campuses continuously and will alert immediately if that changes. Every homicide within 2 miles creates a 125-day zone.`
+          : `${campus?.name ?? 'Your campus'} is not currently inside a violence contagion zone. This is good news — and Watch will alert you immediately if that changes. Every homicide within 2 miles creates a 125-day zone that Watch monitors.`,
       bg: '#FFFBEB',
     },
     {
