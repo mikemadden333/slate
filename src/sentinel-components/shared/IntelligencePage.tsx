@@ -1,5 +1,5 @@
 /**
- * IntelligencePage — "How Sentinel Works"
+ * IntelligencePage — "How Watch Works"
  *
  * Nine sections: Hero, Science, Scoring, Labels, Sources, Retaliation,
  * For Principals, Research, Our Commitment.
@@ -8,7 +8,7 @@
  */
 
 const NAVY = '#121315';
-const GOLD = '#F0B429';
+const GOLD = '#B79145';
 const WHITE = '#FFFFFF';
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -115,7 +115,7 @@ function HeroSection() {
         fontSize: 36, fontWeight: 800, color: GOLD,
         margin: '0 0 12px', letterSpacing: -0.5, lineHeight: 1.15,
       }}>
-        Sentinel
+        Watch
       </h1>
       <div style={{
         fontSize: 18, fontWeight: 700, color: WHITE,
@@ -184,8 +184,8 @@ function ScienceSection() {
           city&rsquo;s population.
         </p>
         <p style={{ margin: '0 0 20px' }}>
-          Sentinel operationalizes this research in real time. When a homicide occurs within two miles
-          of a campus, Sentinel immediately calculates the contagion zone &mdash; the geographic
+          Watch operationalizes this research in real time. When a homicide occurs within two miles
+          of a campus, Watch immediately calculates the contagion zone &mdash; the geographic
           and temporal space where retaliatory violence is most likely to occur. The model tracks
           four phases: <strong>ACUTE</strong> (0&ndash;18 hours, highest risk),{' '}
           <strong>ACTIVE</strong> (18&ndash;72 hours, peak retaliation window),{' '}
@@ -193,7 +193,7 @@ function ScienceSection() {
           <strong>MONITOR</strong> (7&ndash;21 days, returning to baseline).
         </p>
         <p style={{ margin: 0 }}>
-          This is why Sentinel focuses on homicides and weapons violations rather than all crime. A battery
+          This is why Watch focuses on homicides and weapons violations rather than all crime. A battery
           three miles away doesn&rsquo;t create contagion risk. A homicide half a mile away does.
           The distinction matters enormously for how principals prepare for the school day.
         </p>
@@ -384,7 +384,7 @@ function LabelsSection() {
         />
         <LabelCard
           label="CRITICAL" color="#D45B4F"          pulsing={true}
-          body="This campus is inside an active retaliation window. A homicide occurred within 0.5 miles in the last 18–72 hours. This is the highest-risk period. Code Yellow protocols should be considered. Sentinel will monitor every 90 seconds until the window closes."
+          body="This campus is inside an active retaliation window. A homicide occurred within 0.5 miles in the last 18–72 hours. This is the highest-risk period. Code Yellow protocols should be considered. Watch will monitor every 90 seconds until the window closes."
         />
       </div>
     </LightSection>
@@ -420,7 +420,7 @@ function SourcesSection() {
   return (
     <DarkSection>
       <h2 style={{ fontSize: 28, fontWeight: 800, color: GOLD, margin: '0 0 32px', textAlign: 'center' }}>
-        What Sentinel Sees
+        What Watch Sees
       </h2>
 
       <div style={{
@@ -431,7 +431,7 @@ function SourcesSection() {
         <SourceCard
           icon="&#128737;" title="CPD Verified"
           badge="Updated every 10 min"
-          body="Chicago Police Department incident reports. Every homicide, weapons violation, battery, assault, robbery, and narcotics arrest filed within the network geography. 5,000 most recent incidents. Note: CPD publishes reports with a 5–10 day lag. Sentinel displays all available verified data."
+          body="Chicago Police Department incident reports. Every homicide, weapons violation, battery, assault, robbery, and narcotics arrest filed within the network geography. 5,000 most recent incidents. Note: CPD publishes reports with a 5–10 day lag. Watch displays all available verified data."
         />
         <SourceCard
           icon="&#128065;" title="Citizen App"
@@ -444,20 +444,25 @@ function SourcesSection() {
           body="Acoustic gunshot detection sensors deployed throughout Chicago. Detects and locates gunfire within seconds. ShotSpotter data arrives before CPD reports. A ShotSpotter activation within 0.25 miles triggers immediate ELEVATED status."
         />
         <SourceCard
-          icon="&#128240;" title="Block Club Chicago"
-          badge="~20 min latency"
-          body="Hyperlocal Chicago journalism. Block Club reporters cover shootings and homicides in the network neighborhoods within 20–30 minutes. Sentinel parses breaking news headlines and plots them as real-time incident markers."
+          icon="📻" title="CPD Radio"
+          badge="5 min refresh"
+          body="Live CPD radio traffic via OpenMHz. Watch monitors zone-level call volume across a 2-hour rolling window and flags spike zones — areas with unusual dispatch activity near campuses."
+        />
+        <SourceCard
+          icon="&#128240;" title="News Intelligence"
+          badge="8 sources · 5 min refresh"
+          body="Block Club Chicago, ABC7, NBC5, CBS Chicago, Sun-Times, WGN, WBEZ, and Fox 32. Violence headlines are parsed, geocoded, and plotted as real-time incident markers near campuses."
         />
         <SourceCard
           icon="&#9729;" title="Open-Meteo Weather"
           badge="30 min refresh"
-          body="Current temperature and forecast. Research shows violence increases significantly above 80°F. Sentinel applies a temperature modifier to risk scores during hot weather."
+          body="Current temperature and forecast. Research shows violence increases significantly above 80°F. Watch applies a temperature modifier to risk scores during hot weather."
         />
         <SourceCard
           icon="&#128737;" title="ICE Monitoring"
           badge="Separate from violence score"
           iconColor="#7C3AED"
-          body="Sentinel monitors news sources for confirmed ICE enforcement activity near Network campuses. The network follows Chicago's Welcoming City Ordinance. Confirmed local enforcement activity triggers a separate Code White advisory — independent of the violence risk score."
+          body="Watch monitors news sources for confirmed ICE enforcement activity near Network campuses. The network follows Chicago's Welcoming City Ordinance. Confirmed local enforcement activity triggers a separate Code White advisory — independent of the violence risk score."
         />
       </div>
     </DarkSection>
@@ -508,7 +513,7 @@ function RetaliationSection() {
           between is when principals need to be most alert.
         </p>
         <p style={{ margin: 0 }}>
-          When Sentinel detects that a the network campus has entered a retaliation window, the entire
+          When Watch detects that a the network campus has entered a retaliation window, the entire
           app responds: the header deepens in color, a persistent banner appears counting down the
           hours remaining, the morning briefing leads with the situation, and the campus map zooms to
           show the homicide location relative to the school&rsquo;s front door.
@@ -600,19 +605,19 @@ function PrincipalsSection() {
       }}>
         <ActionCard
           title="EVERY MORNING"
-          body="Open Sentinel before 7am. Read the morning briefing. Check your risk label. If LOW — standard day. If ELEVATED or above — read the status reason carefully and brief your security team."
+          body="Open Watch before 7am. Read the morning briefing. Check your risk label. If LOW — standard day. If ELEVATED or above — read the status reason carefully and brief your security team."
         />
         <ActionCard
           title="WHEN ELEVATED"
-          body="Review dismissal protocols. Consider whether modified routes are warranted. Brief the principal team. The situation may resolve in hours — check Sentinel again before dismissal."
+          body="Review dismissal protocols. Consider whether modified routes are warranted. Brief the principal team. The situation may resolve in hours — check Watch again before dismissal."
         />
         <ActionCard
           title="WHEN HIGH OR CRITICAL"
-          body="Brief all staff. Implement Code Yellow protocols. Contact Network Safety Director. Consider parent/family communication. Sentinel will update every 90 seconds."
+          body="Brief all staff. Implement Code Yellow protocols. Contact Network Safety Director. Consider parent/family communication. Watch will update every 90 seconds."
         />
         <ActionCard
           title="WHEN IN DOUBT"
-          body="Call the Network Safety Director. Sentinel gives you information. Judgment calls belong to humans. The app is a tool, not a decision-maker."
+          body="Call the Network Safety Director. Watch gives you information. Judgment calls belong to humans. The app is a tool, not a decision-maker."
         />
       </div>
     </DarkSection>
@@ -649,13 +654,13 @@ function ResearchSection() {
         Standing on the shoulders of giants.
       </h2>
       <div style={{ fontSize: 14, color: '#64748B', textAlign: 'center', marginBottom: 40 }}>
-        The peer-reviewed research behind Sentinel.
+        The peer-reviewed research behind Watch.
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 700, margin: '0 auto' }}>
         <CitationCard
           citation='Papachristos, A.V., Wildeman, C., & Roberto, E. (2015). "Tragic, but not random: The social contagion of nonfatal gunshot injuries." Social Science & Medicine.'
-          desc="Demonstrated that gunshot victimization spreads through co-offending networks with the predictability of an infectious disease. The foundation of Sentinel's contagion model."
+          desc="Demonstrated that gunshot victimization spreads through co-offending networks with the predictability of an infectious disease. The foundation of Watch's contagion model."
         />
         <CitationCard
           citation='Papachristos, A.V., & Wildeman, C. (2014). "Network exposure and homicide victimization in an African American community." American Journal of Public Health.'
@@ -671,7 +676,7 @@ function ResearchSection() {
         marginTop: 32, fontSize: 13, color: '#6B7280', textAlign: 'center',
         lineHeight: 1.6, maxWidth: 600, margin: '32px auto 0',
       }}>
-        Sentinel is not affiliated with Dr. Papachristos or Yale University. We have operationalized
+        Watch is not affiliated with Dr. Papachristos or Yale University. We have operationalized
         publicly available peer-reviewed research to protect the network students and staff.
       </div>
     </LightSection>
@@ -727,10 +732,10 @@ function CommitmentSection() {
           fontSize: 17, color: '#CBD5E1', lineHeight: 1.85,
           margin: '0 0 32px', fontWeight: 300,
         }}>
-          Sentinel was built by the network for the network. Not as a surveillance tool.
+          Watch was built by the network for the network. Not as a surveillance tool.
           Not as a punitive instrument. As protection. 12,000 students cross our thresholds
           every day in neighborhoods where violence is a real and present danger. They deserve
-          every advantage we can give them. Sentinel is one of those advantages.
+          every advantage we can give them. Watch is one of those advantages.
         </p>
 
         <GoldRule />
