@@ -93,7 +93,7 @@ const GlobalCSS = () => (<style>{`
    ═══════════════════════════════════════════════════════════ */
 const SplashScreen = ({ onComplete }) => {
   const [p, setP] = useState(0);
-  const [dotX, setDotX] = useState(-60);
+  const [dotX, setDotX] = useState(-520);
 
   useEffect(() => {
     const t = [
@@ -121,6 +121,7 @@ const SplashScreen = ({ onComplete }) => {
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       opacity: p >= 4 ? 0 : 1, transition: "opacity 2.2s cubic-bezier(0.4, 0, 0.2, 1)",
     }}>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 100% 80% at 20% 30%, rgba(20,35,65,0.65) 0%, transparent 60%), radial-gradient(ellipse 80% 70% at 80% 70%, rgba(15,25,55,0.5) 0%, transparent 60%)", pointerEvents: "none" }} />
       <div style={{ position: "absolute", width: 700, height: 700, borderRadius: "50%", background: `radial-gradient(circle, ${C.brass}06 0%, transparent 60%)`, top: "35%", left: "50%", transform: "translate(-50%, -50%)", animation: "slateGlow 5s ease-in-out infinite" }} />
 
       <div style={{ position: "relative", marginBottom: 60, padding: "10px 28px", borderRadius: 24, border: "1px solid rgba(255,255,255,0.18)", background: "rgba(255,255,255,0.06)", fontSize: 10, fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.70)", opacity: p >= 1 ? 1 : 0, transition: "opacity 1s ease" }}>
