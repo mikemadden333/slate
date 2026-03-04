@@ -273,8 +273,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       if (!inc.date) return false;
       const incMs = new Date(inc.date).getTime();
       if (isNaN(incMs)) return false;
-      // NEWS incidents always pass time filter
-      if (inc.source !== 'NEWS' && incMs < cutoffMs) return false;
+      if (incMs < cutoffMs) return false;
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
       if (d > distanceRadius) return false;
       if (inc.source === 'NEWS') {
