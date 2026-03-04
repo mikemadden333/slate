@@ -38,6 +38,18 @@ function cacheKey(items: NewsItem[]): string {
 // ---------------------------------------------------------------------------
 // MAIN EXPORT — same signature as v1
 // ---------------------------------------------------------------------------
+// Infer crime type from headline/description text
+function inferCrimeType(text: string): string {
+  const t = text.toLowerCase();
+  if (t.includes('kill') || t.includes('murder') || t.includes('homicide') || t.includes('fatal') || t.includes('slain') || t.includes('dies') || t.includes('dead') || t.includes('body found')) return 'HOMICIDE';
+  if (t.includes('shot') || t.includes('shooting') || t.includes('gunfire') || t.includes('gunshot') || t.includes('wounded')) return 'SHOOTING';
+  if (t.includes('stab') || t.includes('knife')) return 'BATTERY';
+  if (t.includes('carjack') || t.includes('robbery') || t.includes('robbed')) return 'ROBBERY';
+  if (t.includes('weapon') || t.includes('firearm') || t.includes('gun')) return 'WEAPONS VIOLATION';
+  if (t.includes('assault') || t.includes('attack') || t.includes('beat')) return 'BATTERY';
+  return 'UNKNOWN';
+}
+
 export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incident[]> {
   if ((geocodeNewsIncidents as any)._running) {
     console.log('News geocoder v2: already running, skipping');
@@ -228,6 +240,8 @@ ${candidates.map((item, i) => {
         id: `news_${item.id ?? item.title.slice(0, 20).replace(/\s/g, '_')}`,
         type: r.type === 'UNKNOWN' ? 'BATTERY' : r.type,
         date: item.pubDate ?? new Date().toISOString(),
+        // Fall back to keyword inference if Claude returned UNKNOWN
+        ...(resolvedType === 'UNKNOWN' ? { type: inferCrimeType(item.title + ' ' + (item.description ?? '')) } : {}),
         block: `~${r.confidence} — ${item.source}`,
         lat: r.lat + (Math.random() - 0.5) * jitter,
         lng: r.lng + (Math.random() - 0.5) * jitter,

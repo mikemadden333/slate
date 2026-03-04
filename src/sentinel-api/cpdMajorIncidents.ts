@@ -5,7 +5,6 @@
 import type { Incident } from '../sentinel-engine/types';
 
 const CPD_MAJOR = 'https://data.cityofchicago.org/resource/ijzp-q8t2.json';
-const PROXY = '/api/proxy?url=';
 
 const MAJOR_TYPES = [
   'HOMICIDE','CRIM SEXUAL ASSAULT','ROBBERY','ASSAULT','BATTERY','WEAPONS VIOLATION',
@@ -16,7 +15,7 @@ export async function fetchCPDMajorIncidents(hours = 72): Promise<Incident[]> {
     const since = new Date(Date.now() - hours * 3600000).toISOString();
     const where = `date >= '${since}' AND (${MAJOR_TYPES})`;
     const url = `${CPD_MAJOR}?$where=${encodeURIComponent(where)}&$limit=500&$order=date DESC`;
-    const res = await fetch(PROXY + encodeURIComponent(url));
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`CPD Major ${res.status}`);
     const rows = await res.json();
     console.log(`CPD Major: ${rows.length} incidents in last ${hours}h`);
