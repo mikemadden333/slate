@@ -60,6 +60,10 @@ export default function RightNowBar({
   }, []);
 
   const color = PERIOD_COLORS[schoolPeriod] ?? '#6B7280';
+  const campusSpike = activeSpikeZones.find(z =>
+    z.campuses.some(c => campusShort && (c === campusShort || campusShort.includes(c) || c.includes(campusShort)))
+  );
+
   const isDismissalUrgent = schoolPeriod === 'DISMISSAL' ||
     (schoolPeriod === 'SCHOOL_DAY' && minutesToDismissal > 0 && minutesToDismissal <= 15);
   const isPulsingCountdown = isDismissalUrgent && minutesToDismissal <= 15 && minutesToDismissal > 0;
