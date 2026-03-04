@@ -1,5 +1,5 @@
 /**
- * Slate Sentinel — Safety Intelligence
+ * Slate Watch — Safety Intelligence
  * Splash screen, risk-colored header, all 10 campus sections in narrative scroll.
  */
 
@@ -228,10 +228,10 @@ export default function App() {
   const campusMemory = useCampusMemory(selectedCampusId, selectedRisk);
 
   // Risk-colored header background — deeper red during retaliation window
-  const riskColor = selectedRisk ? RISK_COLORS[selectedRisk.label].color : '#1B3A6B';
+  const riskColor = selectedRisk ? RISK_COLORS[selectedRisk.label].color : '#121315';
   const headerBg = view === 'campus'
     ? (retWin.active ? '#7F1D1D' : riskColor)
-    : '#1B3A6B';
+    : '#121315';
 
   // Extra margin when retaliation banner is showing
   const retBannerHeight = retWin.active && view === 'campus' ? 90 : 0;
@@ -365,13 +365,13 @@ export default function App() {
 
   // --- Render ---
 
-  const riskAccent = selectedRisk?.label === 'CRITICAL' ? '#DC2626'
-    : selectedRisk?.label === 'HIGH' ? '#EA580C'
-    : selectedRisk?.label === 'ELEVATED' ? '#D97706'
-    : '#0EA5E9';
+  const riskAccent = selectedRisk?.label === 'CRITICAL' ? '#D45B4F'
+    : selectedRisk?.label === 'HIGH' ? '#C66C3D'
+    : selectedRisk?.label === 'ELEVATED' ? '#B79145'
+    : '#2F8F95';
 
   return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: '#0D1117' }}>
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: '#121315' }}>
       {showCampusSelector && (
         <CampusSelector
           onSelectCampus={(id) => { setSelectedCampusId(id); saveSelectedCampus(id); setShowCampusSelector(false); setView('campus'); }}
@@ -405,16 +405,16 @@ export default function App() {
             <button key={t.v} onClick={() => setView(t.v as View)} style={{
               padding: '9px 20px', borderRadius: 10, border: 'none', cursor: 'pointer',
               fontSize: 13, fontWeight: view === t.v ? 700 : 500,
-              color: view === t.v ? '#0D1117' : '#4A5568',
-              background: view === t.v ? '#E8EDF2' : 'transparent',
+              color: view === t.v ? '#121315' : '#6B7280',
+              background: view === t.v ? '#F7F5F1' : 'transparent',
               transition: 'all 0.15s ease',
             }}>{t.label}</button>
           ))}
           {view === 'network' && (
             <button onClick={() => setShowCommandCenter(true)} style={{
-              padding: '9px 20px', borderRadius: 10, border: '1px solid #EF444440',
+              padding: '9px 20px', borderRadius: 10, border: '1px solid #D45B4F40',
               cursor: 'pointer', fontSize: 13, fontWeight: 600,
-              color: '#EF4444', background: '#FEF2F2',
+              color: '#D45B4F', background: '#FDF2F1',
             }}>Command Center</button>
           )}
         </div>
@@ -435,7 +435,7 @@ export default function App() {
               {selectedRisk?.label ?? 'LOW'}
             </span>
           )}
-          <span style={{ color: justRefreshed ? '#0EA5E9' : '#4A5568', transition: 'color 0.5s' }}>
+          <span style={{ color: justRefreshed ? '#B79145' : '#6B7280', transition: 'color 0.5s' }}>
             ⟳ Updated {updatedAgoText}
           </span>
         </div>
@@ -446,14 +446,14 @@ export default function App() {
       )}
 
       {view === 'network' && (
-        <div style={{ display: 'flex', gap: 0, marginBottom: 24, borderBottom: '1px solid #E8EDF2' }}>
+        <div style={{ display: 'flex', gap: 0, marginBottom: 24, borderBottom: '1px solid #E7E2D8' }}>
           {(['dashboard', 'map', 'news', 'intelligence'] as NetworkTab[]).map(tab => (
             <button key={tab} onClick={() => setNetworkTab(tab)} style={{
               padding: '12px 22px', border: 'none', cursor: 'pointer',
               fontSize: 13, fontWeight: networkTab === tab ? 700 : 500,
-              color: networkTab === tab ? '#0D1117' : '#4A5568',
+              color: networkTab === tab ? '#121315' : '#6B7280',
               background: 'transparent',
-              borderBottom: networkTab === tab ? '2px solid #EF4444' : '2px solid transparent',
+              borderBottom: networkTab === tab ? '2px solid #B79145' : '2px solid transparent',
               textTransform: 'capitalize', transition: 'all 0.15s',
             }}>{tab}</button>
           ))}
@@ -508,9 +508,9 @@ export default function App() {
             iceAlertCount={iceAlerts.length}
             realtimeCount={dataFreshness.realtimeCount} realtimeLastUpdate={dataFreshness.realtimeLastUpdate}
             newsIncidentCount={dataFreshness.newsIncidentCount} />
-          <div style={{ fontSize: 11, color: '#4A5568', lineHeight: 1.6, padding: '16px 0', borderTop: '1px solid #E8EDF2', textAlign: 'center' }}>
-            Data: Chicago Police Department (CPD), ShotSpotter acoustic sensors, Citizen app scanner feed,
-            RSS news (Block Club, WGN, ABC7, NBC, Sun-Times, WBEZ, Chalkbeat), Open-Meteo weather.
+          <div style={{ fontSize: 11, color: '#6B7280', lineHeight: 1.6, padding: '16px 0', borderTop: '1px solid #E7E2D8', textAlign: 'center' }}>
+            Data: Chicago Police Department, CPD Radio (OpenMHz), ShotSpotter acoustic sensors,
+            RSS news (Block Club, WGN, ABC7, NBC5, CBS, Sun-Times, WBEZ, Fox 32), Open-Meteo weather.
             <br />Contagion model: Papachristos et al., Yale/UChicago. Risk engine updates every 90 seconds.
           </div>
         </div>
@@ -540,9 +540,9 @@ export default function App() {
         </div>
       )}
 
-      <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: '#4A5568', borderTop: '1px solid #E8EDF2' }}>
-        <div>Slate Sentinel — Chicago, Illinois — {weather.temperature.toFixed(0)}°F</div>
-        <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, LLC · Madden Advisory Group · 2026</div>
+      <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: '#23272F', borderTop: '1px solid #E7E2D8' }}>
+        <div style={{ color: '#23272F', letterSpacing: '0.5px' }}>Slate Watch — Start with the Facts — {weather.temperature.toFixed(0)}°F</div>
+        <div style={{ fontSize: 9, color: '#6B7280', marginTop: 4 }}>Madden Education Advisory · Chicago, Illinois · 2026</div>
       </footer>
     </div>
   );
@@ -568,9 +568,9 @@ function SlateCampusDropdown({ campuses, selectedId, onSelect }: {
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button onClick={() => { setOpen(!open); setSearch(''); }} style={{
-        background: '#F0F4F8', border: '1px solid #E8EDF2', borderRadius: 10,
+        background: '#F7F5F1', border: '1px solid #E7E2D8', borderRadius: 10,
         padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-        color: '#0D1117', display: 'flex', alignItems: 'center', gap: 8,
+        color: '#121315', display: 'flex', alignItems: 'center', gap: 8,
       }}>
         {selected?.short ?? 'Select campus'}
         <span style={{ fontSize: 10, opacity: 0.5 }}>▼</span>
@@ -580,22 +580,22 @@ function SlateCampusDropdown({ campuses, selectedId, onSelect }: {
           position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
           marginTop: 4, width: 300, background: '#fff', borderRadius: 12,
           boxShadow: '0 8px 30px rgba(0,0,0,0.15)', zIndex: 2000,
-          overflow: 'hidden', border: '1px solid #E8EDF2',
+          overflow: 'hidden', border: '1px solid #E7E2D8',
         }}>
           <input autoFocus type="text" placeholder="Search campuses..." value={search} onChange={e => setSearch(e.target.value)}
-            style={{ width: '100%', padding: '10px 14px', border: 'none', borderBottom: '1px solid #E8EDF2', fontSize: 13, outline: 'none', color: '#0D1117', boxSizing: 'border-box' }} />
+            style={{ width: '100%', padding: '10px 14px', border: 'none', borderBottom: '1px solid #E7E2D8', fontSize: 13, outline: 'none', color: '#121315', boxSizing: 'border-box' }} />
           <div style={{ maxHeight: 280, overflowY: 'auto' }}>
             {filtered.map(c => (
               <button key={c.id} onClick={() => { onSelect(c.id); setOpen(false); }} style={{
                 display: 'block', width: '100%', padding: '10px 14px', border: 'none',
-                borderBottom: '1px solid #F5F7FA',
-                background: c.id === selectedId ? '#E0F2FE' : '#fff',
+                borderBottom: '1px solid #F7F5F1',
+                background: c.id === selectedId ? '#F7F5F1' : '#fff',
                 cursor: 'pointer', textAlign: 'left', fontSize: 13,
-                color: c.id === selectedId ? '#0D1117' : '#2D3748',
+                color: c.id === selectedId ? '#121315' : '#23272F',
                 fontWeight: c.id === selectedId ? 700 : 400,
               }}>
                 <div>{c.short}</div>
-                <div style={{ fontSize: 11, color: '#4A5568', marginTop: 2 }}>{c.communityArea}</div>
+                <div style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>{c.communityArea}</div>
               </button>
             ))}
           </div>
@@ -607,18 +607,18 @@ function SlateCampusDropdown({ campuses, selectedId, onSelect }: {
 
 const SKEL_SHIMMER = `@keyframes pulseShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }`;
 function SkeletonBar({ width, height = 16 }: { width: string; height?: number }) {
-  return (<div style={{ width, height, borderRadius: 6, background: 'linear-gradient(90deg, #E8EDF2 0%, #F5F7FA 50%, #E8EDF2 100%)', backgroundSize: '800px 100%', animation: 'pulseShimmer 1.5s infinite linear' }} />);
+  return (<div style={{ width, height, borderRadius: 6, background: 'linear-gradient(90deg, #E7E2D8 0%, #F7F5F1 50%, #E7E2D8 100%)', backgroundSize: '800px 100%', animation: 'pulseShimmer 1.5s infinite linear' }} />);
 }
 function CampusSkeleton() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 8 }}>
       <style>{SKEL_SHIMMER}</style>
-      <div style={{ padding: 20, borderRadius: 12, borderLeft: '4px solid #E8EDF2', background: '#F5F7FA' }}>
+      <div style={{ padding: 20, borderRadius: 12, borderLeft: '4px solid #E7E2D8', background: '#F7F5F1' }}>
         <SkeletonBar width="85%" height={22} />
         <div style={{ marginTop: 10 }}><SkeletonBar width="60%" /></div>
         <div style={{ marginTop: 16 }}><SkeletonBar width="100%" height={44} /></div>
       </div>
-      <div style={{ padding: '14px 20px', borderRadius: 12, background: '#F5F7FA' }}>
+      <div style={{ padding: '14px 20px', borderRadius: 12, background: '#F7F5F1' }}>
         <SkeletonBar width="100%" height={48} />
       </div>
     </div>
