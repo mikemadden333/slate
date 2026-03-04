@@ -195,8 +195,12 @@ function parseCall(c: Record<string, unknown>): ScannerCall | null {
 }
 
 function aggregateByZone(calls: ScannerCall[], windowMinutes: number): ZoneActivity[] {
-  const baselineScale = windowMinutes / 120;
-  const baseline = BASELINE_CALLS_PER_2H * baselineScale;
+  // Dynamic baseline: average calls per active zone from actual data
+  const zoneCounts: Record<number, number> = {};
+  for (const c of calls) { if (c.zone != null) zoneCounts[c.zone] = (zoneCounts[c.zone] || 0) + 1; }
+  const activeZones = Object.keys(zoneCounts).length || 1;
+  const zoneMatchedCalls = Object.values(zoneCounts).reduce((a, b) => a + b, 0);
+  const baseline = Math.max(zoneMatchedCalls / activeZones, 3); // floor of 3 to avoid false positives on low volume
 
   return CPD_ZONES
     .filter(z => z.campuses.length > 0)
@@ -219,6 +223,9 @@ function aggregateByZone(calls: ScannerCall[], windowMinutes: number): ZoneActiv
         recentCalls: zoneCalls.slice(-5),
       };
     })
+    console.log('Scanner zone baseline: ' + baseline.toFixed(1) + ' calls/zone (' + activeZones + ' active zones, ' + zoneMatchedCalls + ' matched calls)');
+
+  return CPD_ZONES
     .sort((a, b) => b.callCount - a.callCount);
 }
 
