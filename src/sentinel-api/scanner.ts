@@ -93,7 +93,7 @@ export interface ScannerSummary {
 }
 
 const BASELINE_CALLS_PER_2H = 40;
-const SPIKE_THRESHOLD = 1.2;
+const SPIKE_THRESHOLD = 2.0;
 
 export async function fetchScannerActivity(windowMinutes: number = 120): Promise<ScannerSummary> {
   const since = Date.now() - windowMinutes * 60 * 1000;
