@@ -92,26 +92,26 @@ const GlobalCSS = () => (<style>{`
    SPLASH SCREEN — Gold dot writes Slate, settles as period
    ═══════════════════════════════════════════════════════════ */
 const SplashScreen = ({ onComplete }) => {
-  const [fadeOut, setFadeOut] = React.useState(false);
-  const [showTagline, setShowTagline] = React.useState(false);
-  const [showModules, setShowModules] = React.useState(false);
-  const [showFooter, setShowFooter] = React.useState(false);
-  const strokeRef = React.useRef(null);
-  const fillRef   = React.useRef(null);
-  const dotRef    = React.useRef(null);
-  const trail1Ref = React.useRef(null);
-  const trail2Ref = React.useRef(null);
-  const trail3Ref = React.useRef(null);
-  const svgRef    = React.useRef(null);
-  const animRef   = React.useRef(0);
+  const [fadeOut, setFadeOut] = useState(false);
+  const [showTagline, setShowTagline] = useState(false);
+  const [showModules, setShowModules] = useState(false);
+  const [showFooter, setShowFooter] = useState(false);
+  const strokeRef = useRef(null);
+  const fillRef   = useRef(null);
+  const dotRef    = useRef(null);
+  const trail1Ref = useRef(null);
+  const trail2Ref = useRef(null);
+  const trail3Ref = useRef(null);
+  const svgRef    = useRef(null);
+  const animRef   = useRef(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const tFade = setTimeout(() => setFadeOut(true), 5500);
     const tDone = setTimeout(() => onComplete(), 6500);
     return () => { clearTimeout(tFade); clearTimeout(tDone); cancelAnimationFrame(animRef.current); };
   }, [onComplete]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const stroke = strokeRef.current;
     const fill   = fillRef.current;
     const dot    = dotRef.current;
