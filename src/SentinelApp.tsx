@@ -188,7 +188,7 @@ export default function App() {
   // Combined incidents for briefing and map — all sources, deduplicated
   const allIncidents = useMemo(() => {
     // Priority order: CPD acute > CPD full > CPD realtime > news > citizen
-    const merged = [...acuteIncidents, ...incidents, ...realtimeIncidents, ...newsIncidents];
+    const merged = [...acuteIncidents, ...incidents, ...realtimeIncidents, ...newsIncidents, ...dispatchIncidents];
     // Deduplicate: same type + nearby location + within 1 hour = duplicate
     const seen = new Set<string>();
     const result: Incident[] = [];
