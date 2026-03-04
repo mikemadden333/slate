@@ -238,10 +238,9 @@ ${candidates.map((item, i) => {
 
       incidents.push({
         id: `news_${item.id ?? item.title.slice(0, 20).replace(/\s/g, '_')}`,
-        type: r.type === 'UNKNOWN' ? 'BATTERY' : r.type,
+        type: r.type === 'UNKNOWN' ? inferCrimeType(item.title + ' ' + (item.description ?? '')) : r.type,
         date: item.pubDate ?? new Date().toISOString(),
         // Fall back to keyword inference if Claude returned UNKNOWN
-        ...(resolvedType === 'UNKNOWN' ? { type: inferCrimeType(item.title + ' ' + (item.description ?? '')) } : {}),
         block: `~${r.confidence} — ${item.source}`,
         lat: r.lat + (Math.random() - 0.5) * jitter,
         lng: r.lng + (Math.random() - 0.5) * jitter,
