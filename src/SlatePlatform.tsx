@@ -84,7 +84,7 @@ const GlobalCSS = () => (<style>{`
   .slate-scroll::-webkit-scrollbar-thumb { background: ${C.chalk}; border-radius: 3px; }
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
   * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-  @keyframes slateGlow { 0%,100%{opacity:0.04;transform:scale(1)} 50%{opacity:0.08;transform:scale(1.05)} }
+  @keyframes taglineGlow { 0% { opacity:0; letter-spacing:6px; text-shadow:none; color:rgba(255,255,255,0.2); } 35% { opacity:1; letter-spacing:11px; text-shadow:0 0 50px rgba(255,255,255,0.85),0 0 100px rgba(255,255,255,0.3); color:rgba(255,255,255,1); } 100% { opacity:1; letter-spacing:8px; text-shadow:none; color:rgba(255,255,255,0.65); } } @keyframes slateGlow { 0%,100%{opacity:0.04;transform:scale(1)} 50%{opacity:0.08;transform:scale(1.05)} }
   @keyframes slateDotPulse { 0%,100%{box-shadow:0 0 12px currentColor} 50%{box-shadow:0 0 22px currentColor} }
 `}</style>);
 
@@ -155,7 +155,7 @@ const SplashScreen = ({ onComplete }) => {
         }}/>
       </div>
 
-      <div style={{ position: "relative", marginTop: 28, fontSize: 14, fontWeight: 500, letterSpacing: "8px", textTransform: "uppercase", color: "rgba(255,255,255,0.65)", opacity: p >= 2 ? 1 : 0, transform: p >= 2 ? "translateY(0)" : "translateY(10px)", transition: "all 1s ease" }}>
+      <div style={{ position: "relative", marginTop: 28, fontSize: 14, fontWeight: 500, letterSpacing: "8px", textTransform: "uppercase", color: "rgba(255,255,255,0.65)", opacity: p >= 2 ? 1 : 0, transform: p >= 2 ? "translateY(0)" : "translateY(10px)", transition: "all 1s ease", animation: p >= 2 ? "taglineGlow 2.4s ease-out forwards" : "none" }}>
         Start With The Facts
       </div>
 
