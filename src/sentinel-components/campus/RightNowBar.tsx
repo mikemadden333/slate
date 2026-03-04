@@ -19,6 +19,8 @@ interface Props {
   incidents6h?: number;
   scannerCalls?: number;
   scannerSpikeZones?: number;
+  activeSpikeZones?: { zoneName: string; campuses: string[] }[];
+  campusShort?: string;
 }
 
 const KEYFRAMES = `
@@ -48,7 +50,7 @@ const PERIOD_COLORS: Record<string, string> = {
 
 export default function RightNowBar({
   schoolPeriod, minutesToArrival, minutesToDismissal, riskLabel, incidents6h,
-  scannerCalls, scannerSpikeZones,
+  scannerCalls, scannerSpikeZones, activeSpikeZones = [], campusShort,
 }: Props) {
   const [, setTick] = useState(0);
 
@@ -186,6 +188,26 @@ export default function RightNowBar({
       </div>
 
       {/* Scanner badge */}
+      {campusSpike && (
+        <div style={{
+          display: 'flex', alignItems: 'flex-start', gap: 12,
+          padding: '14px 16px', borderRadius: 10,
+          background: '#FEF2F2', border: '1px solid #FECACA',
+          borderLeft: '4px solid #D45B4F',
+        }}>
+          <span style={{ fontSize: 18 }}>📻</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#D45B4F', marginBottom: 2 }}>
+              Police Scanner Spike — {campusSpike.zoneName}
+            </div>
+            <div style={{ fontSize: 12, color: '#6B7280', lineHeight: 1.5 }}>
+              Unusual radio activity detected in this district. No confirmed incident yet — monitor closely.
+            </div>
+          </div>
+          <span style={{ fontSize: 10, fontWeight: 700, color: '#D45B4F', background: '#FECACA', padding: '2px 6px', borderRadius: 4, flexShrink: 0 }}>LIVE</span>
+        </div>
+      )}
+
       {scannerCalls != null && scannerCalls > 0 && (
         <div style={{
           display: 'flex', alignItems: 'center', gap: 8,

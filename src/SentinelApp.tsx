@@ -562,7 +562,9 @@ export default function App() {
             riskLabel={selectedRisk.label as 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL'}
             incidents6h={incidents6h}
             scannerCalls={scannerData?.totalCalls}
-            scannerSpikeZones={scannerData?.spikeZones.length} />
+            scannerSpikeZones={scannerData?.spikeZones.length}
+            activeSpikeZones={scannerData?.spikeZones ?? []}
+            campusShort={selectedCampus.short} />
           {iceAlerts.length > 0 && (
             <IceIntelligence iceAlerts={iceAlerts} onInitiateCodeWhite={handleInitiateCodeWhite} />
           )}
