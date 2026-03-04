@@ -137,6 +137,9 @@ export async function fetchScannerActivity(windowMinutes: number = 120): Promise
     }
 
     console.log('Scanner: ' + calls.length + ' parsed calls');
+    const tgDist: Record<number, number> = {};
+    for (const c of calls) { tgDist[c.talkgroupId] = (tgDist[c.talkgroupId] || 0) + 1; }
+    console.log('Scanner talkgroup distribution: ' + JSON.stringify(tgDist));
 
     const zones = aggregateByZone(calls, windowMinutes);
     const spikeZones = zones.filter(z => z.isSpike);
