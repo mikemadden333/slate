@@ -145,7 +145,7 @@ export default function MorningBriefing({
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <div style={{ fontSize: 20, fontWeight: 700, color: '#121315', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
-            Good Morning, {campus.short}
+            {new Date().getHours() < 12 ? 'Good Morning' : new Date().getHours() < 17 ? 'Good Afternoon' : 'Good Evening'}, {campus.short}
           </div>
           <div style={{ fontSize: 13, color: '#9CA3AF', marginTop: 2 }}>
             Your neighborhood summary — updated as conditions change
@@ -413,7 +413,7 @@ async function generateAIBriefing(
   const isMorning = hour < 10;
   const isPreDismissal = hour >= 13 && hour < 15;
 
-  const prompt = `You are writing the morning intelligence briefing for the principal of ${campus.name} in ${campus.communityArea}, Chicago. This briefing will be the first thing they read when they arrive at school. Write it as a trusted colleague — warm, direct, specific, and human. Never bureaucratic. Never vague.
+  const prompt = `You are writing the ${isMorning ? 'morning' : isPreDismissal ? 'afternoon' : 'evening'} intelligence briefing for the principal of ${campus.name} in ${campus.communityArea}, Chicago. This briefing will be the first thing they read when they open the platform. Write it as a trusted colleague — warm, direct, specific, and human. Never bureaucratic. Never vague.
 
 CURRENT CONDITIONS:
 Campus: ${campus.name}, ${campus.communityArea}
