@@ -246,3 +246,4 @@ ${candidates.map((item, i) => {
     console.error('News geocoder v2 batch failed:', err);
     return [];
   }
+}
