@@ -47,7 +47,7 @@ export default function ExplainModal({ title, onClose, children }: Props) {
           padding: '16px 20px',
           borderBottom: '1px solid #E5E7EB',
         }}>
-          <div style={{ fontWeight: 700, fontSize: 16, color: '#0D1117' }}>
+          <div style={{ fontWeight: 700, fontSize: 16, color: '#121315' }}>
             {title}
           </div>
           <button

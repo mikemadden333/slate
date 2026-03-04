@@ -32,17 +32,17 @@ const CHICAGO_CENTER: [number, number] = [41.8400, -87.6800];
 const MI_TO_M = 1609.34;
 
 const SHIELD_COLORS: Record<string, string> = {
-  LOW: '#0D1117', ELEVATED: '#D97706', HIGH: '#EA580C', CRITICAL: '#DC2626',
+  LOW: '#121315', ELEVATED: '#B79145', HIGH: '#C66C3D', CRITICAL: '#D45B4F',
 };
 
 const INC_COLORS: Record<string, string> = {
-  'HOMICIDE': '#DC2626', 'WEAPONS VIOLATION': '#EA580C', 'BATTERY': '#D97706',
+  'HOMICIDE': '#D45B4F', 'WEAPONS VIOLATION': '#C66C3D', 'BATTERY': '#B79145',
   'ASSAULT': '#EAB308', 'ROBBERY': '#7C3AED', 'NARCOTICS': '#0D9488',
 };
 
 const ZONE_FILLS: Record<string, { color: string; op: number }> = {
-  ACUTE:  { color: '#DC2626', op: 0.40 },
-  ACTIVE: { color: '#D97706', op: 0.25 },
+  ACUTE:  { color: '#D45B4F', op: 0.40 },
+  ACTIVE: { color: '#B79145', op: 0.25 },
   WATCH:  { color: '#6B7280', op: 0.08 },
 };
 
@@ -61,19 +61,19 @@ const CORRIDORS = [
   {
     name: 'South Side Corridor',
     campusIds: [1, 3, 4, 5, 8, 9],
-    color: '#0D1117',
+    color: '#121315',
     labelPos: { lat: 41.755, lng: -87.620 },
   },
   {
     name: 'West Side Corridor',
     campusIds: [6, 10, 13, 15, 16, 18],
-    color: '#0D1117',
+    color: '#121315',
     labelPos: { lat: 41.865, lng: -87.725 },
   },
   {
     name: 'Near North & Downtown',
     campusIds: [2, 7, 11, 12, 14, 17],
-    color: '#0D1117',
+    color: '#121315',
     labelPos: { lat: 41.895, lng: -87.660 },
   },
 ];
@@ -120,7 +120,7 @@ const KEYFRAMES = `
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #0D1117;
+  background: #121315;
   cursor: pointer;
   border: 2px solid #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.3);
@@ -129,7 +129,7 @@ const KEYFRAMES = `
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #0D1117;
+  background: #121315;
   cursor: pointer;
   border: 2px solid #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.3);
@@ -156,7 +156,7 @@ function makeShield(label: string, score: number, color: string, size: number, p
           font-size:8px;font-weight:800;border-radius:8px;padding:1px 4px;
           border:1.5px solid #fff;font-family:'SF Mono',monospace;">${score}</div>
       </div>
-      <div style="font-size:10px;font-weight:700;color:#0D1117;white-space:nowrap;margin-top:1px;
+      <div style="font-size:10px;font-weight:700;color:#121315;white-space:nowrap;margin-top:1px;
         text-shadow:0 0 3px #fff,0 0 3px #fff;">${label}</div>
     </div>`,
     className: '',
@@ -312,7 +312,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
     return { avgScore, elevated, acuteCount, iceCount, highestCampus, highestScore: highest?.score ?? 0, highestLabel: highest?.label ?? 'LOW' };
   }, [risks, zones, iceAlerts]);
 
-  const sliderBg = (pct: number) => `linear-gradient(to right, #0D1117 ${pct}%, #E5E7EB ${pct}%)`;
+  const sliderBg = (pct: number) => `linear-gradient(to right, #121315 ${pct}%, #E5E7EB ${pct}%)`;
   const timePct = (timeSnapIdx / (SNAP_HOURS.length - 1)) * 100;
   const riskPct = riskThreshold;
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
@@ -335,12 +335,12 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
       {/* Time Window */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-          <span style={{ fontWeight: 600, color: '#0D1117' }}>Time Window</span>
+          <span style={{ fontWeight: 600, color: '#121315' }}>Time Window</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button
               onClick={() => { if (isPlaying) setIsPlaying(false); else { setTimeSnapIdx(0); setIsPlaying(true); } }}
               style={{
-                background: isPlaying ? '#DC2626' : '#0D1117', color: '#fff', border: 'none',
+                background: isPlaying ? '#D45B4F' : '#121315', color: '#fff', border: 'none',
                 borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', minHeight: 28,
               }}
             >{isPlaying ? '■ Stop' : '▶ Play'}</button>
@@ -357,13 +357,13 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
 
       {/* Zone Display */}
       <div>
-        <div style={{ fontWeight: 600, color: '#0D1117', marginBottom: 8 }}>Contagion Zone Display</div>
+        <div style={{ fontWeight: 600, color: '#121315', marginBottom: 8 }}>Contagion Zone Display</div>
         <div style={{ display: 'flex', border: '1px solid #D1D5DB', borderRadius: 8, overflow: 'hidden' }}>
           {([['ACUTE', 'Acute Only'], ['ACUTE_ACTIVE', 'Acute + Active'], ['ALL', 'All Zones']] as const).map(([val, label]) => (
             <button key={val} onClick={() => setZoneMode(val as ZoneMode)} style={{
               flex: 1, padding: '8px 4px', border: 'none', fontSize: 12, fontWeight: 600,
               cursor: 'pointer', minHeight: 40,
-              background: zoneMode === val ? '#0D1117' : '#fff',
+              background: zoneMode === val ? '#121315' : '#fff',
               color: zoneMode === val ? '#fff' : '#6B7280',
             }}>{label}</button>
           ))}
@@ -373,7 +373,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
       {/* Risk Filter */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontWeight: 600, color: '#0D1117' }}>Show campuses with score above</span>
+          <span style={{ fontWeight: 600, color: '#121315' }}>Show campuses with score above</span>
           <span style={{ color: '#6B7280', fontSize: 13 }}>{riskThreshold}</span>
         </div>
         <input type="range" min={0} max={100} value={riskThreshold}
@@ -383,7 +383,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
 
       {/* Layers */}
       <div>
-        <div style={{ fontWeight: 600, color: '#0D1117', marginBottom: 8 }}>Layers</div>
+        <div style={{ fontWeight: 600, color: '#121315', marginBottom: 8 }}>Layers</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           <LToggle label="Campus Markers" on={showCampuses} onToggle={() => setShowCampuses(v => !v)} />
           <LToggle label="Contagion Zones" on={showZones} onToggle={() => setShowZones(v => !v)} />
@@ -425,7 +425,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
           <button key={ch.key} onClick={() => setChipFilter(ch.key)} style={{
             padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600,
             border: '1px solid #D1D5DB', cursor: 'pointer', minHeight: 44,
-            background: chipFilter === ch.key ? '#0D1117' : '#fff',
+            background: chipFilter === ch.key ? '#121315' : '#fff',
             color: chipFilter === ch.key ? '#fff' : '#4B5563',
           }}>{ch.label}</button>
         ))}
@@ -464,7 +464,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
                     <strong>{zone.phase}</strong> — Homicide
                     {zone.block && <><br />{zone.block}</>}
                     <br />{fmtAgo(zone.homicideDate)} — {zone.daysLeft}d remaining
-                    {zone.retWin && <><br /><strong style={{ color: '#DC2626' }}>RETALIATION WINDOW ACTIVE</strong></>}
+                    {zone.retWin && <><br /><strong style={{ color: '#D45B4F' }}>RETALIATION WINDOW ACTIVE</strong></>}
                   </div>
                 </Popup>
               </Circle>
@@ -480,7 +480,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
             return pairs.map(([a, b]) => (
               <Polyline key={`${sz.zone.incidentId}-${a.id}-${b.id}`}
                 positions={[[a.lat, a.lng], [b.lat, b.lng]]}
-                pathOptions={{ color: '#DC2626', weight: 1.5, opacity: 0.4, dashArray: '4 4' }}>
+                pathOptions={{ color: '#D45B4F', weight: 1.5, opacity: 0.4, dashArray: '4 4' }}>
                 <Tooltip sticky>
                   <span style={{ fontSize: 10 }}>Shared zone — {sz.campuses.length} campuses affected</span>
                 </Tooltip>
@@ -557,7 +557,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
                       Base {r.base} | Acute {r.acute} | Seasonal {r.seasonal}
                     </span>
                     {r.contagionZones.length > 0 && (
-                      <><br /><span style={{ fontSize: 11, color: '#D97706' }}>
+                      <><br /><span style={{ fontSize: 11, color: '#B79145' }}>
                         {r.contagionZones.filter(z => z.phase === 'ACUTE').length} ACUTE,{' '}
                         {r.contagionZones.filter(z => z.phase === 'ACTIVE').length} ACTIVE zones
                       </span></>
@@ -568,7 +568,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
                     </span>
                     <br />
                     <a href="#" onClick={e => { e.preventDefault(); onSelectCampus(campus.id); }}
-                      style={{ fontSize: 12, color: '#0D1117', fontWeight: 600 }}>
+                      style={{ fontSize: 12, color: '#121315', fontWeight: 600 }}>
                       View Full Campus →
                     </a>
                   </div>
@@ -599,7 +599,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
             <button onClick={() => setIntelOpen(v => !v)} style={{
               width: '100%', padding: '8px 12px', border: 'none',
               background: 'transparent', cursor: 'pointer', textAlign: 'left',
-              color: fullscreen ? '#F0B429' : '#0D1117', fontWeight: 700, fontSize: 12,
+              color: fullscreen ? '#F0B429' : '#121315', fontWeight: 700, fontSize: 12,
             }}>
               {intelOpen ? '▼ NETWORK STATUS' : '▶'}
             </button>
@@ -659,7 +659,7 @@ export default function NetworkMap({ risks, zones, incidents24h, iceAlerts, onSe
         }}>
           <button onClick={() => setPanelOpen(p => !p)} style={{
             width: 44, height: 44, border: 'none', background: 'transparent',
-            cursor: 'pointer', fontSize: 16, color: '#0D1117', fontWeight: 700,
+            cursor: 'pointer', fontSize: 16, color: '#121315', fontWeight: 700,
           }}>{panelOpen ? '◀' : '▶'}</button>
           {panelOpen && controlPanel}
         </div>
@@ -682,7 +682,7 @@ function MapBtn({ label, onClick }: { label: string; onClick: () => void }) {
     <button onClick={onClick} style={{
       background: 'rgba(255,255,255,0.92)', border: '1px solid #D1D5DB',
       borderRadius: 8, padding: '6px 10px', fontSize: 13,
-      cursor: 'pointer', color: '#0D1117', fontWeight: 600,
+      cursor: 'pointer', color: '#121315', fontWeight: 600,
       boxShadow: '0 1px 4px rgba(0,0,0,0.1)', minHeight: 44,
     }}>{label}</button>
   );
@@ -693,8 +693,8 @@ function LToggle({ label, on, onToggle }: { label: string; on: boolean; onToggle
     <button onClick={onToggle} style={{
       display: 'flex', alignItems: 'center', gap: 8,
       padding: '6px 10px', borderRadius: 8, border: '1px solid #E5E7EB',
-      background: on ? '#E0F2FE' : '#fff', cursor: 'pointer', fontSize: 12,
-      color: on ? '#0D1117' : '#9CA3AF', fontWeight: on ? 600 : 400, minHeight: 44,
+      background: on ? '#F7F5F1' : '#fff', cursor: 'pointer', fontSize: 12,
+      color: on ? '#121315' : '#9CA3AF', fontWeight: on ? 600 : 400, minHeight: 44,
     }}>
       <span style={{
         width: 10, height: 10, borderRadius: '50%',

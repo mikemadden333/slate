@@ -51,7 +51,7 @@ export default function LastNight({ campus, incidents, citizenIncidents, schoolP
 
   return (
     <div style={{
-      background: '#0D1117',
+      background: '#121315',
       borderRadius: 12,
       padding: 20,
       marginBottom: 24,

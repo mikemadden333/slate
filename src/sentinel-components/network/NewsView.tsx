@@ -30,10 +30,10 @@ const TIER_SECTION_LABELS: Record<NewsTier, string> = {
 };
 
 const TIER_STYLE: Record<NewsTier, { borderColor: string; badge: string; badgeBg: string }> = {
-  CAMPUS_PROXIMATE:  { borderColor: '#DC2626', badge: 'NEAR CAMPUS',       badgeBg: '#DC2626' },
-  CHICAGO_VIOLENCE:  { borderColor: '#EA580C', badge: 'CHICAGO VIOLENCE',  badgeBg: '#EA580C' },
+  CAMPUS_PROXIMATE:  { borderColor: '#D45B4F', badge: 'NEAR CAMPUS',       badgeBg: '#D45B4F' },
+  CHICAGO_VIOLENCE:  { borderColor: '#C66C3D', badge: 'CHICAGO VIOLENCE',  badgeBg: '#C66C3D' },
   CHICAGO_GENERAL:   { borderColor: '#3B82F6', badge: 'CHICAGO',           badgeBg: '#3B82F6' },
-  NATIONAL_BREAKING: { borderColor: '#0D1117', badge: 'NATIONAL',          badgeBg: '#0D1117' },
+  NATIONAL_BREAKING: { borderColor: '#121315', badge: 'NATIONAL',          badgeBg: '#121315' },
 };
 
 const TIER_KEYS: NewsTier[] = ['CAMPUS_PROXIMATE', 'CHICAGO_VIOLENCE', 'CHICAGO_GENERAL', 'NATIONAL_BREAKING'];
@@ -75,7 +75,7 @@ export default function NewsView({ newsItems, campusName }: Props) {
       }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: 8,
-          color: '#0D1117', fontWeight: 700, fontSize: 15,
+          color: '#121315', fontWeight: 700, fontSize: 15,
           paddingLeft: 10, borderLeft: '3px solid #F0B429',
         }}>
           <Newspaper size={18} />
@@ -173,7 +173,7 @@ function NewsCard({ item }: { item: NewsItem }) {
             {item.isBreaking && (
               <span style={{
                 fontSize: 9, fontWeight: 800, color: '#fff',
-                background: '#DC2626', padding: '2px 6px', borderRadius: 3,
+                background: '#D45B4F', padding: '2px 6px', borderRadius: 3,
               }}>
                 BREAKING
               </span>

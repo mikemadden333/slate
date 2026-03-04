@@ -140,9 +140,9 @@ const LABEL_HUMAN: Record<string, string> = {
 /* ---- Score bar zone boundaries ---- */
 const SCORE_ZONES = [
   { label: 'LOW', end: 25, color: '#16A34A' },
-  { label: 'ELEVATED', end: 45, color: '#D97706' },
-  { label: 'HIGH', end: 70, color: '#EA580C' },
-  { label: 'CRITICAL', end: 100, color: '#DC2626' },
+  { label: 'ELEVATED', end: 45, color: '#B79145' },
+  { label: 'HIGH', end: 70, color: '#C66C3D' },
+  { label: 'CRITICAL', end: 100, color: '#D45B4F' },
 ];
 
 export default function SituationCard({ risk, onBeginProtocol }: Props) {
@@ -206,7 +206,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
             style={{
               width: '100%',
               padding: '14px 20px',
-              background: '#0D1117',
+              background: '#121315',
               color: '#fff',
               border: 'none',
               borderRadius: 10,
@@ -342,7 +342,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
               paddingTop: 16,
               borderTop: '1px solid #E5E7EB',
             }}>
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#0D1117', marginBottom: 4 }}>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#121315', marginBottom: 4 }}>
                 Your score of {risk.score} is made up of three things.
               </div>
               <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 12 }}>
@@ -364,7 +364,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
                 label="Acute activity"
                 value={risk.acute}
                 max={40}
-                color={risk.acute > 0 ? '#DC2626' : '#374151'}
+                color={risk.acute > 0 ? '#D45B4F' : '#374151'}
                 points={`${risk.acute} points`}
                 expanded={expandedComponent === 'acute'}
                 onToggle={() => setExpandedComponent(expandedComponent === 'acute' ? null : 'acute')}
@@ -408,12 +408,12 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
       {/* ---- Action modal: What does this mean for me today? ---- */}
       {showActionModal && (
         <ExplainModal title="What This Means For You Today" onClose={() => setShowActionModal(false)}>
-          <p style={{ marginTop: 0, fontSize: 16, fontWeight: 600, color: '#0D1117' }}>
+          <p style={{ marginTop: 0, fontSize: 16, fontWeight: 600, color: '#121315' }}>
             Current Situation
           </p>
           <p style={{ lineHeight: 1.7 }}>{headline} {context}</p>
 
-          <p style={{ fontWeight: 600, color: '#0D1117', marginTop: 20 }}>
+          <p style={{ fontWeight: 600, color: '#121315', marginTop: 20 }}>
             What the research says:
           </p>
           <p style={{ lineHeight: 1.7 }}>
@@ -426,7 +426,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
                   : 'Seasonal patterns and recent incident activity are contributing to elevated risk. These patterns are well-documented in Chicago violence research.'}
           </p>
 
-          <p style={{ fontWeight: 700, fontSize: 18, color: '#0D1117', marginTop: 20, marginBottom: 8 }}>
+          <p style={{ fontWeight: 700, fontSize: 18, color: '#121315', marginTop: 20, marginBottom: 8 }}>
             What you should do right now:
           </p>
           <ol style={{ paddingLeft: 24, margin: 0 }}>
@@ -448,7 +448,7 @@ export default function SituationCard({ risk, onBeginProtocol }: Props) {
               style={{
                 width: '100%',
                 padding: '14px 20px',
-                background: '#0D1117',
+                background: '#121315',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 10,
@@ -492,7 +492,7 @@ function ScoreComponent({
         <span style={{
           fontSize: 14,
           fontWeight: 600,
-          color: '#0D1117',
+          color: '#121315',
           width: 160,
           flexShrink: 0,
         }}>

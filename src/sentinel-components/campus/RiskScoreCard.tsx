@@ -83,7 +83,7 @@ export default function RiskScoreCard({ risk }: Props) {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <ScoreRow label="Base (30-day incidents)" value={risk.base} max={75} color="#374151" />
-            <ScoreRow label="Acute (6h urgent)" value={risk.acute} max={40} color={risk.acute > 0 ? '#DC2626' : '#374151'} />
+            <ScoreRow label="Acute (6h urgent)" value={risk.acute} max={40} color={risk.acute > 0 ? '#D45B4F' : '#374151'} />
             <ScoreRow label="Seasonal (day/month/temp)" value={risk.seasonal} max={26} color="#374151" />
             {risk.shotSpotterBonus > 0 && (
               <ScoreRow label="ShotSpotter bonus" value={risk.shotSpotterBonus} max={25} color="#0F766E" />

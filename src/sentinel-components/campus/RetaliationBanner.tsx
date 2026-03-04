@@ -16,8 +16,8 @@ interface Props {
 
 const BANNER_KEYFRAMES = `
 @keyframes retBannerPulse {
-  0%, 100% { border-color: #DC262680; }
-  50% { border-color: #DC2626; }
+  0%, 100% { border-color: #D45B4F80; }
+  50% { border-color: #D45B4F; }
 }
 @keyframes timelineGlow {
   0%, 100% { box-shadow: 0 0 4px #F0B429; }
@@ -42,7 +42,7 @@ export default function RetaliationBanner({ retWin, campusName, onBeginProtocol 
         right: 0,
         zIndex: 999,
         background: '#7F1D1D',
-        borderBottom: '2px solid #DC2626',
+        borderBottom: '2px solid #D45B4F',
         animation: 'retBannerPulse 3s ease-in-out infinite',
         padding: '12px 20px',
         color: '#fff',
@@ -223,7 +223,7 @@ function RetaliationExplainModal({ retWin, campusName, onClose, onBeginProtocol 
             {/* Active window highlight */}
             <div style={{
               position: 'absolute', top: 18, left: '14.4%', width: '43.2%', height: 8,
-              background: '#DC262660', borderRadius: 4,
+              background: '#D45B4F60', borderRadius: 4,
             }} />
 
             {/* NOW marker */}

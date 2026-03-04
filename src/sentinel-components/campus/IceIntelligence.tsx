@@ -179,7 +179,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
             <li>A family notification is sent (carefully worded to protect families)</li>
             <li>Normal dismissal may be modified</li>
           </ul>
-          <p style={{ fontSize: 15, lineHeight: 1.7, color: '#DC2626', fontWeight: 600 }}>
+          <p style={{ fontSize: 15, lineHeight: 1.7, color: '#D45B4F', fontWeight: 600 }}>
             Critical: The PA announcement and family notification must NEVER mention ICE, immigration,
             or the nature of the threat. Many our families include undocumented individuals who could
             be endangered by such information in a message.

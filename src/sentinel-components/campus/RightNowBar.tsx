@@ -38,7 +38,7 @@ const PERIOD_COLORS: Record<string, string> = {
   PRE_SCHOOL: '#6B7280',
   ARRIVAL: '#2563EB',
   SCHOOL_DAY: '#16A34A',
-  DISMISSAL: '#D97706',
+  DISMISSAL: '#B79145',
   AFTER_SCHOOL: '#6B7280',
   OVERNIGHT: '#374151',
   NO_SCHOOL: '#9CA3AF',
@@ -170,7 +170,7 @@ export default function RightNowBar({
               fontWeight: 800,
               fontFamily: "'SF Mono', 'Roboto Mono', 'Courier New', monospace",
               color: isPulsingCountdown
-                ? (riskLabel !== 'LOW' ? '#DC2626' : color)
+                ? (riskLabel !== 'LOW' ? '#D45B4F' : color)
                 : color,
               flexShrink: 0,
               animation: isPulsingCountdown ? 'countdownPulse 1s ease-in-out infinite' : 'none',

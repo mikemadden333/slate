@@ -34,9 +34,9 @@ interface Props {
 const MI_TO_M = 1609.34;
 
 const TYPE_STYLES: Record<string, { fill: string; radius: number }> = {
-  'HOMICIDE':            { fill: '#DC2626', radius: 7 },
-  'WEAPONS VIOLATION':   { fill: '#EA580C', radius: 5.5 },
-  'BATTERY':             { fill: '#D97706', radius: 4.5 },
+  'HOMICIDE':            { fill: '#D45B4F', radius: 7 },
+  'WEAPONS VIOLATION':   { fill: '#C66C3D', radius: 5.5 },
+  'BATTERY':             { fill: '#B79145', radius: 4.5 },
   'ASSAULT':             { fill: '#EAB308', radius: 4 },
   'ROBBERY':             { fill: '#7C3AED', radius: 4 },
   'NARCOTICS':           { fill: '#0D9488', radius: 3.5 },
@@ -45,7 +45,7 @@ const TYPE_STYLES: Record<string, { fill: string; radius: number }> = {
 const DEFAULT_STYLE = { fill: '#6B7280', radius: 3 };
 
 const TYPE_COLORS: Record<string, string> = {
-  'HOMICIDE': '#DC2626', 'WEAPONS VIOLATION': '#EA580C', 'BATTERY': '#D97706',
+  'HOMICIDE': '#D45B4F', 'WEAPONS VIOLATION': '#C66C3D', 'BATTERY': '#B79145',
   'ASSAULT': '#EAB308', 'ROBBERY': '#7C3AED', 'NARCOTICS': '#0D9488', 'SHOTSPOTTER': '#0D9488',
   'NEWS': '#2563EB',
 };
@@ -58,14 +58,14 @@ const TYPE_LABELS: Record<string, string> = {
 
 const ALL_TYPES = ['HOMICIDE', 'WEAPONS VIOLATION', 'BATTERY', 'ASSAULT', 'ROBBERY', 'NARCOTICS', 'SHOTSPOTTER', 'NEWS'] as const;
 
-const CORRIDOR_COLORS: Record<string, string> = { CLEAR: '#16A34A', CAUTION: '#D97706', AVOID: '#DC2626' };
+const CORRIDOR_COLORS: Record<string, string> = { CLEAR: '#16A34A', CAUTION: '#B79145', AVOID: '#D45B4F' };
 
 const SNAP_HOURS = [2, 6, 24, 168, 336, 720];
 const SNAP_LABELS = ['2h', '6h', '24h', '7d', '14d', '30d'];
 
 const ZONE_FILLS: Record<string, { color: string; baseOp: number }> = {
-  ACUTE:  { color: '#DC2626', baseOp: 0.35 },
-  ACTIVE: { color: '#D97706', baseOp: 0.20 },
+  ACUTE:  { color: '#D45B4F', baseOp: 0.35 },
+  ACTIVE: { color: '#B79145', baseOp: 0.20 },
   WATCH:  { color: '#6B7280', baseOp: 0.08 },
 };
 
@@ -105,7 +105,7 @@ const KEYFRAMES = `
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #0D1117;
+  background: #121315;
   cursor: pointer;
   border: 2px solid #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.3);
@@ -114,7 +114,7 @@ const KEYFRAMES = `
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #0D1117;
+  background: #121315;
   cursor: pointer;
   border: 2px solid #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.3);
@@ -130,10 +130,10 @@ function makeShieldIcon(label: string): L.DivIcon {
   return L.divIcon({
     html: `<div style="display:flex;flex-direction:column;align-items:center;pointer-events:none;">
       <svg width="28" height="34" viewBox="0 0 28 34">
-        <path d="M14 1L2 7v12c0 9.3 5.1 17.9 12 21.5 6.9-3.6 12-12.2 12-21.5V7L14 1z" fill="#0D1117" stroke="#fff" stroke-width="1.5"/>
+        <path d="M14 1L2 7v12c0 9.3 5.1 17.9 12 21.5 6.9-3.6 12-12.2 12-21.5V7L14 1z" fill="#121315" stroke="#fff" stroke-width="1.5"/>
         <text x="14" y="20" text-anchor="middle" fill="#fff" font-size="10" font-weight="800" font-family="system-ui">N</text>
       </svg>
-      <div style="font-size:10px;font-weight:700;color:#0D1117;white-space:nowrap;margin-top:1px;text-shadow:0 0 3px #fff,0 0 3px #fff;">${label}</div>
+      <div style="font-size:10px;font-weight:700;color:#121315;white-space:nowrap;margin-top:1px;text-shadow:0 0 3px #fff,0 0 3px #fff;">${label}</div>
     </div>`,
     className: '',
     iconSize: [80, 50],
@@ -350,7 +350,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   const sonarIcon = useMemo(() => makeSonarIcon(), []);
 
   /* ---- Slider background ---- */
-  const sliderBg = (pct: number) => `linear-gradient(to right, #0D1117 ${pct}%, #E5E7EB ${pct}%)`;
+  const sliderBg = (pct: number) => `linear-gradient(to right, #121315 ${pct}%, #E5E7EB ${pct}%)`;
   const timePct = (timeSnapIdx / (SNAP_HOURS.length - 1)) * 100;
   const distPct = ((distanceRadius - 0.1) / 2.9) * 100;
 
@@ -375,7 +375,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       {/* Slider 1: Time Window */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontWeight: 600, color: '#0D1117' }}>Time Window</span>
+          <span style={{ fontWeight: 600, color: '#121315' }}>Time Window</span>
           <span style={{ color: '#6B7280', fontSize: 13 }}>Last {fmtTimeLabel(timeWindowH)}</span>
         </div>
         <input
@@ -395,7 +395,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       {/* Slider 2: Distance */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontWeight: 600, color: '#0D1117' }}>Distance from Campus</span>
+          <span style={{ fontWeight: 600, color: '#121315' }}>Distance from Campus</span>
           <span style={{ color: '#6B7280', fontSize: 13 }}>{distanceRadius.toFixed(1)} miles</span>
         </div>
         <input
@@ -412,7 +412,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       {/* Slider 3: Zone Opacity */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontWeight: 600, color: '#0D1117' }}>Contagion Zone Visibility</span>
+          <span style={{ fontWeight: 600, color: '#121315' }}>Contagion Zone Visibility</span>
           <span style={{ color: '#6B7280', fontSize: 13 }}>{zoneOpacity}%</span>
         </div>
         <input
@@ -425,7 +425,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
 
       {/* Type filter toggles */}
       <div>
-        <div style={{ fontWeight: 600, color: '#0D1117', marginBottom: 8 }}>Incident Types</div>
+        <div style={{ fontWeight: 600, color: '#121315', marginBottom: 8 }}>Incident Types</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {ALL_TYPES.map(t => (
             <button key={t} onClick={() => toggleType(t)} style={{
@@ -448,7 +448,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
 
       {/* Layer toggles */}
       <div>
-        <div style={{ fontWeight: 600, color: '#0D1117', marginBottom: 8 }}>Layers</div>
+        <div style={{ fontWeight: 600, color: '#121315', marginBottom: 8 }}>Layers</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           <LayerToggle label="Incidents" on={showInc} onToggle={() => setShowInc(v => !v)} />
           <LayerToggle label="Contagion Zones" on={showZones} onToggle={() => setShowZones(v => !v)} />
@@ -472,7 +472,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
         }}>
           {toasts.map(t => (
             <div key={t.id} style={{
-              background: t.isHomicide ? '#DC2626' : '#0D1117', color: '#fff',
+              background: t.isHomicide ? '#D45B4F' : '#121315', color: '#fff',
               padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
               whiteSpace: 'nowrap', boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             }}>{t.text}</div>
@@ -556,7 +556,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
               center={[campus.lat, campus.lng]}
               radius={distanceRadius * MI_TO_M}
               pathOptions={{
-                color: '#0D1117', fillColor: 'transparent', fillOpacity: 0,
+                color: '#121315', fillColor: 'transparent', fillOpacity: 0,
                 weight: 1.5, opacity: 0.3, dashArray: '8 6',
               }}
             />
@@ -587,7 +587,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
                     <strong>Homicide</strong>{zone.block && <> — {zone.block}</>}
                     <br />{fmtAgo(zone.homicideDate)} — <strong>{zone.phase}</strong>
                     <br />{zone.daysLeft} days remaining on 125-day clock
-                    {zone.retWin && <><br /><strong style={{ color: '#DC2626' }}>RETALIATION WINDOW ACTIVE</strong></>}
+                    {zone.retWin && <><br /><strong style={{ color: '#D45B4F' }}>RETALIATION WINDOW ACTIVE</strong></>}
                   </div>
                 </Popup>
               </Circle>
@@ -636,7 +636,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
                     }}>{isNews ? `🗞 ${inc.type !== 'BATTERY' ? inc.type : 'NEWS'}` : inc.type}</span>
                     {isNews && (
                       <span style={{
-                        marginLeft: 6, fontSize: 10, fontWeight: 600, color: '#D97706',
+                        marginLeft: 6, fontSize: 10, fontWeight: 600, color: '#B79145',
                         background: '#FFFBEB', padding: '1px 6px', borderRadius: 3,
                       }}>~ APPROXIMATE LOCATION</span>
                     )}
@@ -674,7 +674,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
                     fontSize: 11, fontWeight: 700, color: '#fff', background: '#0D9488',
                   }}>SHOTSPOTTER</span>
                   <span style={{
-                    marginLeft: 6, fontSize: 10, fontWeight: 600, color: '#D97706',
+                    marginLeft: 6, fontSize: 10, fontWeight: 600, color: '#B79145',
                     background: '#FFFBEB', padding: '1px 6px', borderRadius: 3,
                   }}>UNCONFIRMED</span>
                   <br />{evt.rounds} round{evt.rounds !== 1 ? 's' : ''} detected
@@ -707,7 +707,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
         }}>
           <button onClick={() => setPanelOpen(p => !p)} style={{
             width: 44, height: 44, border: 'none', background: 'transparent',
-            cursor: 'pointer', fontSize: 16, color: '#0D1117', fontWeight: 700,
+            cursor: 'pointer', fontSize: 16, color: '#121315', fontWeight: 700,
           }}>
             {panelOpen ? '◀' : '▶'}
           </button>
@@ -734,7 +734,7 @@ function MapBtn({ label, onClick }: { label: string; onClick: () => void }) {
     <button onClick={onClick} style={{
       background: 'rgba(255,255,255,0.92)', border: '1px solid #D1D5DB',
       borderRadius: 8, padding: '6px 10px', fontSize: 13,
-      cursor: 'pointer', color: '#0D1117', fontWeight: 600,
+      cursor: 'pointer', color: '#121315', fontWeight: 600,
       boxShadow: '0 1px 4px rgba(0,0,0,0.1)', minHeight: 44,
     }}>
       {label}
@@ -748,9 +748,9 @@ function LayerToggle({ label, on, onToggle }: { label: string; on: boolean; onTo
       display: 'flex', alignItems: 'center', gap: 8,
       padding: '6px 10px', borderRadius: 8,
       border: '1px solid #E5E7EB',
-      background: on ? '#E0F2FE' : '#fff',
+      background: on ? '#F7F5F1' : '#fff',
       cursor: 'pointer', fontSize: 12,
-      color: on ? '#0D1117' : '#9CA3AF',
+      color: on ? '#121315' : '#9CA3AF',
       fontWeight: on ? 600 : 400,
       minHeight: 44,
     }}>

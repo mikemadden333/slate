@@ -41,7 +41,7 @@ export default function DismissalClock({ risk, schoolPeriod, inRetaliationWindow
   const isUrgent = minutes <= 15 || isRetActive;
   const isImminent = minutes <= 5;
   const colors = isRetActive
-    ? { color: '#DC2626', bg: '#FEF2F2' }
+    ? { color: '#D45B4F', bg: '#FEF2F2' }
     : risk.label !== 'LOW' ? RISK_COLORS[risk.label] : { color: '#374151', bg: '#F3F4F6' };
 
   // Force re-render awareness
@@ -93,7 +93,7 @@ export default function DismissalClock({ risk, schoolPeriod, inRetaliationWindow
           marginTop: 8,
           fontSize: 13,
           fontWeight: 600,
-          color: '#DC2626',
+          color: '#D45B4F',
           lineHeight: 1.5,
         }}>
           Dismissal in {timeStr} — retaliation window active — consider modified protocol

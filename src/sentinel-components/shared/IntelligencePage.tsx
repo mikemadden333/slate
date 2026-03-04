@@ -7,7 +7,7 @@
  * Premium research publication feel. Mobile-first.
  */
 
-const NAVY = '#0D1117';
+const NAVY = '#121315';
 const GOLD = '#F0B429';
 const WHITE = '#FFFFFF';
 
@@ -25,7 +25,7 @@ if (typeof document !== 'undefined' && !document.getElementById(STYLE_ID)) {
       50% { opacity: 1; }
     }
     @keyframes hiw-critical-border {
-      0%, 100% { border-color: #DC2626; }
+      0%, 100% { border-color: #D45B4F; }
       50% { border-color: #FCA5A5; }
     }
     @keyframes hiw-arc-dot {
@@ -152,7 +152,7 @@ function StatBlock({ number, label }: { number: string; label: string }) {
   return (
     <div style={{ textAlign: 'center', minWidth: 120 }}>
       <div style={{ fontSize: 40, fontWeight: 800, color: GOLD, lineHeight: 1 }}>{number}</div>
-      <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 6, fontWeight: 400, maxWidth: 140 }}>{label}</div>
+      <div style={{ fontSize: 12, color: '#6B7280', marginTop: 6, fontWeight: 400, maxWidth: 140 }}>{label}</div>
     </div>
   );
 }
@@ -205,7 +205,7 @@ function ScienceSection() {
         border: '1px solid #E2E8F0', marginTop: 32,
       }}>
         <div style={{
-          fontSize: 11, fontWeight: 700, color: '#94A3B8',
+          fontSize: 11, fontWeight: 700, color: '#6B7280',
           textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 20,
         }}>
           Contagion Timeline
@@ -217,26 +217,26 @@ function ScienceSection() {
         }}>
           <div style={{
             width: 12, height: 12, borderRadius: '50%',
-            background: '#DC2626', border: '3px solid #FCA5A5',
+            background: '#D45B4F', border: '3px solid #FCA5A5',
           }} />
           <span style={{ fontSize: 14, fontWeight: 700, color: NAVY }}>HOMICIDE OCCURS</span>
         </div>
 
         <TimelineBar
-          phase="ACUTE" hours="0–18h" color="#DC2626" width="50%"
+          phase="ACUTE" hours="0–18h" color="#D45B4F" width="50%"
           desc="Immediate response zone" marker={null}
         />
         <TimelineBar
-          phase="ACTIVE" hours="18–72h" color="#EA580C" width="70%"
+          phase="ACTIVE" hours="18–72h" color="#C66C3D" width="70%"
           desc="Peak retaliation window"
           marker={<span style={{
             fontSize: 10, fontWeight: 800, color: GOLD,
-            background: '#0D1117', padding: '2px 8px', borderRadius: 4, marginLeft: 8,
+            background: '#121315', padding: '2px 8px', borderRadius: 4, marginLeft: 8,
             whiteSpace: 'nowrap',
           }}>&#9668; You are here</span>}
         />
         <TimelineBar
-          phase="WATCH" hours="72h–7d" color="#D97706" width="40%"
+          phase="WATCH" hours="72h–7d" color="#B79145" width="40%"
           desc="Elevated, declining risk" marker={null}
         />
         <TimelineBar
@@ -249,7 +249,7 @@ function ScienceSection() {
           borderTop: '1px solid #E2E8F0', paddingTop: 16,
         }}>
           the network campuses in the <strong>ACTIVE</strong> window receive a{' '}
-          <strong style={{ color: '#DC2626' }}>CRITICAL</strong> risk designation regardless of other factors.
+          <strong style={{ color: '#D45B4F' }}>CRITICAL</strong> risk designation regardless of other factors.
         </div>
       </div>
     </LightSection>
@@ -268,7 +268,7 @@ function TimelineBar({ phase, hours, color, width, desc, marker }: {
           fontSize: 11, fontWeight: 800, color, minWidth: 70,
           fontFamily: "'SF Mono', 'Fira Code', monospace",
         }}>{phase}</span>
-        <span style={{ fontSize: 11, color: '#94A3B8' }}>{hours}</span>
+        <span style={{ fontSize: 11, color: '#6B7280' }}>{hours}</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div style={{
@@ -295,7 +295,7 @@ function ScoringSection() {
       <h2 style={{ fontSize: 28, fontWeight: 800, color: WHITE, margin: '0 0 8px', textAlign: 'center' }}>
         Your Safety Picture &mdash; not a crime count.
       </h2>
-      <div style={{ fontSize: 14, color: '#94A3B8', textAlign: 'center', marginBottom: 40 }}>
+      <div style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', marginBottom: 40 }}>
         Four factors combine into a single, actionable score.
       </div>
 
@@ -305,21 +305,21 @@ function ScoringSection() {
         gap: 20,
       }}>
         <ScoreColumn
-          iconColor="#DC2626"
+          iconColor="#D45B4F"
           iconContent="&#9632;"
           title="CONTAGION CRIMES"
           subtitle="drives the label"
           body="Homicide, Weapons Violation, Criminal Sexual Assault. These are the crimes that create network contagion. A single homicide within 0.5 miles carries more weight than 50 batteries. These crimes alone determine whether your campus is LOW, ELEVATED, HIGH, or CRITICAL."
         />
         <ScoreColumn
-          iconColor="#EA580C"
+          iconColor="#C66C3D"
           iconContent="&#9678;"
           title="PROXIMITY"
           subtitle="the closer, the higher"
           body={`\u22640.25mi: Maximum weight.\n\u22640.5mi: High weight.\n\u22641.0mi: Moderate weight.\n\u22642.0mi: Low weight.\nBeyond 2 miles: Not counted.`}
         />
         <ScoreColumn
-          iconColor="#D97706"
+          iconColor="#B79145"
           iconContent="&#9201;"
           title="RECENCY"
           subtitle="the fresher, the heavier"
@@ -375,15 +375,15 @@ function LabelsSection() {
           body="Your campus neighborhood is quiet. No contagion-level crimes in recent history. Standard safety protocols. This is where the network campuses are most of the time."
         />
         <LabelCard
-          label="ELEVATED" color="#D97706"          pulsing={false}
+          label="ELEVATED" color="#B79145"          pulsing={false}
           body="A weapons violation has occurred nearby in the last 48 hours, or ShotSpotter has detected gunfire. Heightened awareness recommended. Review dismissal protocols."
         />
         <LabelCard
-          label="HIGH" color="#EA580C"          pulsing={false}
+          label="HIGH" color="#C66C3D"          pulsing={false}
           body="A homicide has occurred within 1 mile in the last 72 hours. This campus is in the outer edge of a potential contagion zone. Review Code Yellow criteria. Brief your staff."
         />
         <LabelCard
-          label="CRITICAL" color="#DC2626"          pulsing={true}
+          label="CRITICAL" color="#D45B4F"          pulsing={true}
           body="This campus is inside an active retaliation window. A homicide occurred within 0.5 miles in the last 18–72 hours. This is the highest-risk period. Code Yellow protocols should be considered. Sentinel will monitor every 90 seconds until the window closes."
         />
       </div>
@@ -524,14 +524,14 @@ function RetaliationSection() {
             <circle cx="120" cy="120" r="100" fill="none" stroke="#E2E8F0" strokeWidth="16" />
             {/* 0-18h segment — gray calm zone */}
             <circle cx="120" cy="120" r="100" fill="none"
-              stroke="#94A3B8" strokeWidth="16"
+              stroke="#6B7280" strokeWidth="16"
               strokeDasharray={`${2 * Math.PI * 100 * 18 / 72} ${2 * Math.PI * 100}`}
               strokeDashoffset={2 * Math.PI * 100 * 0.25}
               strokeLinecap="round"
             />
             {/* 18-72h segment — red danger zone */}
             <circle cx="120" cy="120" r="100" fill="none"
-              stroke="#DC2626" strokeWidth="16"
+              stroke="#D45B4F" strokeWidth="16"
               strokeDasharray={`${2 * Math.PI * 100 * 54 / 72} ${2 * Math.PI * 100}`}
               strokeDashoffset={2 * Math.PI * 100 * 0.25 - 2 * Math.PI * 100 * 18 / 72}
               strokeLinecap="round"
@@ -541,10 +541,10 @@ function RetaliationSection() {
             <text x="120" y="110" textAnchor="middle" fill={NAVY} fontSize="14" fontWeight="800">RETALIATION</text>
             <text x="120" y="132" textAnchor="middle" fill={NAVY} fontSize="14" fontWeight="800">WINDOW</text>
             {/* Hour labels */}
-            <text x="120" y="30" textAnchor="middle" fill="#94A3B8" fontSize="11" fontWeight="600">0h</text>
-            <text x="228" y="124" textAnchor="middle" fill="#DC2626" fontSize="11" fontWeight="600">18h</text>
-            <text x="120" y="235" textAnchor="middle" fill="#DC2626" fontSize="11" fontWeight="600">36h</text>
-            <text x="14" y="124" textAnchor="middle" fill="#DC2626" fontSize="11" fontWeight="600">54h</text>
+            <text x="120" y="30" textAnchor="middle" fill="#6B7280" fontSize="11" fontWeight="600">0h</text>
+            <text x="228" y="124" textAnchor="middle" fill="#D45B4F" fontSize="11" fontWeight="600">18h</text>
+            <text x="120" y="235" textAnchor="middle" fill="#D45B4F" fontSize="11" fontWeight="600">36h</text>
+            <text x="14" y="124" textAnchor="middle" fill="#D45B4F" fontSize="11" fontWeight="600">54h</text>
           </svg>
           {/* Animated gold dot */}
           <div style={{
@@ -566,12 +566,12 @@ function RetaliationSection() {
       </div>
 
       <div style={{
-        textAlign: 'center', fontSize: 12, color: '#94A3B8',
+        textAlign: 'center', fontSize: 12, color: '#6B7280',
         fontWeight: 600, letterSpacing: 0.5,
       }}>
-        <span style={{ color: '#94A3B8' }}>&#9632; 0–18h Chaotic</span>
+        <span style={{ color: '#6B7280' }}>&#9632; 0–18h Chaotic</span>
         {' '}&middot;{' '}
-        <span style={{ color: '#DC2626' }}>&#9632; 18–72h Peak Retaliation</span>
+        <span style={{ color: '#D45B4F' }}>&#9632; 18–72h Peak Retaliation</span>
         {' '}&middot;{' '}
         <span style={{ color: GOLD }}>&#9679; Tracking</span>
       </div>
@@ -589,7 +589,7 @@ function PrincipalsSection() {
       <h2 style={{ fontSize: 28, fontWeight: 800, color: WHITE, margin: '0 0 8px', textAlign: 'center' }}>
         What to do with this information.
       </h2>
-      <div style={{ fontSize: 14, color: '#94A3B8', textAlign: 'center', marginBottom: 40 }}>
+      <div style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', marginBottom: 40 }}>
         Practical guidance for school leaders.
       </div>
 
@@ -668,7 +668,7 @@ function ResearchSection() {
       </div>
 
       <div style={{
-        marginTop: 32, fontSize: 13, color: '#94A3B8', textAlign: 'center',
+        marginTop: 32, fontSize: 13, color: '#6B7280', textAlign: 'center',
         lineHeight: 1.6, maxWidth: 600, margin: '32px auto 0',
       }}>
         Sentinel is not affiliated with Dr. Papachristos or Yale University. We have operationalized

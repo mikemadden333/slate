@@ -69,7 +69,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
       position: 'fixed',
       inset: 0,
       zIndex: 9999,
-      background: '#0D1117',
+      background: '#121315',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -80,8 +80,8 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
       {/* Slate mark */}
       <svg width="60" height="45" viewBox="0 0 40 30" fill="none" style={{ marginBottom: 20 }}>
         <path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.12)" />
-        <line x1="10" y1="13" x2="30" y2="13" stroke="#E8EDF2" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="10" y1="19" x2="22" y2="19" stroke="#E8EDF2" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
+        <line x1="10" y1="13" x2="30" y2="13" stroke="#E7E2D8" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="10" y1="19" x2="22" y2="19" stroke="#E7E2D8" strokeWidth="2.5" strokeLinecap="round" opacity="0.5" />
       </svg>
 
       <div style={{ fontSize: 28, fontWeight: 800, color: '#fff', marginBottom: 6, textAlign: 'center' }}>
@@ -105,7 +105,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           background: '#fff',
           borderRadius: 16,
           padding: 24,
-          border: '2px solid #0D1117',
+          border: '2px solid #121315',
           boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
           display: 'flex',
           flexDirection: 'column',
@@ -114,7 +114,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           <div style={{
             fontSize: 20,
             fontWeight: 700,
-            color: '#0D1117',
+            color: '#121315',
             paddingLeft: 12,
             borderLeft: '3px solid #F0B429',
           }}>
@@ -167,7 +167,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
                   padding: '10px 14px',
                   border: 'none',
                   borderBottom: '1px solid #F3F4F6',
-                  background: selectedId === c.id ? '#E0F2FE' : '#fff',
+                  background: selectedId === c.id ? '#F7F5F1' : '#fff',
                   cursor: 'pointer',
                   textAlign: 'left',
                 }}
@@ -176,7 +176,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
                   <div style={{
                     fontSize: 14,
                     fontWeight: selectedId === c.id ? 700 : 500,
-                    color: selectedId === c.id ? '#0D1117' : '#374151',
+                    color: selectedId === c.id ? '#121315' : '#374151',
                   }}>
                     {c.name}
                   </div>
@@ -197,7 +197,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
             disabled={selectedId == null}
             style={{
               padding: '14px 20px',
-              background: selectedId != null ? '#0D1117' : '#9CA3AF',
+              background: selectedId != null ? '#121315' : '#9CA3AF',
               color: '#fff',
               border: 'none',
               borderRadius: 10,
@@ -217,7 +217,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           background: '#fff',
           borderRadius: 16,
           padding: 24,
-          border: '2px solid #0D1117',
+          border: '2px solid #121315',
           boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
           display: 'flex',
           flexDirection: 'column',
@@ -226,7 +226,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
           <div style={{
             fontSize: 20,
             fontWeight: 700,
-            color: '#0D1117',
+            color: '#121315',
             paddingLeft: 12,
             borderLeft: '3px solid #F0B429',
           }}>
@@ -242,7 +242,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
             background: '#FEF9EC',
             borderRadius: 8,
             fontSize: 13,
-            color: '#0D1117',
+            color: '#121315',
             lineHeight: 1.5,
           }}>
             Network dashboard, campus ranking, contagion map, and executive intelligence.
@@ -252,7 +252,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
             onClick={handleGoNetwork}
             style={{
               padding: '14px 20px',
-              background: '#0D1117',
+              background: '#121315',
               color: '#fff',
               border: 'none',
               borderRadius: 10,

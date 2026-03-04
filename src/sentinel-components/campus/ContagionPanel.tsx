@@ -35,18 +35,18 @@ interface Props {
 
 const KEYFRAMES = `
 @keyframes retGradient {
-  0%, 100% { background: linear-gradient(135deg, #DC2626, #991B1B); }
+  0%, 100% { background: linear-gradient(135deg, #D45B4F, #991B1B); }
   50% { background: linear-gradient(135deg, #991B1B, #7F1D1D); }
 }
 @keyframes retPulse {
-  0%, 100% { background-color: #DC2626; }
+  0%, 100% { background-color: #D45B4F; }
   50% { background-color: #9B1C1C; }
 }
 `;
 
 const PHASE_STYLES: Record<string, { color: string; bg: string }> = {
-  ACUTE:  { color: '#DC2626', bg: '#FEF2F2' },
-  ACTIVE: { color: '#D97706', bg: '#FFFBEB' },
+  ACUTE:  { color: '#D45B4F', bg: '#FEF2F2' },
+  ACTIVE: { color: '#B79145', bg: '#FFFBEB' },
   WATCH:  { color: '#6B7280', bg: '#F3F4F6' },
 };
 
@@ -126,7 +126,7 @@ export default function ContagionPanel({
     <div style={{ marginBottom: 16 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 20, color: '#0D1117', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 20, color: '#121315', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
             Violence Spread Monitor
             <Explainer title="Violence Contagion Model">
               <p style={{ margin: '0 0 12px' }}>Based on research by Yale sociologist Andrew Papachristos, gun violence spreads through social networks like an infectious disease. A person's risk of being shot increases by <strong>900%</strong> if someone in their social network was recently shot.</p>
@@ -199,7 +199,7 @@ export default function ContagionPanel({
         <style>{KEYFRAMES}{CONTAGION_KEYFRAMES}</style>
 
         {/* Header on white */}
-        <div style={{ padding: '20px 20px 0', background: '#fff', border: '1px solid #DC262644', borderBottom: 'none', borderRadius: '12px 12px 0 0' }}>
+        <div style={{ padding: '20px 20px 0', background: '#fff', border: '1px solid #D45B4F44', borderBottom: 'none', borderRadius: '12px 12px 0 0' }}>
           {header}
         </div>
 
@@ -283,7 +283,7 @@ export default function ContagionPanel({
             <button
               onClick={() => onBeginProtocol('YELLOW')}
               style={{
-                width: '100%', padding: '14px 16px', background: '#0D1117',
+                width: '100%', padding: '14px 16px', background: '#121315',
                 border: 'none', borderRadius: 8, color: '#fff',
                 fontSize: 16, fontWeight: 700, cursor: 'pointer', marginBottom: 8,
               }}
@@ -317,16 +317,16 @@ export default function ContagionPanel({
               {/* Concentric rings */}
               <div style={{
                 position: 'absolute', width: 160, height: 160, borderRadius: '50%',
-                border: '2px dashed #D97706', opacity: 0.3,
+                border: '2px dashed #B79145', opacity: 0.3,
               }} />
               <div style={{
                 position: 'absolute', width: 100, height: 100, borderRadius: '50%',
-                border: '2px solid #DC2626', background: '#DC262615',
+                border: '2px solid #D45B4F', background: '#D45B4F15',
               }} />
               {/* Campus marker */}
               <div style={{
                 position: 'absolute', width: 16, height: 16, borderRadius: '50%',
-                background: '#0D1117', border: '3px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                background: '#121315', border: '3px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
                 zIndex: 2,
               }} />
               {/* Incident marker */}
@@ -335,7 +335,7 @@ export default function ContagionPanel({
                 left: `${50 + (retZone.bearingFromCampus != null ? Math.sin((retZone.bearingFromCampus * Math.PI) / 180) * 25 : 20)}%`,
                 top: `${50 - (retZone.bearingFromCampus != null ? Math.cos((retZone.bearingFromCampus * Math.PI) / 180) * 25 : 20)}%`,
                 width: 12, height: 12, borderRadius: '50%',
-                background: '#DC2626', border: '2px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                background: '#D45B4F', border: '2px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
                 zIndex: 2,
               }} />
               {/* Legend */}
@@ -408,7 +408,7 @@ export default function ContagionPanel({
         }}>
           <div style={{
             fontSize: 18, fontWeight: 700, marginBottom: 6,
-            color: isAcutePhase ? '#DC2626' : '#D97706',
+            color: isAcutePhase ? '#D45B4F' : '#B79145',
           }}>
             {isAcutePhase
               ? `Active Contagion Zone — ACUTE phase`
@@ -429,7 +429,7 @@ export default function ContagionPanel({
               </div>
               <div style={{ height: 6, background: '#E5E7EB', borderRadius: 3, overflow: 'hidden' }}>
                 <div style={{
-                  height: '100%', width: `${activeProgressPct}%`, background: '#D97706',
+                  height: '100%', width: `${activeProgressPct}%`, background: '#B79145',
                   borderRadius: 3, transition: 'width 1s linear',
                 }} />
               </div>
@@ -546,7 +546,7 @@ function NetworkContagionSection({ corridors }: { corridors: CorridorGroup[]; ca
   if (corridors.length === 0) return null;
   return (
     <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: 16, marginTop: 16 }}>
-      <div style={{ fontWeight: 700, fontSize: 14, color: '#0D1117', marginBottom: 8 }}>Network Alert</div>
+      <div style={{ fontWeight: 700, fontSize: 14, color: '#121315', marginBottom: 8 }}>Network Alert</div>
       {corridors.map(group => {
         const names = group.campuses.map(c => c.name);
         return (
@@ -565,8 +565,8 @@ function NetworkContagionSection({ corridors }: { corridors: CorridorGroup[]; ca
 
 const FC_COLORS: Record<string, { color: string; bg: string }> = {
   LOW: { color: '#16A34A', bg: '#DCFCE7' },
-  ELEVATED: { color: '#D97706', bg: '#FFFBEB' },
-  HIGH: { color: '#DC2626', bg: '#FEF2F2' },
+  ELEVATED: { color: '#B79145', bg: '#FFFBEB' },
+  HIGH: { color: '#D45B4F', bg: '#FEF2F2' },
 };
 
 function ForecastLine({ summary, onOpen }: { summary: { level: string; throughDate: string | null }; onOpen?: () => void }) {
@@ -599,10 +599,10 @@ function PapachristosModal({ onClose }: { onClose: () => void }) {
         Sentinel tracks every homicide near your campus and calculates where you are in that risk window.
         This science has never been applied to school safety before. <strong>This has never been done before.</strong>
       </p>
-      <p style={{ fontWeight: 600, color: '#0D1117', fontSize: 16 }}>The three phases:</p>
+      <p style={{ fontWeight: 600, color: '#121315', fontSize: 16 }}>The three phases:</p>
       <ul style={{ paddingLeft: 20, fontSize: 15, lineHeight: 1.8 }}>
-        <li><strong style={{ color: '#DC2626' }}>ACUTE (0-72 hours):</strong> Highest danger. 0.5-mile radius. The 18-72 hour window is when retaliatory violence is most likely.</li>
-        <li><strong style={{ color: '#D97706' }}>ACTIVE (3-14 days):</strong> Elevated risk continues. 1-mile radius. Community tension may still be high.</li>
+        <li><strong style={{ color: '#D45B4F' }}>ACUTE (0-72 hours):</strong> Highest danger. 0.5-mile radius. The 18-72 hour window is when retaliatory violence is most likely.</li>
+        <li><strong style={{ color: '#B79145' }}>ACTIVE (3-14 days):</strong> Elevated risk continues. 1-mile radius. Community tension may still be high.</li>
         <li><strong style={{ color: '#6B7280' }}>WATCH (14-125 days):</strong> Risk declining but not gone. 1.5-mile radius. Historical context only.</li>
       </ul>
       <p style={{ fontSize: 15, lineHeight: 1.8 }}>
@@ -618,7 +618,7 @@ function PapachristosModal({ onClose }: { onClose: () => void }) {
 function RetaliationDismissalModal({ direction, onClose }: { direction: string; onClose: () => void }) {
   return (
     <ExplainModal title="Retaliation Window — Dismissal Guidance" onClose={onClose}>
-      <p style={{ marginTop: 0, color: '#DC2626', fontWeight: 600, fontSize: 16 }}>
+      <p style={{ marginTop: 0, color: '#D45B4F', fontWeight: 600, fontSize: 16 }}>
         You are in an active retaliation window. Dismissal is the highest-risk moment of your school day.
       </p>
       <p style={{ fontSize: 15, lineHeight: 1.7 }}>

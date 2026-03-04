@@ -93,7 +93,7 @@ Rules:
     <div style={{ border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, marginBottom: 24 }}>
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#0D1117' }}>Ask Sentinel</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#121315' }}>Ask Sentinel</div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
           Ask anything about your campus safety environment
         </div>
@@ -118,7 +118,7 @@ Rules:
           onClick={() => sendQuery()}
           disabled={loading || !input.trim()}
           style={{
-            background: '#0D1117', border: 'none', borderRadius: 10,
+            background: '#121315', border: 'none', borderRadius: 10,
             color: '#fff', padding: '14px 16px', cursor: loading ? 'wait' : 'pointer',
             opacity: !input.trim() ? 0.5 : 1, minWidth: 48,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -162,7 +162,7 @@ Rules:
             padding: '16px 18px', background: '#F8F9FA',
             borderRadius: 10, border: '1px solid #E5E7EB',
           }}>
-            <div style={{ fontSize: 16, color: '#0D1117', lineHeight: 1.7 }}>
+            <div style={{ fontSize: 16, color: '#121315', lineHeight: 1.7 }}>
               {card.answer}
             </div>
             {card.sources && (

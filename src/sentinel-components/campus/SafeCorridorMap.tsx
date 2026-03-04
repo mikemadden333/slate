@@ -20,8 +20,8 @@ interface Props {
 
 const STATUS_COLORS: Record<string, { color: string; bg: string; label: string }> = {
   CLEAR:   { color: '#16A34A', bg: '#DCFCE7', label: 'Clear' },
-  CAUTION: { color: '#D97706', bg: '#FFFBEB', label: 'Caution' },
-  AVOID:   { color: '#DC2626', bg: '#FEF2F2', label: 'Avoid' },
+  CAUTION: { color: '#B79145', bg: '#FFFBEB', label: 'Caution' },
+  AVOID:   { color: '#D45B4F', bg: '#FEF2F2', label: 'Avoid' },
 };
 
 export default function SafeCorridorMap({ corridors, schoolPeriod }: Props) {
@@ -58,7 +58,7 @@ export default function SafeCorridorMap({ corridors, schoolPeriod }: Props) {
   return (
     <div style={{ border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, marginBottom: 24 }}>
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#0D1117' }}>Student Walking Routes</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#121315' }}>Student Walking Routes</div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
           Recommended routes to and from campus based on current incident locations
         </div>
@@ -69,7 +69,7 @@ export default function SafeCorridorMap({ corridors, schoolPeriod }: Props) {
           padding: '14px 16px', background: '#FEF2F2', border: '1px solid #FECACA',
           borderRadius: 10, marginBottom: 16,
         }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#DC2626', marginBottom: 4 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#D45B4F', marginBottom: 4 }}>
             Route Advisory — {redCorridor.name} corridor has recent activity
           </div>
           <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.5 }}>
@@ -138,8 +138,8 @@ function CorridorExplainModal({ onClose }: { onClose: () => void }) {
       </p>
       <ul style={{ paddingLeft: 20 }}>
         <li><strong style={{ color: '#16A34A' }}>GREEN:</strong> No incidents in last 6h. Clear.</li>
-        <li><strong style={{ color: '#D97706' }}>AMBER:</strong> Incidents in last 24h. Exercise awareness.</li>
-        <li><strong style={{ color: '#DC2626' }}>RED:</strong> Incidents in last 6h or active ShotSpotter. Consider alternate routes.</li>
+        <li><strong style={{ color: '#B79145' }}>AMBER:</strong> Incidents in last 24h. Exercise awareness.</li>
+        <li><strong style={{ color: '#D45B4F' }}>RED:</strong> Incidents in last 6h or active ShotSpotter. Consider alternate routes.</li>
       </ul>
     </ExplainModal>
   );

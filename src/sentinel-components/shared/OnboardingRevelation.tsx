@@ -23,13 +23,13 @@ export default function OnboardingRevelation({
 
   const screens = [
     {
-      icon: <MapPin size={48} style={{ color: '#DC2626' }} />,
+      icon: <MapPin size={48} style={{ color: '#D45B4F' }} />,
       title: 'What You Didn\'t Know',
       body: `In the last 30 days, ${incidents30d} incidents occurred within 1 mile of ${campus.name}. You likely knew about very few of them. That gap between what happened and what you knew is the problem Sentinel solves.`,
       bg: '#FEF2F2',
     },
     {
-      icon: <Activity size={48} style={{ color: '#D97706' }} />,
+      icon: <Activity size={48} style={{ color: '#B79145' }} />,
       title: 'Your Neighborhood Right Now',
       body: inContagionZone
         ? `${campus.name} is currently inside ${contagionZoneCount} violence contagion zone${contagionZoneCount > 1 ? 's' : ''}. This means a recent homicide near your campus has created a statistically elevated risk of follow-on violence. Sentinel tracks these zones continuously.`
@@ -77,7 +77,7 @@ export default function OnboardingRevelation({
         <h2 style={{
           fontSize: 22,
           fontWeight: 800,
-          color: '#0D1117',
+          color: '#121315',
           marginBottom: 16,
           lineHeight: 1.2,
         }}>
@@ -101,7 +101,7 @@ export default function OnboardingRevelation({
                 width: i === step ? 24 : 8,
                 height: 8,
                 borderRadius: 4,
-                background: i === step ? '#0D1117' : '#D1D5DB',
+                background: i === step ? '#121315' : '#D1D5DB',
                 transition: 'width 0.3s ease',
               }}
             />
@@ -111,7 +111,7 @@ export default function OnboardingRevelation({
         <button
           onClick={() => isLast ? onComplete() : setStep(s => s + 1)}
           style={{
-            background: '#0D1117',
+            background: '#121315',
             color: '#fff',
             border: 'none',
             borderRadius: 12,

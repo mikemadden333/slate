@@ -19,17 +19,17 @@ export default function SinceLastVisitCard({ data, onDismiss }: Props) {
     : `${Math.round(data.hoursAgo / 24)} days ago`;
 
   const scoreDir = data.scoreChange > 0 ? '↑' : data.scoreChange < 0 ? '↓' : '';
-  const scoreColor = data.scoreChange > 0 ? '#DC2626' : data.scoreChange < 0 ? '#16A34A' : '#6B7280';
+  const scoreColor = data.scoreChange > 0 ? '#D45B4F' : data.scoreChange < 0 ? '#16A34A' : '#6B7280';
   const scoreWord = data.scoreChange > 0 ? 'rising' : data.scoreChange < 0 ? 'improving' : 'stable';
 
   return (
     <div style={{
       border: '1px solid #E5E7EB',
-      borderLeft: '4px solid #0D1117',
+      borderLeft: '4px solid #121315',
       borderRadius: 12,
       padding: '16px 18px',
       marginBottom: 16,
-      background: '#E0F2FE',
+      background: '#F7F5F1',
       position: 'relative',
       animation: 'slideInBottom 300ms ease',
     }}>
@@ -42,7 +42,7 @@ export default function SinceLastVisitCard({ data, onDismiss }: Props) {
         ✕
       </button>
 
-      <div style={{ fontSize: 15, fontWeight: 700, color: '#0D1117', marginBottom: 10 }}>
+      <div style={{ fontSize: 15, fontWeight: 700, color: '#121315', marginBottom: 10 }}>
         Since you last checked ({timeLabel})
       </div>
 

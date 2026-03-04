@@ -32,16 +32,16 @@ const DISTANCE_OPTIONS = [
 ] as const;
 
 const TYPE_FILTERS = [
-  { key: 'HOMICIDE', label: 'HOMICIDE', color: '#DC2626' },
-  { key: 'WEAPONS VIOLATION', label: 'WEAPONS', color: '#EA580C' },
-  { key: 'BATTERY', label: 'BATTERY', color: '#D97706' },
+  { key: 'HOMICIDE', label: 'HOMICIDE', color: '#D45B4F' },
+  { key: 'WEAPONS VIOLATION', label: 'WEAPONS', color: '#C66C3D' },
+  { key: 'BATTERY', label: 'BATTERY', color: '#B79145' },
   { key: 'ASSAULT', label: 'ASSAULT', color: '#B45309' },
   { key: 'ROBBERY', label: 'ROBBERY', color: '#7C3AED' },
   { key: 'NARCOTICS', label: 'NARCOTICS', color: '#0D9488' },
 ] as const;
 
 const TYPE_COLORS: Record<string, string> = {
-  'HOMICIDE': '#DC2626', 'WEAPONS VIOLATION': '#EA580C', 'BATTERY': '#D97706',
+  'HOMICIDE': '#D45B4F', 'WEAPONS VIOLATION': '#C66C3D', 'BATTERY': '#B79145',
   'ASSAULT': '#B45309', 'ROBBERY': '#7C3AED', 'NARCOTICS': '#0D9488',
 };
 
@@ -120,7 +120,7 @@ export default function IncidentList({ campus, incidents, contagionZones }: Prop
     <div style={{ border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, marginBottom: 24 }}>
       {/* Header */}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#0D1117' }}>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#121315' }}>
           What's Happened Near Your Campus
         </div>
         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
@@ -259,13 +259,13 @@ export default function IncidentList({ campus, incidents, contagionZones }: Prop
                 </div>
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
                   {isNew && (
-                    <span style={{ fontSize: 9, fontWeight: 800, color: '#DC2626', background: '#FEE2E2', padding: '2px 6px', borderRadius: 3 }}>NEW</span>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: '#D45B4F', background: '#FEE2E2', padding: '2px 6px', borderRadius: 3 }}>NEW</span>
                   )}
                   {isShotSpotter && (
                     <span style={{ fontSize: 9, fontWeight: 700, color: '#0D9488', background: '#CCFBF1', padding: '2px 6px', borderRadius: 3 }}>UNCONFIRMED</span>
                   )}
                   {isHomicide && (
-                    <span style={{ fontSize: 10, fontWeight: 700, color: '#DC2626' }}>See contagion</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: '#D45B4F' }}>See contagion</span>
                   )}
                 </div>
                 <div style={{
@@ -313,7 +313,7 @@ export default function IncidentList({ campus, incidents, contagionZones }: Prop
                       background: inContagion ? '#FEF2F2' : '#F0FDF4',
                       border: `1px solid ${inContagion ? '#FECACA' : '#BBF7D0'}`,
                     }}>
-                      <div style={{ fontWeight: 600, color: inContagion ? '#DC2626' : '#15803D', marginBottom: 2, fontSize: 14 }}>
+                      <div style={{ fontWeight: 600, color: inContagion ? '#D45B4F' : '#15803D', marginBottom: 2, fontSize: 14 }}>
                         Is this in a contagion zone? {inContagion ? 'YES' : 'NO'}
                       </div>
                       <div style={{ color: '#6B7280', fontSize: 13 }}>
@@ -349,7 +349,7 @@ function FilterBtn({ label, active, onClick }: { label: string; active: boolean;
     <button onClick={onClick} style={{
       padding: '4px 12px', borderRadius: 4, fontSize: 12,
       fontWeight: active ? 700 : 400, color: active ? '#fff' : '#374151',
-      background: active ? '#0D1117' : '#fff', border: '1px solid #D1D5DB',
+      background: active ? '#121315' : '#fff', border: '1px solid #D1D5DB',
       cursor: 'pointer', minHeight: 44,
     }}>
       {label}

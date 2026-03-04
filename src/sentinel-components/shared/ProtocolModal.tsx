@@ -156,7 +156,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
             <div style={{
               fontSize: 13,
               fontWeight: 700,
-              color: '#0D1117',
+              color: '#121315',
               marginBottom: 8,
               display: 'flex',
               alignItems: 'center',
@@ -198,7 +198,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
 
           {/* Protocol steps */}
           <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#0D1117', marginBottom: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#121315', marginBottom: 8 }}>
               Protocol Steps ({checkedSteps.filter(Boolean).length}/{ec.steps.length})
             </div>
             {ec.steps.map((step, idx) => (
@@ -245,7 +245,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
             <div style={{
               fontSize: 13,
               fontWeight: 700,
-              color: '#0D1117',
+              color: '#121315',
               marginBottom: 8,
               display: 'flex',
               alignItems: 'center',
@@ -257,7 +257,7 @@ Context: Risk score ${risk.score} (${risk.label}).`;
                   onClick={generateFamilyMessage}
                   disabled={generatingMsg}
                   style={{
-                    background: '#0D1117',
+                    background: '#121315',
                     border: 'none',
                     borderRadius: 6,
                     padding: '4px 10px',

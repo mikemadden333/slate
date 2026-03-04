@@ -43,7 +43,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
       position: 'fixed',
       inset: 0,
       zIndex: 10000,
-      background: '#0D1117',
+      background: '#121315',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -69,7 +69,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
           stroke="rgba(255,255,255,0.4)"
           strokeWidth="1"
         />
-        <text x="40" y="56" textAnchor="middle" fill="#0D1117"
+        <text x="40" y="56" textAnchor="middle" fill="#121315"
           fontFamily="system-ui" fontSize="18" fontWeight="800" letterSpacing="2">
           N
         </text>

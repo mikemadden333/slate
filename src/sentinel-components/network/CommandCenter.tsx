@@ -29,16 +29,16 @@ const BG = '#0A0F1E';
 const PANEL = '#0F172A';
 const BORDER = '#1E293B';
 const TEXT = '#F1F5F9';
-const TEXT2 = '#94A3B8';
+const TEXT2 = '#6B7280';
 const GOLD = '#F0B429';
 
 const LABEL_COLORS: Record<string, string> = {
-  CRITICAL: '#DC2626', HIGH: '#EA580C', ELEVATED: '#D97706', LOW: '#16A34A',
+  CRITICAL: '#D45B4F', HIGH: '#C66C3D', ELEVATED: '#B79145', LOW: '#16A34A',
 };
 
 const INC_TYPE_COLORS: Record<string, string> = {
-  'HOMICIDE': '#DC2626', 'WEAPONS VIOLATION': '#EA580C', 'BATTERY': '#D97706',
-  'ASSAULT': '#EAB308', 'ROBBERY': '#7C3AED', 'CRIM SEXUAL ASSAULT': '#DC2626',
+  'HOMICIDE': '#D45B4F', 'WEAPONS VIOLATION': '#C66C3D', 'BATTERY': '#B79145',
+  'ASSAULT': '#EAB308', 'ROBBERY': '#7C3AED', 'CRIM SEXUAL ASSAULT': '#D45B4F',
   'NARCOTICS': '#0D9488', 'MOTOR VEHICLE THEFT': '#6366F1',
 };
 
@@ -392,7 +392,7 @@ export default function CommandCenter({
               <button style={btnClose} onClick={close}>&times;</button>
               <div style={heading}>CALL 911</div>
               <a href="tel:911" onClick={() => logAction('911 called', activeCampus.short)}
-                style={{ display: 'block', background: '#DC2626', color: '#fff', borderRadius: 8, padding: 16, fontSize: 20, fontWeight: 800, textAlign: 'center', textDecoration: 'none', marginBottom: 16 }}>
+                style={{ display: 'block', background: '#D45B4F', color: '#fff', borderRadius: 8, padding: 16, fontSize: 20, fontWeight: 800, textAlign: 'center', textDecoration: 'none', marginBottom: 16 }}>
                 Call 911 Now
               </a>
               <label style={{ fontSize: 12, color: TEXT2 }}>Which campus?</label>
@@ -406,7 +406,7 @@ export default function CommandCenter({
               <div style={{ fontSize: 13, color: TEXT2, marginBottom: 8 }}>Was 911 already called by campus?</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {actionBtn('#16A34A', 'Yes — Already Called', () => { logAction('911 confirmed — already called by campus', activeCampus.short); close(); })}
-                {actionBtn('#D97706', 'No — I am calling', () => { logAction('911 called — initiated from Command Center', activeCampus.short); close(); })}
+                {actionBtn('#B79145', 'No — I am calling', () => { logAction('911 called — initiated from Command Center', activeCampus.short); close(); })}
               </div>
             </div>
           </div>
@@ -435,7 +435,7 @@ export default function CommandCenter({
                       (___) ___-____
                     </div>
                     <button onClick={() => { logAction('Principal contacted', c.short); }}
-                      style={{ background: '#D97706', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', minHeight: 32 }}>
+                      style={{ background: '#B79145', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: 11, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', minHeight: 32 }}>
                       Log Call
                     </button>
                   </div>
@@ -455,7 +455,7 @@ export default function CommandCenter({
               <div style={{ fontSize: 13, color: TEXT2, marginBottom: 8 }}>CPS Office of Safety & Security</div>
               <div style={{ fontFamily: MONO, fontSize: 20, fontWeight: 800, color: TEXT, marginBottom: 12 }}>(773) 553-1600</div>
               <a href="tel:7735531600" onClick={() => logAction('CPS Safety Center called', activeCampus.short)}
-                style={{ display: 'block', background: '#D97706', color: '#fff', borderRadius: 8, padding: 14, fontSize: 16, fontWeight: 700, textAlign: 'center', textDecoration: 'none', marginBottom: 16 }}>
+                style={{ display: 'block', background: '#B79145', color: '#fff', borderRadius: 8, padding: 14, fontSize: 16, fontWeight: 700, textAlign: 'center', textDecoration: 'none', marginBottom: 16 }}>
                 Call Now
               </a>
               <div style={{ fontSize: 12, color: TEXT2, marginBottom: 4 }}>Situation summary:</div>
@@ -560,9 +560,9 @@ export default function CommandCenter({
               <button style={btnClose} onClick={close}>&times;</button>
               <div style={heading}>CONTAGION ASSESSMENT</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16 }}>
-                <StatTile label="ACUTE Zones" value={String(acuteZones.length)} color="#DC2626" />
-                <StatTile label="ACTIVE Zones" value={String(activeZones.length)} color="#D97706" />
-                <StatTile label="Ret. Windows" value={String(retWindows.length)} color="#DC2626" />
+                <StatTile label="ACUTE Zones" value={String(acuteZones.length)} color="#D45B4F" />
+                <StatTile label="ACTIVE Zones" value={String(activeZones.length)} color="#B79145" />
+                <StatTile label="Ret. Windows" value={String(retWindows.length)} color="#D45B4F" />
               </div>
               <div style={{ fontSize: 12, color: GOLD, fontWeight: 600, marginBottom: 6 }}>Campuses in ACUTE zones:</div>
               {campusesInAcute.length === 0 ? (
@@ -574,7 +574,7 @@ export default function CommandCenter({
                     return (
                       <div key={r.campusId} style={{ fontSize: 12, color: TEXT, padding: '4px 0', borderBottom: `1px solid ${BORDER}` }}>
                         <span style={{ fontWeight: 700, color: LABEL_COLORS[r.label] }}>{c.short}</span> — {r.contagionZones.filter(z => z.phase === 'ACUTE').length} ACUTE zone(s)
-                        {r.inRetaliationWindow && <span style={{ color: '#DC2626', marginLeft: 8, fontWeight: 700 }}>RET WIN</span>}
+                        {r.inRetaliationWindow && <span style={{ color: '#D45B4F', marginLeft: 8, fontWeight: 700 }}>RET WIN</span>}
                       </div>
                     );
                   })}
@@ -585,7 +585,7 @@ export default function CommandCenter({
                 {forecast.map((day, i) => (
                   <div key={i} style={{
                     flex: 1, padding: 6, background: BG, borderRadius: 6, textAlign: 'center',
-                    border: `1px solid ${day.contagionPhase === 'ACUTE' ? '#DC2626' : day.contagionPhase === 'ACTIVE' ? '#D97706' : BORDER}`,
+                    border: `1px solid ${day.contagionPhase === 'ACUTE' ? '#D45B4F' : day.contagionPhase === 'ACTIVE' ? '#B79145' : BORDER}`,
                   }}>
                     <div style={{ fontSize: 9, color: TEXT2 }}>{day.dayName.slice(0, 3)}</div>
                     <div style={{ fontSize: 9, fontWeight: 700, color: LABEL_COLORS[day.label] ?? TEXT2 }}>{day.label}</div>
@@ -637,8 +637,8 @@ export default function CommandCenter({
         {/* Center: metrics */}
         <div style={{ display: 'flex', gap: 20 }}>
           <HeaderMetric label="Network Avg" value={String(networkSummary.avgScore)} color={TEXT} />
-          <HeaderMetric label="Elevated" value={String(elevatedCount)} color={elevatedCount > 0 ? '#D97706' : '#16A34A'} />
-          <HeaderMetric label="Contagion" value={String(contagionCount)} color={contagionCount > 0 ? '#DC2626' : '#16A34A'} />
+          <HeaderMetric label="Elevated" value={String(elevatedCount)} color={elevatedCount > 0 ? '#B79145' : '#16A34A'} />
+          <HeaderMetric label="Contagion" value={String(contagionCount)} color={contagionCount > 0 ? '#D45B4F' : '#16A34A'} />
           <HeaderMetric label="ICE" value={iceAlerts.length > 0 ? 'ACTIVE' : 'CLEAR'} color={iceAlerts.length > 0 ? '#7C3AED' : '#16A34A'} />
         </div>
 
@@ -728,7 +728,7 @@ export default function CommandCenter({
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
                     <span style={{ fontSize: 8, fontWeight: 700, color: '#fff', background: labelColor, padding: '1px 5px', borderRadius: 3 }}>{r.label}</span>
-                    {r.inRetaliationWindow && <span style={{ fontSize: 7, fontWeight: 800, color: '#fff', background: '#DC2626', padding: '1px 4px', borderRadius: 3 }}>RET.WIN</span>}
+                    {r.inRetaliationWindow && <span style={{ fontSize: 7, fontWeight: 800, color: '#fff', background: '#D45B4F', padding: '1px 4px', borderRadius: 3 }}>RET.WIN</span>}
                     {iceAlerts.some(a => a.nearestCampusId === r.campusId) && <span style={{ fontSize: 7, fontWeight: 800, color: '#fff', background: '#7C3AED', padding: '1px 4px', borderRadius: 3 }}>ICE</span>}
                     {shotSpotterEvents.some(s => haversine(c.lat, c.lng, s.lat, s.lng) <= 0.5 && ageInHours(s.date) <= 2) && <span style={{ fontSize: 7, fontWeight: 800, color: '#fff', background: '#0D9488', padding: '1px 4px', borderRadius: 3 }}>SHOT</span>}
                   </div>
@@ -783,8 +783,8 @@ export default function CommandCenter({
             {zones.filter(z => z.phase !== 'WATCH').map(zone => (
               <Circle key={zone.incidentId} center={[zone.lat, zone.lng]} radius={zone.radius * MI_TO_M}
                 pathOptions={{
-                  color: zone.phase === 'ACUTE' ? '#DC2626' : '#D97706',
-                  fillColor: zone.phase === 'ACUTE' ? '#DC2626' : '#D97706',
+                  color: zone.phase === 'ACUTE' ? '#D45B4F' : '#B79145',
+                  fillColor: zone.phase === 'ACUTE' ? '#D45B4F' : '#B79145',
                   fillOpacity: zone.phase === 'ACUTE' ? 0.25 : 0.12,
                   weight: 1, dashArray: '4 4',
                 }} />
@@ -832,7 +832,7 @@ export default function CommandCenter({
               ACTIVE INCIDENTS
             </span>
             {feedIncidents.length > 0 && (
-              <span style={{ marginLeft: 6, background: '#DC2626', color: '#fff', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 8 }}>
+              <span style={{ marginLeft: 6, background: '#D45B4F', color: '#fff', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 8 }}>
                 {feedIncidents.length}
               </span>
             )}
@@ -1004,7 +1004,7 @@ export default function CommandCenter({
                 {entry.action}
                 {entry.campus && <span style={{ color: TEXT2 }}> &mdash; {entry.campus}</span>}
               </span>
-              <span style={{ fontSize: 8, color: entry.status === 'complete' ? '#16A34A' : '#D97706', flexShrink: 0 }}>
+              <span style={{ fontSize: 8, color: entry.status === 'complete' ? '#16A34A' : '#B79145', flexShrink: 0 }}>
                 {entry.status === 'complete' ? '✓' : '○'}
               </span>
             </div>
@@ -1063,9 +1063,9 @@ const workflowBtnBase: React.CSSProperties = {
 };
 
 const WORKFLOW_BUTTONS = [
-  { key: '911', icon: '🚨', label: 'CALL 911', bg: '#DC262620', fg: '#DC2626', border: '#DC262660', shortcut: '1' },
-  { key: 'principal', icon: '📞', label: 'CONTACT PRINCIPAL', bg: '#D9770620', fg: '#D97706', border: '#D9770660', shortcut: '2' },
-  { key: 'cps', icon: '🏛️', label: 'CPS SAFETY', bg: '#D9770620', fg: '#D97706', border: '#D9770660', shortcut: '3' },
+  { key: '911', icon: '🚨', label: 'CALL 911', bg: '#D45B4F20', fg: '#D45B4F', border: '#D45B4F60', shortcut: '1' },
+  { key: 'principal', icon: '📞', label: 'CONTACT PRINCIPAL', bg: '#B7914520', fg: '#B79145', border: '#B7914560', shortcut: '2' },
+  { key: 'cps', icon: '🏛️', label: 'CPS SAFETY', bg: '#B7914520', fg: '#B79145', border: '#B7914560', shortcut: '3' },
   { key: 'nst', icon: '🛡️', label: 'DEPLOY NST', bg: `${GOLD}20`, fg: GOLD, border: `${GOLD}60`, shortcut: '4' },
   { key: 'leadership', icon: '👔', label: 'NOTIFY LEADERSHIP', bg: '#1E3A5F', fg: TEXT, border: `${GOLD}40`, shortcut: '5' },
   { key: 'comms', icon: '📢', label: 'FAMILY & STAFF', bg: '#1E3A8A20', fg: '#60A5FA', border: '#60A5FA60', shortcut: '6' },

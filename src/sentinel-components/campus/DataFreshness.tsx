@@ -48,7 +48,7 @@ function Tip({ text }: { text: string }) {
       {show && (
         <div style={{
           position: 'absolute', bottom: 20, left: -100, width: 240,
-          background: '#0D1117', color: '#fff', padding: '8px 12px',
+          background: '#121315', color: '#fff', padding: '8px 12px',
           borderRadius: 8, fontSize: 11, lineHeight: 1.5, zIndex: 100,
           boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
         }}>
@@ -72,7 +72,7 @@ export default function DataFreshness({
       marginBottom: 24, background: '#FAFAFA',
     }}>
       <div style={{
-        fontWeight: 700, fontSize: 14, color: '#0D1117', marginBottom: 4,
+        fontWeight: 700, fontSize: 14, color: '#121315', marginBottom: 4,
         paddingLeft: 10, borderLeft: '3px solid #F0B429',
       }}>
         Data Sources & Freshness
@@ -100,7 +100,7 @@ export default function DataFreshness({
         <Row
           label="CPD Verified"
           value={`Updated ${minutesAgo(cpdLastUpdate)} — ${cpdCount} incidents loaded`}
-          badge={{ text: 'VERIFIED', color: '#0D1117' }}
+          badge={{ text: 'VERIFIED', color: '#121315' }}
           tip="Chicago Police Department verified incident reports. CPD publishes with a 5-10 day delay — this is a CPD limitation, not a Sentinel issue."
           warning={cpdCount === 0 && !showLagMessage ? "CPD portal has a 5-10 day publication lag" : undefined}
         />
@@ -174,7 +174,7 @@ function Row({ label, value, badge, tip, warning }: {
         </div>
         <div style={{ color: '#6B7280', fontSize: 12 }}>{value}</div>
         {warning && (
-          <div style={{ color: '#D97706', fontSize: 11, marginTop: 2 }}>
+          <div style={{ color: '#B79145', fontSize: 11, marginTop: 2 }}>
             ⚠ {warning}
           </div>
         )}

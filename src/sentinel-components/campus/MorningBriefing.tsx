@@ -131,7 +131,7 @@ export default function MorningBriefing({
 
   return (
     <div style={{
-      borderLeft: '4px solid #0D1117',
+      borderLeft: '4px solid #121315',
       borderRadius: 12,
       padding: '20px 20px',
       marginBottom: 24,
@@ -144,7 +144,7 @@ export default function MorningBriefing({
       {/* Header */}
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: '#0D1117', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#121315', paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
             Good Morning, {campus.short}
           </div>
           <div style={{ fontSize: 13, color: '#9CA3AF', marginTop: 2 }}>
@@ -168,7 +168,7 @@ export default function MorningBriefing({
           onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'rotate(90deg)'; }}
           onMouseLeave={e => { e.currentTarget.style.transform = 'rotate(0deg)'; }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D1117" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#121315" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M23 4v6h-6" />
             <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
           </svg>
@@ -204,7 +204,7 @@ export default function MorningBriefing({
               animation: `fadeInSentence 400ms ease ${i * 400}ms both`,
             }}>
               <div style={{
-                fontSize: 18, color: '#0D1117', lineHeight: 1.7, padding: '8px 0',
+                fontSize: 18, color: '#121315', lineHeight: 1.7, padding: '8px 0',
               }}>
                 {sentence}
               </div>
@@ -227,12 +227,12 @@ export default function MorningBriefing({
 
       {/* One specific action */}
       <div style={{
-        marginTop: 20, padding: '16px', background: '#E0F2FE', borderRadius: 8,
+        marginTop: 20, padding: '16px', background: '#F7F5F1', borderRadius: 8,
       }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: '#0D1117', marginBottom: 4 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#121315', marginBottom: 4 }}>
           What should I do right now?
         </div>
-        <div style={{ fontSize: 16, color: '#0D1117', lineHeight: 1.6, fontWeight: 500 }}>
+        <div style={{ fontSize: 16, color: '#121315', lineHeight: 1.6, fontWeight: 500 }}>
           {action}
         </div>
       </div>
@@ -242,7 +242,7 @@ export default function MorningBriefing({
         {onAskPulse && (
           <button onClick={onAskPulse} style={{
             background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-            fontSize: 14, color: '#0D1117', fontWeight: 600, textDecoration: 'underline',
+            fontSize: 14, color: '#121315', fontWeight: 600, textDecoration: 'underline',
             textUnderlineOffset: 3,
           }}>
             Ask Sentinel anything

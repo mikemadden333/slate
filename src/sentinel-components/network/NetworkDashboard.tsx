@@ -88,7 +88,7 @@ export default function NetworkDashboard({
   const briefing = generateExecBriefing(calmCount, elevatedCampuses, retWindows, iceAlerts, summary);
 
   // Status bar color
-  const barBg = summary.campusesElevated === 0 ? '#E0F2FE' :
+  const barBg = summary.campusesElevated === 0 ? '#F7F5F1' :
     summary.campusesElevated <= 3 ? '#FFFBEB' : '#FEF2F2';
 
   return (
@@ -101,14 +101,14 @@ export default function NetworkDashboard({
       }}>
         <MetricTile label="Network Avg" value={String(summary.avgScore)}
           sub={summary.trends.scoreVsLastWeek !== 0 ? `${summary.trends.scoreVsLastWeek > 0 ? '↑' : '↓'}${Math.abs(summary.trends.scoreVsLastWeek).toFixed(0)} vs last wk` : 'stable'}
-          active={filter === 'all'} onClick={() => setFilter('all')} color="#0D1117" />
+          active={filter === 'all'} onClick={() => setFilter('all')} color="#121315" />
         <MetricTile label="Elevated" value={`${summary.campusesElevated}`}
           sub="of 17" active={filter === 'elevated'} onClick={() => setFilter('elevated')}
-          color={summary.campusesElevated > 0 ? '#D97706' : '#16A34A'} />
+          color={summary.campusesElevated > 0 ? '#B79145' : '#16A34A'} />
         <MetricTile label="Contagion" value={`${summary.acuteZones + summary.activeZones}`}
           sub={`${summary.acuteZones} ACUTE · ${summary.activeZones} ACTIVE`}
           active={filter === 'contagion'} onClick={() => setFilter('contagion')}
-          color={summary.acuteZones > 0 ? '#DC2626' : summary.activeZones > 0 ? '#D97706' : '#16A34A'} />
+          color={summary.acuteZones > 0 ? '#D45B4F' : summary.activeZones > 0 ? '#B79145' : '#16A34A'} />
         <MetricTile label="ICE" value={summary.iceAlerts > 0 ? 'ACTIVE' : 'CLEAR'}
           sub={summary.iceAlerts > 0 ? `${summary.iceAlerts} alert${summary.iceAlerts !== 1 ? 's' : ''}` : 'No reports'}
           active={filter === 'ice'} onClick={() => setFilter('ice')}
@@ -117,10 +117,10 @@ export default function NetworkDashboard({
 
       {/* Executive Morning Briefing */}
       <div style={{
-        borderLeft: '4px solid #0D1117', padding: '20px', marginBottom: 20,
+        borderLeft: '4px solid #121315', padding: '20px', marginBottom: 20,
         background: '#FEF9EC', borderRadius: 12,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 700, color: '#0D1117', marginBottom: 12, paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 700, color: '#121315', marginBottom: 12, paddingLeft: 12, borderLeft: '3px solid #F0B429' }}>
           Network
           <Explainer title="Network">
             <p style={{ margin: '0 0 12px' }}>The Network Intelligence view provides a holistic picture across all 17 campuses. Campuses are ranked by risk score and tagged with badges for active conditions.</p>
@@ -128,22 +128,22 @@ export default function NetworkDashboard({
             <p style={{ margin: 0 }}>Use the metric tiles to filter campuses by condition. Tap any campus row to switch to its detailed view.</p>
           </Explainer>
         </div>
-        <div style={{ fontSize: 16, color: '#0D1117', lineHeight: 1.8 }}>
+        <div style={{ fontSize: 16, color: '#121315', lineHeight: 1.8 }}>
           {briefing}
         </div>
 
         {/* Principal Call Recommendations */}
         {callRecs.length > 0 ? (
           <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#0D1117' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#121315' }}>
               Which principals should I call today?
             </div>
             {callRecs.map(rec => {
               const urgColors = rec.urgency === 'CALL NOW'
-                ? { border: '#DC2626', bg: '#FEF2F220' }
+                ? { border: '#D45B4F', bg: '#FEF2F220' }
                 : rec.urgency === 'CALL TODAY'
-                  ? { border: '#D97706', bg: '#FFFBEB20' }
-                  : { border: '#0D1117', bg: 'transparent' };
+                  ? { border: '#B79145', bg: '#FFFBEB20' }
+                  : { border: '#121315', bg: 'transparent' };
               return (
                 <div key={rec.campusId} style={{
                   borderLeft: `4px solid ${urgColors.border}`,
@@ -161,7 +161,7 @@ export default function NetworkDashboard({
                     }}>
                       {rec.urgency}
                     </span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#0D1117' }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#121315' }}>
                       {rec.campusName}
                     </span>
                   </div>
@@ -192,8 +192,8 @@ export default function NetworkDashboard({
                     <button
                       onClick={(e) => { e.stopPropagation(); onSelectCampus(rec.campusId); }}
                       style={{
-                        background: 'none', border: '1px solid #0D1117', borderRadius: 6,
-                        padding: '4px 12px', fontSize: 12, color: '#0D1117', fontWeight: 600, cursor: 'pointer',
+                        background: 'none', border: '1px solid #121315', borderRadius: 6,
+                        padding: '4px 12px', fontSize: 12, color: '#121315', fontWeight: 600, cursor: 'pointer',
                       }}
                     >
                       View campus →
@@ -219,7 +219,7 @@ export default function NetworkDashboard({
           {filter === 'all' ? 'All 17 campuses' : `Showing ${filtered.length} campus${filtered.length !== 1 ? 'es' : ''}`}
           {filter !== 'all' && (
             <button onClick={() => setFilter('all')} style={{
-              marginLeft: 8, background: 'none', border: 'none', color: '#0D1117',
+              marginLeft: 8, background: 'none', border: 'none', color: '#121315',
               fontSize: 12, cursor: 'pointer', textDecoration: 'underline',
             }}>
               Show all
@@ -264,7 +264,7 @@ export default function NetworkDashboard({
                   {risk.label}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: 15, color: '#0D1117' }}>{campus.short}</div>
+                  <div style={{ fontWeight: 700, fontSize: 15, color: '#121315' }}>{campus.short}</div>
                   <div style={{ fontSize: 11, color: '#9CA3AF' }}>{campus.communityArea}</div>
                 </div>
                 {badges.inc24h > 0 && (
@@ -273,7 +273,7 @@ export default function NetworkDashboard({
                   </div>
                 )}
                 <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                  {risk.inRetaliationWindow && <span style={{ fontSize: 9, fontWeight: 800, color: '#fff', background: '#DC2626', padding: '2px 5px', borderRadius: 3 }}>RET</span>}
+                  {risk.inRetaliationWindow && <span style={{ fontSize: 9, fontWeight: 800, color: '#fff', background: '#D45B4F', padding: '2px 5px', borderRadius: 3 }}>RET</span>}
                   {badges.ice && <span style={{ fontSize: 9, fontWeight: 800, color: '#fff', background: '#7C3AED', padding: '2px 5px', borderRadius: 3 }}>ICE</span>}
                   {badges.shot && <span style={{ fontSize: 9, fontWeight: 800, color: '#fff', background: '#0D9488', padding: '2px 5px', borderRadius: 3 }}>SHOT</span>}
                 </div>

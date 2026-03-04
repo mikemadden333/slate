@@ -87,8 +87,8 @@ function ElevatedFirstSeen({ risk }: { risk: CampusRisk }) {
   if (seen || risk.label === 'LOW') return null;
 
   return (
-    <EducationCard borderColor="#D97706" onGotIt={markSeen} onDismiss={markDismissed}>
-      <div style={{ fontSize: 16, fontWeight: 700, color: '#D97706', marginBottom: 8 }}>
+    <EducationCard borderColor="#B79145" onGotIt={markSeen} onDismiss={markDismissed}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: '#B79145', marginBottom: 8 }}>
         Your campus just moved to ELEVATED.
       </div>
       <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.7 }}>
@@ -107,8 +107,8 @@ function AcuteFirstSeen({ risk }: { risk: CampusRisk }) {
   if (seen || !hasAcute) return null;
 
   return (
-    <EducationCard borderColor="#DC2626" onGotIt={markSeen} onDismiss={markDismissed}>
-      <div style={{ fontSize: 16, fontWeight: 700, color: '#DC2626', marginBottom: 8 }}>
+    <EducationCard borderColor="#D45B4F" onGotIt={markSeen} onDismiss={markDismissed}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: '#D45B4F', marginBottom: 8 }}>
         You're seeing an ACUTE zone for the first time.
       </div>
       <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.7 }}>
@@ -128,8 +128,8 @@ function ScoreJumpFirstSeen({ risk, lastScore }: { risk: CampusRisk; lastScore?:
   if (jump < 15) return null;
 
   return (
-    <EducationCard borderColor="#0D1117" onGotIt={markSeen} onDismiss={markDismissed}>
-      <div style={{ fontSize: 16, fontWeight: 700, color: '#0D1117', marginBottom: 8 }}>
+    <EducationCard borderColor="#121315" onGotIt={markSeen} onDismiss={markDismissed}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: '#121315', marginBottom: 8 }}>
         Your score just jumped {jump} points.
       </div>
       <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.7 }}>
@@ -205,7 +205,7 @@ function IceFirstSeen({ iceAlerts, dataLoaded }: { iceAlerts: IceAlert[]; dataLo
         </ol>
 
         <div style={{
-          fontSize: 14, color: '#DC2626', fontWeight: 600, lineHeight: 1.6,
+          fontSize: 14, color: '#D45B4F', fontWeight: 600, lineHeight: 1.6,
           padding: '12px 14px', background: '#FEF2F2', borderRadius: 8, marginBottom: 16,
         }}>
           Critical: Never mention ICE, immigration, or the nature of the alert in any
