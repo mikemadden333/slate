@@ -17,6 +17,8 @@ interface Props {
   minutesToDismissal: number;
   riskLabel: 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL';
   incidents6h?: number;
+  scannerCalls?: number;
+  scannerSpikeZones?: number;
 }
 
 const KEYFRAMES = `
@@ -46,6 +48,7 @@ const PERIOD_COLORS: Record<string, string> = {
 
 export default function RightNowBar({
   schoolPeriod, minutesToArrival, minutesToDismissal, riskLabel, incidents6h,
+  scannerCalls, scannerSpikeZones,
 }: Props) {
   const [, setTick] = useState(0);
 
