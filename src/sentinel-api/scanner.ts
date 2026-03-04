@@ -65,6 +65,7 @@ export interface ScannerCall {
   talkgroupId: number;
   time: string;
   length: number;
+  url: string;
   zone: number | null;
   zoneName: string;
 }
@@ -172,6 +173,7 @@ function parseCall(c: Record<string, unknown>): ScannerCall | null {
   const talkgroupId = Number(c.talkgroupNum ?? c.talkgroup_num ?? 0);
   const time = String(c.time ?? c.start_time ?? '');
   const length = Number(c.len ?? c.length ?? 0);
+  const url = String(c.url ?? c.audio_url ?? '');
 
   if (!time) return null;
 
@@ -189,6 +191,7 @@ function parseCall(c: Record<string, unknown>): ScannerCall | null {
     talkgroupId,
     time,
     length,
+    url,
     zone: matchedZone?.zone ?? null,
     zoneName: matchedZone?.name ?? talkgroup,
   };

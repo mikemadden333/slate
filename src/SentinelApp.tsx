@@ -18,6 +18,8 @@ import { getSchoolPeriod, minutesToArrival, minutesToDismissal } from './sentine
 import { haversine, ageInHours } from './sentinel-engine/geo';
 import { fetchIncidents, fetchShotSpotter } from './sentinel-api/cpd';
 import { fetchScannerActivity } from './sentinel-api/scanner';
+import { transcribeSpikeCalls } from './sentinel-api/scannerIntel';
+import type { DispatchIncident } from './sentinel-api/scannerIntel';
 import type { ScannerSummary } from './sentinel-api/scanner';
 import { fetchCitizenIncidents } from './sentinel-api/citizen';
 import type { CitizenIncident } from './sentinel-api/citizen';
@@ -119,6 +121,7 @@ export default function App() {
   const [iceAlerts, setIceAlerts] = useState<IceAlert[]>([]);
   const [citizenIncidents, setCitizenIncidents] = useState<CitizenIncident[]>([]);
   const [scannerData, setScannerData] = useState<ScannerSummary | null>(null);
+  const [dispatchIncidents, setDispatchIncidents] = useState<DispatchIncident[]>([]);
   const [realtimeIncidents, setRealtimeIncidents] = useState<Incident[]>([]);
   const [newsIncidents, setNewsIncidents] = useState<Incident[]>([]);
   const [dataFreshness, setDataFreshness] = useState({
@@ -313,6 +316,17 @@ export default function App() {
     const data = await fetchScannerActivity(120);
     setScannerData(data);
     console.log('Scanner: ' + data.totalCalls + ' calls, ' + data.spikeZones.length + ' spike zones');
+    // Transcribe spike zone calls for real-time dispatch intelligence
+    if (data.spikeZones.length > 0) {
+      const spikeCalls = data.spikeZones.flatMap(z => z.recentCalls);
+      console.log('Scanner intel: spike detected, transcribing ' + spikeCalls.length + ' calls');
+      transcribeSpikeCalls(spikeCalls).then(dispatches => {
+        if (dispatches.length > 0) {
+          console.log('Scanner intel: ' + dispatches.length + ' dispatch incidents geolocated');
+          setDispatchIncidents(dispatches);
+        }
+      }).catch(err => console.log('Scanner intel error:', String(err)));
+    }
   }, []);
 
   useEffect(() => {
