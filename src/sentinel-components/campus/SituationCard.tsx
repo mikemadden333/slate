@@ -77,19 +77,27 @@ function getTopSentence(risk: CampusRisk): { headline: string; context: string }
   }
 
   // Recent close incident
-  if (risk.closeCount > 0 && risk.acute > 0) {
+  if (risk.label === 'CRITICAL') {
     return {
-      headline: `${risk.closeCount} incident${risk.closeCount !== 1 ? 's' : ''} detected within 0.5 miles of your campus in the last 24 hours.`,
-      context: risk.label === 'LOW'
-        ? 'Activity is within normal ranges. Standard operations apply.'
-        : `Your campus is at ${risk.label} risk. Review your security posture for today.`,
+      headline: 'Critical threat conditions near your campus.',
+      context: 'Your campus is in an active retaliation window. Implement Code Red protocols immediately.',
     };
   }
-
-  // Quiet
+  if (risk.label === 'HIGH') {
+    return {
+      headline: 'Elevated violence activity near your campus.',
+      context: 'A serious incident has occurred within 1 mile in the last 14 days. Review protocols before students arrive.',
+    };
+  }
+  if (risk.label === 'ELEVATED') {
+    return {
+      headline: 'Increased activity detected near your campus.',
+      context: 'Violent incidents or weapons activity within 0.5 miles in the last 14 days. Stay aware today.',
+    };
+  }
   return {
-    headline: 'Your campus neighborhood has been quiet.',
-    context: 'Nothing in the last 24 hours requires your attention. That\'s a good morning.',
+    headline: 'No acute incidents flagged near your campus.',
+    context: 'Current data shows no contagion-level events nearby. Note: CPD data has a 5-10 day publication lag.',
   };
 }
 
