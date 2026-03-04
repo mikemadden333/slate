@@ -5,7 +5,7 @@
  * Fullscreen command mode. Toast notifications for new incidents.
  */
 
-import { appStartTime, SETTLE_TIME_MS } from '../../WatchApp';
+import { appStartTime, SETTLE_TIME_MS } from '../../SentinelApp';
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import {
   MapContainer, TileLayer, Circle, CircleMarker,
