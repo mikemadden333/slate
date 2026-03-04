@@ -203,7 +203,7 @@ export default function NetworkDashboard({
       {/* ── CHAPTER 3: CAMPUS HEAT BOARD ── */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: '#121315', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-          All Campuses — {sorted.length} total · {elevatedCampuses.length} elevated
+          All Campuses — 17 total · {elevatedCampuses.length} elevated
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {sorted.map(risk => {
@@ -309,7 +309,8 @@ function getSituation(risk: CampusRisk): string {
   if (acute.length > 0) return `${acute.length} ACUTE contagion zone${acute.length > 1 ? 's' : ''} nearby`;
   const active = risk.contagionZones.filter(z => z.phase === 'ACTIVE');
   if (active.length > 0) return `${active.length} active contagion zone${active.length > 1 ? 's' : ''} nearby`;
-  if (risk.label !== 'LOW') return `${risk.closeCount} incidents within 0.5mi in last 14 days`;
+  if (risk.label === 'HIGH') return 'Elevated violent activity nearby in last 14 days.';
+  if (risk.label === 'ELEVATED') return 'Increased violent activity nearby in last 14 days.';
   return '';
 }
 
@@ -319,7 +320,9 @@ function generateExecBriefing(
   iceAlerts: IceAlert[], summary: NetworkSummary,
 ): string {
   const parts: string[] = [];
-  parts.push(`${calmCount} of 17 campuses are in normal conditions.`);
+  const totalCampuses = 17;
+  const actualCalm = totalCampuses - elevated.length;
+  parts.push(`${actualCalm} of ${totalCampuses} campuses are in normal conditions.`);
   if (elevated.length > 0) {
     const names = elevated.slice(0, 3).map(r => CAMPUSES.find(c => c.id === r.campusId)?.short ?? '?');
     const nameStr = names.length <= 2 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
