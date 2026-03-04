@@ -509,7 +509,9 @@ export default function App() {
             newsLastUpdate={dataFreshness.newsLastUpdate} newsSourceCount={dataFreshness.newsSourceCount}
             iceAlertCount={iceAlerts.length}
             realtimeCount={dataFreshness.realtimeCount} realtimeLastUpdate={dataFreshness.realtimeLastUpdate}
-            newsIncidentCount={dataFreshness.newsIncidentCount} />
+            newsIncidentCount={dataFreshness.newsIncidentCount}
+            scannerCalls={scannerData?.totalCalls}
+            scannerSpikeZones={scannerData?.spikeZones.length} />
           <div style={{ fontSize: 11, color: '#6B7280', lineHeight: 1.6, padding: '16px 0', borderTop: '1px solid #E7E2D8', textAlign: 'center' }}>
             Data: Chicago Police Department, CPD Radio (OpenMHz), ShotSpotter acoustic sensors,
             RSS news (Block Club, WGN, ABC7, NBC5, CBS, Sun-Times, WBEZ, Fox 32), Open-Meteo weather.

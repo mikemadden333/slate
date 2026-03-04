@@ -15,9 +15,11 @@ interface Props {
   newsLastUpdate: Date;
   newsSourceCount: number;
   iceAlertCount: number;
-  realtimeCount?: number;
+  rrealtimeCount?: number;
   realtimeLastUpdate?: Date;
   newsIncidentCount?: number;
+  scannerCalls?: number;
+  scannerSpikeZones?: number;
 }
 
 function isCpdLagExpected(): boolean {
@@ -62,7 +64,8 @@ function Tip({ text }: { text: string }) {
 export default function DataFreshness({
   cpdLastUpdate, cpdCount, citizenLastUpdate, citizenCount,
   shotSpotterStatus, newsLastUpdate, newsSourceCount, iceAlertCount,
-  realtimeCount = 0, realtimeLastUpdate, newsIncidentCount = 0,
+  rrealtimeCount = 0, realtimeLastUpdate, newsIncidentCount = 0,
+  scannerCalls = 0, scannerSpikeZones = 0,
 }: Props) {
   const showLagMessage = cpdCount === 0 && isCpdLagExpected();
 
@@ -119,6 +122,14 @@ export default function DataFreshness({
             : 'No community-reported incidents near your campus in the last hour.'}
           badge={{ text: 'LIVE', color: '#0D9488' }}
           tip="Scanner-derived incidents from Citizen app. Available 5-15 minutes after CPD dispatch. Unverified."
+        />
+       <Row
+          label="CPD Radio"
+          value={scannerCalls > 0
+            ? `${scannerCalls} calls monitored${scannerSpikeZones > 0 ? ` — ${scannerSpikeZones} spike zone${scannerSpikeZones !== 1 ? 's' : ''} detected` : ' — no spike zones'}`
+            : 'Scanner offline or no recent traffic'}
+          badge={{ text: scannerCalls > 0 ? 'LIVE' : 'OFFLINE', color: scannerCalls > 0 ? '#0D9488' : '#9CA3AF' }}
+          tip="CPD radio traffic via OpenMHz. Monitors zone-level call volume for unusual spikes near campuses. 2-hour rolling window, 5-minute refresh."
         />
         <Row
           label="ShotSpotter"
