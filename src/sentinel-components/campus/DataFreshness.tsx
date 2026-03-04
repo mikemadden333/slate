@@ -15,7 +15,7 @@ interface Props {
   newsLastUpdate: Date;
   newsSourceCount: number;
   iceAlertCount: number;
-  rrealtimeCount?: number;
+  realtimeCount?: number;
   realtimeLastUpdate?: Date;
   newsIncidentCount?: number;
   scannerCalls?: number;
@@ -64,7 +64,7 @@ function Tip({ text }: { text: string }) {
 export default function DataFreshness({
   cpdLastUpdate, cpdCount, citizenLastUpdate, citizenCount,
   shotSpotterStatus, newsLastUpdate, newsSourceCount, iceAlertCount,
-  rrealtimeCount = 0, realtimeLastUpdate, newsIncidentCount = 0,
+  realtimeCount = 0, realtimeLastUpdate, newsIncidentCount = 0,
   scannerCalls = 0, scannerSpikeZones = 0,
 }: Props) {
   const showLagMessage = cpdCount === 0 && isCpdLagExpected();
