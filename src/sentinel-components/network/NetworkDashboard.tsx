@@ -83,7 +83,7 @@ export default function NetworkDashboard({
   // Executive briefing
   const elevatedCampuses = sorted.filter(r => r.label !== 'LOW');
   const retWindows = sorted.filter(r => r.inRetaliationWindow);
-  const calmCount = sorted.length - elevatedCampuses.length;
+  const calmCount = Math.min(sorted.length, 17) - elevatedCampuses.length;
 
   const briefing = generateExecBriefing(calmCount, elevatedCampuses, retWindows, iceAlerts, summary);
 
