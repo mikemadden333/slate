@@ -134,7 +134,7 @@ function CorridorExplainModal({ onClose }: { onClose: () => void }) {
   return (
     <ExplainModal title="How Corridors Are Determined" onClose={onClose}>
       <p style={{ marginTop: 0 }}>
-        Sentinel identifies 4 primary walking corridors radiating from your campus based on the street grid.
+        Watch identifies 4 primary walking corridors radiating from your campus based on the street grid.
       </p>
       <ul style={{ paddingLeft: 20 }}>
         <li><strong style={{ color: '#16A34A' }}>GREEN:</strong> No incidents in last 6h. Clear.</li>

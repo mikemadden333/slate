@@ -94,7 +94,7 @@ export default function DataFreshness({
           <Info size={16} style={{ flexShrink: 0, marginTop: 2, color: '#3B82F6' }} />
           <div>
             Overnight reports are still being filed by CPD officers.
-            Check back after 9am for last night's verified data. Sentinel uses Citizen scanner data and news feeds to bridge the gap until official reports arrive.
+            Check back after 9am for last night's verified data. Watch uses Citizen scanner data and news feeds to bridge the gap until official reports arrive.
           </div>
         </div>
       )}
@@ -104,7 +104,7 @@ export default function DataFreshness({
           label="CPD Verified"
           value={`Updated ${minutesAgo(cpdLastUpdate)} — ${cpdCount} incidents loaded`}
           badge={{ text: 'VERIFIED', color: '#121315' }}
-          tip="Chicago Police Department verified incident reports. CPD publishes with a 5-10 day delay — this is a CPD limitation, not a Sentinel issue."
+          tip="Chicago Police Department verified incident reports. CPD publishes with a 5-10 day delay — this is a CPD limitation, not a Watch issue."
           warning={cpdCount === 0 && !showLagMessage ? "CPD portal has a 5-10 day publication lag" : undefined}
         />
         <Row

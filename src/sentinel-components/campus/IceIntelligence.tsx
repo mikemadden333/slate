@@ -152,7 +152,7 @@ export default function IceIntelligence({ iceAlerts, onInitiateCodeWhite }: Prop
             <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
               <ExplainLink onClick={() => setShowExplain(true)} label="What is Code White?" />
               <Explainer title="ICE Intelligence">
-                <p style={{ margin: '0 0 12px' }}>Sentinel monitors news feeds and social media for immigration enforcement activity near campuses using a <strong>three-tier verification filter</strong>.</p>
+                <p style={{ margin: '0 0 12px' }}>Watch monitors news feeds and social media for immigration enforcement activity near campuses using a <strong>three-tier verification filter</strong>.</p>
                 <p style={{ margin: '0 0 12px' }}>Alerts are only surfaced when within <strong>3 miles</strong> of a campus with a <strong>non-zero distance</strong> (0.0 mi = geocoding failure, discarded).</p>
                 <p style={{ margin: 0 }}>Code White (Neptune Protocol) is the network's response protocol for confirmed ICE activity near campuses.</p>
               </Explainer>

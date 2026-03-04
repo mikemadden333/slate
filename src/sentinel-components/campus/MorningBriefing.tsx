@@ -237,7 +237,7 @@ export default function MorningBriefing({
         </div>
       </div>
 
-      {/* Ask Sentinel + View data */}
+      {/* Ask Watch + View data */}
       <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         {onAskPulse && (
           <button onClick={onAskPulse} style={{
@@ -245,7 +245,7 @@ export default function MorningBriefing({
             fontSize: 14, color: '#121315', fontWeight: 600, textDecoration: 'underline',
             textUnderlineOffset: 3,
           }}>
-            Ask Sentinel anything
+            Ask Watch anything
           </button>
         )}
         <button onClick={() => setShowDataInputs(!showDataInputs)} style={{

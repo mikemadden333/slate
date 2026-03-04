@@ -1,6 +1,6 @@
 /**
  * ExplainModal — Reusable "What is this?" overlay.
- * Plain-English explanations for every technical concept in Sentinel.
+ * Plain-English explanations for every technical concept in Watch.
  * Clicking the backdrop closes the modal.
  */
 

@@ -113,7 +113,7 @@ function AcuteFirstSeen({ risk }: { risk: CampusRisk }) {
       </div>
       <div style={{ fontSize: 14, color: '#374151', lineHeight: 1.7 }}>
         This is the most serious phase of the violence contagion model developed by Professor Andrew Papachristos at Yale.
-        When a homicide occurs near a campus, Sentinel tracks the 125-day window of elevated risk it creates — with the first
+        When a homicide occurs near a campus, Watch tracks the 125-day window of elevated risk it creates — with the first
         72 hours being the most dangerous. This is peer-reviewed science, not speculation.
       </div>
     </EducationCard>

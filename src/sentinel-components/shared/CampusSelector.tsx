@@ -85,7 +85,7 @@ export default function CampusSelector({ onSelectCampus, onSelectNetwork }: Prop
       </svg>
 
       <div style={{ fontSize: 28, fontWeight: 800, color: '#fff', marginBottom: 6, textAlign: 'center' }}>
-        Slate Sentinel
+        Slate Watch
       </div>
       <div style={{ fontSize: 18, color: '#F0B429', marginBottom: 32, textAlign: 'center' }}>
         Select your campus or view the network
