@@ -319,7 +319,7 @@ function generateExecBriefing(
   const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const parts: string[] = [];
 
-  parts.push(`Good morning. As of ${timeStr}, ${calmCount} of 17 campuses are operating in normal conditions.`);
+  parts.push(`${new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 17 ? 'Good afternoon' : 'Good evening'}. As of ${timeStr}, ${calmCount} of 17 campuses are operating in normal conditions.`);
 
   if (elevated.length > 0) {
     const names = elevated.slice(0, 3).map(r => CAMPUSES.find(c => c.id === r.campusId)?.short ?? '?');
