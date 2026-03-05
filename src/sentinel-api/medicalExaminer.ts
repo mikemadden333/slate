@@ -10,7 +10,12 @@ const ME_API = 'https://datacatalog.cookcountyil.gov/resource/cjeq-bs86.json';
 export async function fetchMedicalExaminerHomicides(days = 14): Promise<Incident[]> {
   try {
     const since = new Date(Date.now() - days * 86400000).toISOString().split('T')[0];
-    const url = `${ME_API}?$where=death_date >= '${since}' AND manner_of_death = 'HOMICIDE'&$limit=200&$order=death_date DESC`;
+    const params = new URLSearchParams({
+      $where: `death_date > '${since}' AND manner_of_death = 'HOMICIDE'`,
+      $limit: '200',
+      $order: 'death_date DESC',
+    });
+    const url = `${ME_API}?${params}`;
     
     const res = await fetch(url);
     if (!res.ok) throw new Error(`ME API ${res.status}`);
