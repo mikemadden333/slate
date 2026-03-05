@@ -18,8 +18,8 @@ interface CampusDashboardProps {
   campusName: string;
 }
 
-export default function CampusDashboard({
-  const { data: { budget }, ytd } = useLedger(); campusName }: CampusDashboardProps) {
+export default function CampusDashboard({ campusName }: CampusDashboardProps) {
+  const { data: { budget }, ytd } = useLedger();
   const campus = CAMPUSES.find(c => c.name === campusName);
   if (!campus) return <div style={{ color: TEXT.primary, padding: 40 }}>Campus not found.</div>;
 
