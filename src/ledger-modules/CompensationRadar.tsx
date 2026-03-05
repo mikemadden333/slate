@@ -1,3 +1,5 @@
+import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import {
   AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -15,6 +17,7 @@ const scenarios = COMPENSATION.fy27Scenarios;
 const gap = COMPENSATION.scenarioGap;
 
 export default function CompensationRadar() {
+  const { data: { budget, historical }, ytd } = useLedger();
   return (
     <div>
       <SectionHeader
@@ -399,6 +402,8 @@ export default function CompensationRadar() {
         trajectory (10% vs 15% growth = $2.1M swing). Revenue per FTE must accelerate to
         sustain current staffing levels.
       </AIInsight>
+
+      <AIFinancialAdvisor mode="compensation" compact={true} />
     </div>
   );
 }

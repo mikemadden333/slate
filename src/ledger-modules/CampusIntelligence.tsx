@@ -1,3 +1,5 @@
+import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import { useState, useMemo, useCallback } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine,
@@ -16,6 +18,7 @@ type CampusTab = 'Per Pupil $' | 'Enrollment' | 'Δ from Avg' | 'Applications' |
 const TABS: string[] = ['Per Pupil $', 'Enrollment', 'Δ from Avg', 'Applications', 'Retention'];
 
 export default function CampusIntelligence() {
+  const { data: { budget }, ytd } = useLedger();
   const [activeTab, setActiveTab] = useState<string>('Per Pupil $');
   const [selectedName, setSelectedName] = useState<string | null>(null);
   const tab = activeTab as CampusTab;
@@ -369,6 +372,8 @@ function PerPupilSpread() {
       }}>
         Spread: ${fmtNum(perPupilSpread)} ({spreadPct}%)
       </div>
+
+      <AIFinancialAdvisor mode="freeform" compact={true} />
     </div>
   );
 }

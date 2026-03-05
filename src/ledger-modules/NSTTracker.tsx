@@ -1,3 +1,5 @@
+import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import { useMemo } from 'react';
 import {
   BarChart, Bar,
@@ -55,6 +57,7 @@ function NSTTooltip({ active, payload, label }: {
 }
 
 export default function NSTTracker() {
+  const { data: { budget }, ytd } = useLedger();
   const sortedDepts = useMemo(() =>
     [...NST_DEPARTMENTS].sort((a, b) => b.variance - a.variance),
   []);
@@ -294,6 +297,8 @@ export default function NSTTracker() {
         offset by underspends in Education Team (-$173K), IT (-$129K), and Legal
         (-$80K), totaling $382K in savings. Net NST variance: $300K over budget (2.3%).
       </AIInsight>
+
+      <AIFinancialAdvisor mode="freeform" compact={true} />
     </div>
   );
 }

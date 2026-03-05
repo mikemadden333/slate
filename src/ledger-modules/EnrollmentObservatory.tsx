@@ -1,3 +1,5 @@
+import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import { useMemo } from 'react';
 import {
   AreaChart, Area,
@@ -54,6 +56,7 @@ function EnrollmentTooltip({ active, payload, label }: {
 }
 
 export default function EnrollmentObservatory() {
+  const { data: { budget, historical } } = useLedger();
   const chartData = useMemo(() => {
     const opt = ENROLLMENT_SCENARIOS.optimistic.projections;
     const prob = ENROLLMENT_SCENARIOS.probable.projections;
@@ -382,6 +385,8 @@ export default function EnrollmentObservatory() {
         12,100 through SY31. The spread between optimistic and pessimistic widens to 622 students by
         SY31, representing approximately $10.3M in PCTC revenue — roughly equivalent to one full campus.
       </AIInsight>
+
+      <AIFinancialAdvisor mode="enrollment" compact={true} />
     </div>
   );
 }

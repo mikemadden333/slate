@@ -1,3 +1,5 @@
+import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import { useState, useMemo, useCallback } from 'react';
 import {
   ComposedChart, Bar, Line, Cell,
@@ -13,7 +15,7 @@ import AIInsight from '../sentinel-components/AIInsight';
 
 type Scenario = 'optimistic' | 'reasonable' | 'pessimistic';
 
-const FY26B = { year: 'FY26B', dscr: 3.47, cushion: 8.8, ebitda: 7.5, enrollment: 12148 };
+const FY26B = { year: 'FY26B', dscr: budget.dscr, cushion: budget.ebitda, ebitda: budget.ebitda, enrollment: budget.enrollmentC1 };
 
 function dscrStatus(dscr: number): 'pass' | 'tight' | 'breach' {
   if (dscr >= 1.1) return 'pass';
@@ -88,6 +90,7 @@ const AI_INSIGHTS: Record<Scenario, { severity: 'green' | 'amber' | 'red'; text:
 };
 
 export default function CovenantStressLab() {
+  const { data: { budget, covenants }, ytd } = useLedger();
   const [scenario, setScenario] = useState<Scenario>('reasonable');
 
   const handleScenarioClick = useCallback((s: Scenario) => {
@@ -360,6 +363,8 @@ export default function CovenantStressLab() {
       <AIInsight severity={insight.severity}>
         {insight.text}
       </AIInsight>
+
+      <AIFinancialAdvisor mode="covenant" compact={true} />
     </div>
   );
 }

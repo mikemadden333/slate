@@ -1,3 +1,5 @@
+import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import { useMemo } from 'react';
 import {
   BarChart, Bar,
@@ -16,7 +18,8 @@ interface CampusDashboardProps {
   campusName: string;
 }
 
-export default function CampusDashboard({ campusName }: CampusDashboardProps) {
+export default function CampusDashboard({
+  const { data: { budget }, ytd } = useLedger(); campusName }: CampusDashboardProps) {
   const campus = CAMPUSES.find(c => c.name === campusName);
   if (!campus) return <div style={{ color: TEXT.primary, padding: 40 }}>Campus not found.</div>;
 
@@ -260,6 +263,8 @@ function BudgetItem({ label, value }: { label: string; value: string }) {
       <div style={{ fontSize: 20, fontFamily: "'DM Mono', monospace", fontWeight: 500, color: TEXT.primary }}>
         {value}
       </div>
+
+      <AIFinancialAdvisor mode="freeform" compact={true} />
     </div>
   );
 }
