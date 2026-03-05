@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { useState, useCallback, useRef } from 'react';
+import { LedgerProvider } from './ledger-context/LedgerDataContext';
+import DataUploadPanel from './ledger-modules/DataUploadPanel';
 import CommandCenter from './ledger-modules/CommandCenter';
 import FinancialTrajectory from './ledger-modules/FinancialTrajectory';
 import CampusIntelligence from './ledger-modules/CampusIntelligence';
@@ -76,6 +78,7 @@ export default function LedgerApp() {
   };
 
   return (
+    <LedgerProvider>
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: '#0D1117' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -115,6 +118,7 @@ export default function LedgerApp() {
         ))}
       </div>
 
+      <DataUploadPanel />
       <div ref={contentRef}>{renderModule()}</div>
 
       <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: '#4A5568', borderTop: '1px solid #E8EDF2' }}>
@@ -122,5 +126,6 @@ export default function LedgerApp() {
         <div style={{ fontSize: 9, color: '#94A3B8', marginTop: 4 }}>Slate Systems, LLC · Madden Advisory Group · 2026</div>
       </footer>
     </div>
+    </LedgerProvider>
   );
 }

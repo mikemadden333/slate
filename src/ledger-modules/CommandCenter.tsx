@@ -11,6 +11,8 @@ import { HISTORICAL } from '../sentinel-data/historical';
 import { FY26_BUDGET, FY26_YTD } from '../sentinel-data/fy26';
 import KPICard from '../sentinel-components/KPICard';
 import AIInsight from '../sentinel-components/AIInsight';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
+import { useLedger } from '../ledger-context/LedgerDataContext';
 import SectionHeader from '../sentinel-components/SectionHeader';
 import DistanceToDanger from '../sentinel-components/DistanceToDanger';
 import CustomTooltip from '../sentinel-components/CustomTooltip';
@@ -45,6 +47,7 @@ function WaterfallTooltip({ active, payload, label }: {
 }
 
 export default function CommandCenter() {
+  const { data, ytd } = useLedger();
   const chartData = useMemo(() => [
     ...HISTORICAL.map(h => ({
       year: h.year,
@@ -410,23 +413,9 @@ export default function CommandCenter() {
           }}>
             AI Insights
           </h3>
-          <AIInsight severity="green">
-            FY26 YTD is $5.9M ahead of budget through January, driven by
-            philanthropy outperformance (+$2.3M) and other public revenue
-            (+$1.5M) offsetting personnel overruns (+$3.2M over budget).
-          </AIInsight>
-          <AIInsight severity="amber">
-            The Reasonable scenario projects EBITDA deficits in FY27 (-$1.9M)
-            and FY28 (-$3.3M) before recovering in FY29+. The FY28 DSCR of
-            0.72x would breach the 1.0x bond covenant minimum.
-          </AIInsight>
-          <AIInsight severity="red">
-            Personnel spending is $3.2M over budget YTD ($95.8M vs $92.7M).
-            At 70% of operating expenses, this is the single largest cost
-            pressure. The L1→L2 salary premium and health cost trajectory are
-            the key swing factors — a $4.5M gap between optimistic and
-            reasonable scenarios.
-          </AIInsight>
+          <AIFinancialAdvisor mode="variance" autoRun={true} />
+          <AIFinancialAdvisor mode="covenant" compact={true} />
+          <AIFinancialAdvisor mode="freeform" />
         </div>
       </div>
     </div>
