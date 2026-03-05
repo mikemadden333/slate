@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useLedger } from '../ledger-context/LedgerDataContext';
 import {
   ComposedChart, Area, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine,
