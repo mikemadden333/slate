@@ -7,8 +7,6 @@ import {
 } from 'recharts';
 import { NOBLE, BG, TEXT, CHART, STATUS } from '../theme/colors';
 import { fmt } from '../theme/formatters';
-import { HISTORICAL } from '../sentinel-data/historical';
-import { FY26_BUDGET, FY26_YTD } from '../sentinel-data/fy26';
 import KPICard from '../sentinel-components/KPICard';
 import AIInsight from '../sentinel-components/AIInsight';
 import AIFinancialAdvisor from './AIFinancialAdvisor';
@@ -48,8 +46,9 @@ function WaterfallTooltip({ active, payload, label }: {
 
 export default function CommandCenter() {
   const { data, ytd } = useLedger();
+  const { budget, historical } = data;
   const chartData = useMemo(() => [
-    ...HISTORICAL.map(h => ({
+    ...historical.map(h => ({
       year: h.year,
       totalRevenue: h.totalRevenue,
       totalExpenses: h.totalExpenses,
@@ -57,66 +56,69 @@ export default function CommandCenter() {
     })),
     {
       year: 'FY26B',
-      totalRevenue: FY26_BUDGET.totalRevenue,
-      totalExpenses: FY26_BUDGET.totalExpenses,
-      ebitda: FY26_BUDGET.ebitda,
+      totalRevenue: budget.revenue.total,
+      totalExpenses: budget.expenses.total,
+      ebitda: budget.ebitda,
     },
-  ], []);
+  ], [historical, budget]);
 
   /* ── Revenue waterfall data ─────────────────────────────── */
 
   const revWaterfall = useMemo(() => {
-    const r = FY26_YTD.revenue;
-    const budget = r.total.budget;   // 139.9
-    let running = budget;
-
+    const pf = ytd.proratedBudgetFactor;
+    const proratedTotal = budget.revenue.total * pf;
+    const cpsBudget = budget.revenue.cps * pf;
+    const otherBudget = budget.revenue.otherPublic * pf;
+    const philBudget = budget.revenue.philanthropy * pf;
+    const campusBudget = budget.revenue.campus * pf;
+    let running = proratedTotal;
+    const cpsVar = ytd.revenue.cps - cpsBudget;
+    const otherVar = ytd.revenue.otherPublic - otherBudget;
+    const philVar = ytd.revenue.philanthropy - philBudget;
+    const campusVar = ytd.revenue.campus - campusBudget;
     const items = [
-      { name: 'Budget', base: 0, delta: budget, total: budget, isTotal: true },
-      { name: 'CPS Revenue', base: running, delta: r.cps.variance, total: running + r.cps.variance, isTotal: false },
+      { name: "Budget", base: 0, delta: proratedTotal, total: proratedTotal, isTotal: true },
+      { name: "CPS Revenue", base: running, delta: cpsVar, total: running + cpsVar, isTotal: false },
     ];
-    running += r.cps.variance;
-
-    items.push({ name: 'Other Public', base: running, delta: r.otherPublic.variance, total: running + r.otherPublic.variance, isTotal: false });
-    running += r.otherPublic.variance;
-
-    items.push({ name: 'Philanthropy', base: running, delta: r.philanthropy.variance, total: running + r.philanthropy.variance, isTotal: false });
-    running += r.philanthropy.variance;
-
-    items.push({ name: 'Campus Rev', base: running, delta: r.campus.variance, total: running + r.campus.variance, isTotal: false });
-    running += r.campus.variance;
-
-    items.push({ name: 'Actual', base: 0, delta: r.total.actual, total: r.total.actual, isTotal: true });
-
+    running += cpsVar;
+    items.push({ name: "Other Public", base: running, delta: otherVar, total: running + otherVar, isTotal: false });
+    running += otherVar;
+    items.push({ name: "Philanthropy", base: running, delta: philVar, total: running + philVar, isTotal: false });
+    running += philVar;
+    items.push({ name: "Campus Rev", base: running, delta: campusVar, total: running + campusVar, isTotal: false });
+    items.push({ name: "Actual", base: 0, delta: ytd.revenue.total, total: ytd.revenue.total, isTotal: true });
     return items;
-  }, []);
+  }, [ytd, budget]);
 
   /* ── Expense waterfall data ─────────────────────────────── */
 
   const expWaterfall = useMemo(() => {
-    const e = FY26_YTD.expenses;
-    const budget = e.total.budget;   // 131.3
-    let running = budget;
-
-    // Expense variances are negative when over budget (bad), so flip sign for waterfall
+    const pf = ytd.proratedBudgetFactor;
+    const proratedTotal = budget.expenses.total * pf;
+    const personnelBudget = budget.expenses.personnel * pf;
+    const directBudget = budget.expenses.directStudent * pf;
+    const occupancyBudget = budget.expenses.occupancy * pf;
+    const otherBudget = (budget.expenses.total - budget.expenses.personnel - budget.expenses.directStudent - budget.expenses.occupancy) * pf;
+    let running = proratedTotal;
+    const personnelVar = -(ytd.expenses.personnel - personnelBudget);
+    const directVar = -(ytd.expenses.directStudent - directBudget);
+    const occupancyVar = -(ytd.expenses.occupancy - occupancyBudget);
+    const otherActual = ytd.expenses.total - ytd.expenses.personnel - ytd.expenses.directStudent - ytd.expenses.occupancy;
+    const otherVar = -(otherActual - otherBudget);
     const items = [
-      { name: 'Budget', base: 0, delta: budget, total: budget, isTotal: true },
-      { name: 'Personnel', base: running, delta: -e.personnel.variance, total: running + (-e.personnel.variance), isTotal: false },
+      { name: "Budget", base: 0, delta: proratedTotal, total: proratedTotal, isTotal: true },
+      { name: "Personnel", base: running, delta: personnelVar, total: running + personnelVar, isTotal: false },
     ];
-    running += (-e.personnel.variance);
-
-    items.push({ name: 'Other OpEx', base: running, delta: -e.other.variance, total: running + (-e.other.variance), isTotal: false });
-    running += (-e.other.variance);
-
-    items.push({ name: 'Direct Student', base: running, delta: -e.directStudent.variance, total: running + (-e.directStudent.variance), isTotal: false });
-    running += (-e.directStudent.variance);
-
-    items.push({ name: 'Occupancy', base: running, delta: -e.occupancy.variance, total: running + (-e.occupancy.variance), isTotal: false });
-    running += (-e.occupancy.variance);
-
-    items.push({ name: 'Actual', base: 0, delta: e.total.actual, total: e.total.actual, isTotal: true });
-
+    running += personnelVar;
+    items.push({ name: "Other OpEx", base: running, delta: otherVar, total: running + otherVar, isTotal: false });
+    running += otherVar;
+    items.push({ name: "Direct Student", base: running, delta: directVar, total: running + directVar, isTotal: false });
+    running += directVar;
+    items.push({ name: "Occupancy", base: running, delta: occupancyVar, total: running + occupancyVar, isTotal: false });
+    items.push({ name: "Actual", base: 0, delta: ytd.expenses.total, total: ytd.expenses.total, isTotal: true });
     return items;
-  }, []);
+  }, [ytd, budget]);
+
 
   return (
     <div>
