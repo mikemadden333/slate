@@ -222,19 +222,40 @@ interface LedgerContextType {
 const LedgerContext = createContext<LedgerContextType | null>(null);
 
 export function LedgerProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<LedgerData>({
-    budget: DEFAULT_BUDGET,
-    actuals: DEFAULT_ACTUALS,
-    historical: DEFAULT_HISTORICAL,
-    covenants: DEFAULT_COVENANTS,
-    lastUpdated: new Date(),
-    updatedBy: 'System Default',
-  });
+  const STORAGE_KEY = 'ledger-data-v1';
+
+  const loadFromStorage = (): LedgerData => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {
+        budget: DEFAULT_BUDGET, actuals: DEFAULT_ACTUALS,
+        historical: DEFAULT_HISTORICAL, covenants: DEFAULT_COVENANTS,
+        lastUpdated: new Date(), updatedBy: 'System Default',
+      };
+      const parsed = JSON.parse(raw);
+      return { ...parsed, lastUpdated: new Date(parsed.lastUpdated) };
+    } catch {
+      return {
+        budget: DEFAULT_BUDGET, actuals: DEFAULT_ACTUALS,
+        historical: DEFAULT_HISTORICAL, covenants: DEFAULT_COVENANTS,
+        lastUpdated: new Date(), updatedBy: 'System Default',
+      };
+    }
+  };
+
+  const [data, setData] = useState<LedgerData>(loadFromStorage);
+
+  const saveToStorage = (d: LedgerData) => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch {}
+  };
 
   const ytd = computeYTD(data.actuals);
 
   const updateBudget = useCallback((patch: Partial<AnnualBudget>) => {
-    setData(d => ({ ...d, budget: { ...d.budget, ...patch }, lastUpdated: new Date() }));
+    setData(d => {
+      const next = { ...d, budget: { ...d.budget, ...patch }, lastUpdated: new Date() };
+      saveToStorage(next); return next;
+    });
   }, []);
 
   const addOrUpdateMonth = useCallback((month: MonthlyActual) => {
@@ -243,16 +264,23 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       const actuals = existing >= 0
         ? d.actuals.map((a, i) => i === existing ? month : a)
         : [...d.actuals, month].sort((a, b) => a.monthIndex - b.monthIndex);
-      return { ...d, actuals, lastUpdated: new Date() };
+      const next = { ...d, actuals, lastUpdated: new Date() };
+      saveToStorage(next); return next;
     });
   }, []);
 
   const replaceActuals = useCallback((months: MonthlyActual[]) => {
-    setData(d => ({ ...d, actuals: months.sort((a, b) => a.monthIndex - b.monthIndex), lastUpdated: new Date() }));
+    setData(d => {
+      const next = { ...d, actuals: months.sort((a, b) => a.monthIndex - b.monthIndex), lastUpdated: new Date() };
+      saveToStorage(next); return next;
+    });
   }, []);
 
   const updateCovenants = useCallback((patch: Partial<CovenantConfig>) => {
-    setData(d => ({ ...d, covenants: { ...d.covenants, ...patch }, lastUpdated: new Date() }));
+    setData(d => {
+      const next = { ...d, covenants: { ...d.covenants, ...patch }, lastUpdated: new Date() };
+      saveToStorage(next); return next;
+    });
   }, []);
 
   const setUpdatedBy = useCallback((name: string) => {

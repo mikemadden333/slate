@@ -6,8 +6,6 @@ import {
 } from 'recharts';
 import { NOBLE, BG, TEXT, STATUS } from '../theme/colors';
 import { fmt, fmtDscr } from '../theme/formatters';
-import { HISTORICAL } from '../sentinel-data/historical';
-import { FY26_BUDGET } from '../sentinel-data/fy26';
 import { PROJECTIONS, SCENARIO_ASSUMPTIONS } from '../sentinel-data/scenarios';
 import SectionHeader from '../sentinel-components/SectionHeader';
 import TabBar from '../sentinel-components/TabBar';
@@ -51,6 +49,7 @@ const NARRATIVES: Record<MetricTab, { severity: 'green' | 'amber' | 'red'; title
 };
 
 export default function FinancialTrajectory() {
+  const { data: { budget, historical } } = useLedger();
   const [activeTab, setActiveTab] = useState<string>('EBITDA');
   const metric = activeTab as MetricTab;
   const field = METRIC_FIELDS[metric] ?? 'ebitda';
@@ -62,7 +61,7 @@ export default function FinancialTrajectory() {
     const data: Record<string, unknown>[] = [];
 
     // Historical FY20–FY25
-    for (const h of HISTORICAL) {
+    for (const h of historical) {
       data.push({
         year: h.year,
         actual: (h as Record<string, unknown>)[field],
@@ -70,7 +69,7 @@ export default function FinancialTrajectory() {
     }
 
     // FY26 bridge year — all scenarios start here
-    const fy26Val = (FY26_BUDGET as Record<string, unknown>)[field] as number;
+    const fy26Val = (budget as Record<string, unknown>)[field] as number;
     data.push({
       year: 'FY26B',
       actual: fy26Val,
@@ -326,6 +325,8 @@ function AssumptionRow({ label, value }: { label: string; value: string }) {
     }}>
       <span style={{ color: TEXT.muted, fontFamily: "'Inter', sans-serif" }}>{label}</span>
       <span style={{ color: TEXT.primary, fontFamily: "'DM Mono', monospace" }}>{value}</span>
+
+      <AIFinancialAdvisor mode="trajectory" compact={true} />
     </div>
   );
 }

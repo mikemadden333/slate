@@ -339,6 +339,24 @@ export default function DataUploadPanel() {
             </div>
           )}
 
+          {/* Reset */}
+          <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #30363D' }}>
+            <button onClick={() => {
+              if (confirm('Reset all financial data to Noble FY26 defaults? This cannot be undone.')) {
+                localStorage.removeItem('ledger-data-v1');
+                window.location.reload();
+              }
+            }} style={{
+              padding: '7px 16px', borderRadius: 6, border: '1px solid #F85149',
+              background: 'transparent', color: '#F85149',
+              fontSize: 12, fontWeight: 600, cursor: 'pointer',
+            }}>
+              Reset to Defaults
+            </button>
+            <span style={{ fontSize: 11, color: '#8B949E', marginLeft: 12 }}>
+              Clears all custom data and reloads Noble FY26 seed data
+            </span>
+          </div>
           {/* Status messages */}
           {saved && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, color: '#3FB950' }}>

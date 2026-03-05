@@ -1,3 +1,5 @@
+import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import { useState, useMemo, useCallback } from 'react';
 import {
   ComposedChart, Bar, Line, Cell,
@@ -143,6 +145,8 @@ function matchesPreset(vals: SliderValues): string | null {
 /* ── component ────────────────────────────────────────────── */
 
 export default function ScenarioWarRoom() {
+  const { data: { budget, historical }, ytd } = useLedger();
+  const FY26_YTD_COMPAT = ytd;
   const [pctc, setPctc] = useState(5.0);
   const [enrollment, setEnrollment] = useState(12100);
   const [l2Premium, setL2Premium] = useState(2000);
