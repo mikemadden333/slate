@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useMemo } from "react";
 
 // ─── SLATE DESIGN SYSTEM ───
