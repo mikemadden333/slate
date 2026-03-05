@@ -221,7 +221,7 @@ export default function CampusDashboard({ campusName }: CampusDashboardProps) {
           gap: 24,
           marginBottom: 20,
         }}>
-          <BudgetItem label="Pre-Tilt Budget" value={`$${fmtNum(campus.preTiltBudget)}K`} />
+          <BudgetItem label="Pre-Tilt Budget" value={`$${fmtNum(Math.round(campus.enroll * 10.29))}K`} />
           <BudgetItem label="Per-Pupil Allocation" value={`$${fmtNum(campus.perPupil)}`} />
           <BudgetItem label="ML Fund" value={campus.mlFund > 0 ? `$${fmtNum(campus.mlFund)}K` : 'Not applicable'} />
         </div>
