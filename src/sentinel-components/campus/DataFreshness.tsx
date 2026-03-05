@@ -20,6 +20,7 @@ interface Props {
   newsIncidentCount?: number;
   scannerCalls?: number;
   scannerSpikeZones?: number;
+  redditIncidentCount?: number;
 }
 
 function isCpdLagExpected(): boolean {
@@ -65,7 +66,7 @@ export default function DataFreshness({
   cpdLastUpdate, cpdCount, citizenLastUpdate, citizenCount,
   shotSpotterStatus, newsLastUpdate, newsSourceCount, iceAlertCount,
   realtimeCount = 0, realtimeLastUpdate, newsIncidentCount = 0,
-  scannerCalls = 0, scannerSpikeZones = 0,
+  scannerCalls = 0, scannerSpikeZones = 0, redditIncidentCount = 0,
 }: Props) {
   const showLagMessage = cpdCount === 0 && isCpdLagExpected();
 

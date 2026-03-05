@@ -263,8 +263,35 @@ export default function NetworkDashboard({
           <span style={{ fontSize: 11, transform: toolsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', display: 'inline-block' }}>▼</span>
         </button>
         {toolsOpen && (
-          <div style={{ paddingTop: 16 }}>
+          <div style={{ paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <WeekForecast forecast={forecast} />
+            {/* Network Data Sources */}
+            <div style={{ borderTop: '1px solid #E7E2D8', paddingTop: 16 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#121315', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                Data Sources — Network View
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12 }}>
+                {[
+                  { badge: 'VERIFIED', color: '#121315', label: 'CPD Verified', value: `${cpdCount.toLocaleString()} incidents loaded — 5-10 day publication lag`, warn: true },
+                  { badge: 'LIVE', color: '#0D9488', label: 'CPD Radio', value: scannerCalls > 0 ? `${scannerCalls} calls monitored — ${scannerSpikeZones} spike zone${scannerSpikeZones !== 1 ? 's' : ''}` : 'No scanner traffic' },
+                  { badge: 'NEWS', color: '#3B82F6', label: 'News Feeds', value: `${newsSourceCount} sources active — ${newsIncidentCount} incidents geocoded` },
+                  { badge: 'SOCIAL', color: '#FF4500', label: 'Reddit Intel', value: redditIncidentCount > 0 ? `${redditIncidentCount} incidents from r/ChicagoScanner + r/CrimeInChicago` : 'Monitoring — no violence posts in last 24h' },
+                  { badge: 'ICE', color: '#7C3AED', label: 'ICE Monitoring', value: `Active — ${iceAlerts.length} alert${iceAlerts.length !== 1 ? 's' : ''}` },
+                  { badge: 'ACOUSTIC', color: '#0D9488', label: 'ShotSpotter', value: shotSpotterEvents.length > 0 ? `${shotSpotterEvents.length} activations` : 'No recent gunfire detected' },
+                ].map(row => (
+                  <div key={row.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: '#fff', background: row.color, padding: '2px 6px', borderRadius: 3, flexShrink: 0, marginTop: 1, minWidth: 54, textAlign: 'center' }}>
+                      {row.badge}
+                    </span>
+                    <div>
+                      <span style={{ fontWeight: 600, color: '#374151' }}>{row.label}</span>
+                      <div style={{ color: '#6B7280', fontSize: 11 }}>{row.value}</div>
+                      {row.warn && <div style={{ color: '#B79145', fontSize: 10, marginTop: 1 }}>⚠ CPD portal has a 5-10 day publication lag</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
