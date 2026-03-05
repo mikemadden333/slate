@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useRef } from "react";
 
 const COLORS = {
@@ -14,24 +13,33 @@ const COLORS = {
 };
 
 const CAMPUSES = [
-  "Noble Street", "Pritzker", "Rauner", "Gary Comer", "UIC", "Muchin",
-  "Johnson", "Bulls", "ITW Speer", "Baker", "Hansberry", "DRW Trading",
-  "Mansueto", "Butler", "Goldblatt", "TNA", "Comer Science"
+  "Baker College Prep", "Chicago Bulls College Prep", "Butler College Prep",
+  "Gary Comer College Prep", "DRW College Prep", "Golder College Prep",
+  "Hansberry College Prep", "Johnson College Prep", "Mansueto High School",
+  "Muchin College Prep", "Noble Street College Prep", "Pritzker College Prep",
+  "Rauner College Prep", "Rowe-Clark Math & Science", "ITW David Speer Academy",
+  "The Noble Academy", "UIC College Prep",
 ];
 
 const QUICK_PROMPTS = [
   { label: "Safety Update", prompt: "Draft a safety update for families at Johnson College Prep. Reference that we monitor campus safety conditions daily and that current conditions are stable. Reassure families while being transparent." },
-  { label: "Board Summary", prompt: "Write an executive summary for the Noble Schools board meeting. Include our current financial position ($240M budget, +$5.9M YTD surplus, 3.47x DSCR), enrollment at 12,120 students across 17 campuses, and safety status across the network." },
+  { label: "Board Summary", prompt: "Write an executive summary for the Noble Schools board meeting. Include our current financial position ($240M budget, +$5.9M YTD surplus, 3.47x DSCR), enrollment at 12,080 students across 17 campuses, and safety status across the network." },
   { label: "Weather Closure", prompt: "Draft a school closure notification for all 17 Noble campuses due to severe winter weather. Include safety guidance for families, information about meal distribution, and remote learning expectations." },
   { label: "Budget Update", prompt: "Write a staff memo explaining Noble's current financial health. We have a $240M annual budget, a $5.9M YTD surplus, and a DSCR of 3.47x against a 1.0x covenant. Frame this as responsible stewardship while acknowledging the work ahead." },
   { label: "Crisis Response", prompt: "Draft an initial community communication following a safety incident near one of our campuses. The incident occurred off-campus and no students were involved. Acknowledge the community's concern, outline our response protocols, and describe enhanced safety measures." },
   { label: "Enrollment Drive", prompt: "Write a recruitment communication for prospective families. Noble serves 12,000+ students across 17 Chicago campuses, with a focus on first-generation college students. Emphasize our track record, campus options, and application process." },
+  { label: "Bond Investor", prompt: "Draft talking points for a meeting with bond investors or rating agencies. Cover Noble's S&P BBB-Stable rating, the $33M deficit we eliminated, our 3.47x DSCR against a 1.0x covenant, and our long-range financial stability strategy." },
+  { label: "Staff Recognition", prompt: "Write a network-wide staff recognition message from leadership. Acknowledge the extraordinary work of Noble's 1,600 employees in serving 12,000 students, reference our shared mission, and highlight recent organizational achievements." },
+  { label: "Donor Stewardship", prompt: "Draft a stewardship letter to a major Noble Schools donor. Thank them for their contribution, connect it to student outcomes, reference our financial health and BBB bond rating as evidence of organizational strength, and paint a picture of impact." },
 ];
 
 const VOICE_STYLES = [
   { id: "presidential", label: "Network Leadership", desc: "Formal, institutional, board-ready" },
   { id: "principal", label: "Campus Principal", desc: "Warm, direct, community-focused" },
   { id: "crisis", label: "Crisis Communications", desc: "Measured, transparent, action-oriented" },
+  { id: "board", label: "Board Presentation", desc: "Data-driven, concise, governance-focused" },
+  { id: "cfo", label: "Financial Stakeholder", desc: "Precise, numbers-forward, bond-holder ready" },
+  { id: "family", label: "Family Outreach", desc: "Accessible, warm, plain language" },
 ];
 
 const CHANNELS = [
@@ -39,6 +47,9 @@ const CHANNELS = [
   { id: "sms", label: "SMS" },
   { id: "letter", label: "Formal Letter" },
   { id: "internal", label: "Internal Memo" },
+  { id: "board", label: "Board Report" },
+  { id: "press", label: "Press Release" },
+  { id: "talking", label: "Talking Points" },
 ];
 
 export default function BriefApp() {
@@ -87,7 +98,7 @@ ${channel === "letter" ? "Include proper letterhead formatting with Noble School
 Be specific, not generic. Reference real Noble details. Never fabricate incident details — if discussing safety, keep it appropriately general while being reassuring and transparent.`;
 
     try {
-      const res = await fetch("/api/anthropic-proxy", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -105,8 +116,8 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
         return;
       }
 
-      const data = await res.json();
-      const text = data.content?.map(c => c.text || "").join("\n") || "No response generated.";
+      const json = await res.json();
+      const text = json.content?.map((c: {type: string; text?: string}) => c.text || "").join("\n") || "No response generated.";
       setResponse(text);
     } catch (err) {
       setResponse("Error: Could not reach the AI service. " + String(err));
