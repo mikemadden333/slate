@@ -319,13 +319,7 @@ export default function App() {
     }
     setNewsIncidents(parsed);
 
-    // Medical Examiner homicides — updates within hours
-    const meData = await fetchMedicalExaminerHomicides(14);
-    setMeIncidents(meData);
-
-    // CPD Major incidents — 72h window, faster than main portal
-    const majorData = await fetchCPDMajorIncidents(72);
-    setMajorIncidents(majorData);
+    // ME and CPD Major removed — same publication lag as main CPD portal
     setDataFreshness(prev => ({
       ...prev,
       newsLastUpdate: new Date(),
