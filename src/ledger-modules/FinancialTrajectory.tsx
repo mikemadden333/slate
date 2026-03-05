@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useLedger } from '../ledger-context/LedgerDataContext';
+import AIFinancialAdvisor from './AIFinancialAdvisor';
 import {
   ComposedChart, Area, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine,
