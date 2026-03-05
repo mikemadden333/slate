@@ -15,9 +15,12 @@ import CampusNetworkContext from './ledger-modules/CampusNetworkContext';
 import CampusBudgetDetail from './ledger-modules/CampusBudgetDetail';
 
 const CAMPUSES = [
-  'Noble Street', 'Pritzker', 'Rauner', 'Gary Comer', 'UIC', 'Muchin',
-  'Johnson', 'Bulls', 'ITW Speer', 'Baker', 'Hansberry', 'DRW Trading',
-  'Mansueto', 'Butler', 'Goldblatt', 'TNA', 'Comer Science',
+  'Baker College Prep', 'Chicago Bulls College Prep', 'Butler College Prep',
+  'Gary Comer College Prep', 'DRW College Prep', 'Golder College Prep',
+  'Hansberry College Prep', 'Johnson College Prep', 'Mansueto High School',
+  'Muchin College Prep', 'Noble Street College Prep', 'Pritzker College Prep',
+  'Rauner College Prep', 'Rowe-Clark Math \& Science', 'ITW David Speer Academy',
+  'The Noble Academy', 'UIC College Prep',
 ];
 
 type NetworkModule = 'command-center' | 'financial-trajectory' | 'campus-intelligence' | 'enrollment-observatory' | 'covenant-stress-lab' | 'scenario-war-room' | 'nst-spending' | 'compensation-radar';
