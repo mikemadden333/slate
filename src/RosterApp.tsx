@@ -4,6 +4,7 @@ import RosterCommandCenter from './roster-modules/RosterCommandCenter';
 import AttritionRadar from './roster-modules/AttritionRadar';
 import EnrollmentFunnel from './roster-modules/EnrollmentFunnel';
 import AIEnrollmentAdvisor from './roster-modules/AIEnrollmentAdvisor';
+import CampusView from './roster-modules/CampusView';
 
 const C = {
   bg: '#F8F9FA', surface: '#FFFFFF', border: '#E5E7EB',
@@ -11,10 +12,11 @@ const C = {
 };
 
 const TABS = [
-  { id: 'command', label: 'Command Center' },
-  { id: 'funnel', label: 'Recruitment Funnel' },
-  { id: 'attrition', label: 'Attrition Radar' },
-  { id: 'ask', label: 'Ask AI' },
+  { id: 'command',  label: 'Command Center' },
+  { id: 'campus',   label: 'Campus View' },
+  { id: 'funnel',   label: 'Recruitment Funnel' },
+  { id: 'attrition',label: 'Attrition Radar' },
+  { id: 'ask',      label: 'Ask AI' },
 ];
 
 function RosterInner() {
@@ -66,8 +68,9 @@ function RosterInner() {
 
       {/* Content */}
       <div style={{ padding: '28px 32px' }}>
-        {activeTab === 'command' && <RosterCommandCenter />}
-        {activeTab === 'funnel' && <EnrollmentFunnel />}
+        {activeTab === 'command'   && <RosterCommandCenter />}
+        {activeTab === 'campus'    && <CampusView />}
+        {activeTab === 'funnel'    && <EnrollmentFunnel />}
         {activeTab === 'attrition' && <AttritionRadar />}
         {activeTab === 'ask' && (
           <div>
