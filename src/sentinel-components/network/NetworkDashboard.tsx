@@ -30,6 +30,8 @@ interface Props {
 
 export default function NetworkDashboard({
   risks, summary, forecast, iceAlerts, shotSpotterEvents, acuteIncidents, onSelectCampus,
+  scannerCalls = 0, scannerSpikeZones = 0, newsSourceCount = 0,
+  newsIncidentCount = 0, redditIncidentCount = 0, cpdCount = 0,
 }: Props) {
   const [toolsOpen, setToolsOpen] = useState(false);
   const sorted = [...risks].sort((a, b) => b.score - a.score);
