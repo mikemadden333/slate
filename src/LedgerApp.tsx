@@ -70,9 +70,9 @@ export default function LedgerApp() {
       case 'scenario-war-room': return <ScenarioWarRoom />;
       case 'nst-spending': return <NSTTracker />;
       case 'compensation-radar': return <CompensationRadar />;
-      case 'campus-overview': return <CampusDashboard />;
-      case 'network-context': return <CampusNetworkContext />;
-      case 'budget-detail': return <CampusBudgetDetail />;
+      case 'campus-overview': return <CampusDashboard campusName={selectedCampus ?? ''} />;
+      case 'network-context': return <CampusNetworkContext campusName={selectedCampus ?? ''} />;
+      case 'budget-detail': return <CampusBudgetDetail campusName={selectedCampus ?? ''} />;
       default: return <CommandCenter />;
     }
   };
