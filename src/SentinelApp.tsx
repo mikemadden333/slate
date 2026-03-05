@@ -26,6 +26,7 @@ import type { CitizenIncident } from './sentinel-api/citizen';
 import { fetchWeather, fetchWeatherForecast } from './sentinel-api/weather';
 import { fetchAllFeeds, parseNewsAsIncidents } from './sentinel-api/news';
 import { geocodeNewsIncidents } from './sentinel-api/newsGeocoder';
+import { fetchRedditIntel } from './sentinel-api/redditIntel';
 import { fetchMedicalExaminerHomicides } from './sentinel-api/medicalExaminer';
 import { fetchCPDMajorIncidents } from './sentinel-api/cpdMajorIncidents';
 import { fetchIceSignals } from './sentinel-api/ice';
@@ -130,6 +131,7 @@ export default function App() {
   const [dispatchIncidents, setDispatchIncidents] = useState<DispatchIncident[]>([]);
   const [realtimeIncidents, setRealtimeIncidents] = useState<Incident[]>([]);
   const [newsIncidents, setNewsIncidents] = useState<Incident[]>([]);
+  const [redditIncidents, setRedditIncidents] = useState<Incident[]>([]);
   const [meIncidents, setMeIncidents] = useState<Incident[]>([]);
   const [majorIncidents, setMajorIncidents] = useState<Incident[]>([]);
   const [dataFreshness, setDataFreshness] = useState({
@@ -193,7 +195,7 @@ export default function App() {
   // Combined incidents for briefing and map — all sources, deduplicated
   const allIncidents = useMemo(() => {
     // Priority order: CPD acute > CPD full > CPD realtime > news > citizen
-    const merged = [...acuteIncidents, ...incidents, ...realtimeIncidents, ...newsIncidents, ...dispatchIncidents, ...meIncidents, ...majorIncidents];
+    const merged = [...acuteIncidents, ...incidents, ...realtimeIncidents, ...newsIncidents, ...dispatchIncidents, ...redditIncidents];
     // Deduplicate: same type + nearby location + within 1 hour = duplicate
     const seen = new Set<string>();
     const result: Incident[] = [];
@@ -320,6 +322,10 @@ export default function App() {
     setNewsIncidents(parsed);
 
     // ME and CPD Major removed — same publication lag as main CPD portal
+
+    // Reddit real-time intel — r/ChicagoScanner, r/CrimeInChicago
+    const redditData = await fetchRedditIntel(24);
+    setRedditIncidents(redditData);
     setDataFreshness(prev => ({
       ...prev,
       newsLastUpdate: new Date(),
