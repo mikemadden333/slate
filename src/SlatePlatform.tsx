@@ -338,7 +338,7 @@ export default function SlatePlatform() {
    return (<><ModuleHeader module={mod} /><div className="slate-module-box">{apps[mod.id]}</div></>);
   };
 
-  return (
+  return (<>
     {showDisclaimer && (
       <div style={{ position:"fixed", inset:0, zIndex:9998, background:"rgba(0,0,0,0.72)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'Inter', system-ui, sans-serif" }}>
         <div style={{ background:"#FFFFFF", borderRadius:16, padding:"40px 48px", maxWidth:520, textAlign:"center", boxShadow:"0 24px 80px rgba(0,0,0,0.4)" }}>
@@ -367,5 +367,5 @@ export default function SlatePlatform() {
         </div>
       </div>
     </div>
-  );
+  </>);
 }
