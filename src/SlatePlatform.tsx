@@ -331,7 +331,7 @@ export default function SlatePlatform() {
   const renderModule = () => {
     const mod = activeModuleData;
     if (!mod) return null;
-    const apps = { sentinel: <SentinelApp />, ledger: <LedgerApp />, brief: <BriefApp />, roster: <RosterApp />, shield: <ShieldApp />, grounds: <GroundsApp /> };
+    const apps = { sentinel: <SentinelApp />, ledger: <LedgerApp />, brief: <BriefApp />, roster: <RosterApp />, shield: <ShieldApp />, grounds: <GroundsApp />, capitol: <PublicAffairsApp /> };
    return (<><ModuleHeader module={mod} /><div className="slate-module-box">{apps[mod.id]}</div></>);
   };
 
