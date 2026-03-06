@@ -6,12 +6,13 @@ import BriefApp from "./BriefApp";
 import RosterApp from "./RosterApp";
 import ShieldApp from "./ShieldApp";
 import GroundsApp from "./GroundsApp";
+import PublicAffairsApp from "./PublicAffairsApp";
 
 const C = {
   deep: "#121315", rock: "#23272F", mid: "#2C3440", light: "#6B7280",
   brass: "#B79145", chalk: "#E7E2D8", signal: "#2F8F95", white: "#FFFFFF", bg: "#F7F5F1",
 };
-const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", roster: "#4F78D6", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D" };
+const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", roster: "#4F78D6", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8" };
 
 const MODULES = [
   { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "17 campuses monitored", tagline: "Know what happened before your students arrive." },
@@ -20,6 +21,7 @@ const MODULES = [
   { id: "brief", label: "Brief", category: "COMMUNICATIONS INTELLIGENCE", icon: "✉️", color: MOD.brief, desc: "AI-drafted communications grounded in live Slate data. In your voice. Out in seconds.", status: "LIVE", metrics: "Powered by Claude", tagline: "Your voice. Your data. Seconds, not hours." },
   { id: "shield", label: "Guard", category: "RISK MANAGEMENT INTELLIGENCE", icon: "⚖️", color: MOD.shield, desc: "Compliance monitoring, incident tracking, insurance analysis, regulatory deadline tracking.", status: "LIVE", metrics: "12 compliance areas", tagline: "Every deadline. Every policy. Every campus." },
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "1.5M sq ft managed", tagline: "The building is the first thing families see." },
+  { id: "capitol", label: "Capitol", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Noble's advocacy intelligence layer.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
 ];
 
 /* ═══════════════════════════════════════════════════════════ */
