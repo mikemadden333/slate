@@ -6,13 +6,14 @@ import BriefApp from "./BriefApp";
 import RosterApp from "./RosterApp";
 import ShieldApp from "./ShieldApp";
 import GroundsApp from "./GroundsApp";
+import FundApp from "./FundApp";
 import PublicAffairsApp from "./PublicAffairsApp";
 
 const C = {
   deep: "#121315", rock: "#23272F", mid: "#2C3440", light: "#6B7280",
   brass: "#B79145", chalk: "#E7E2D8", signal: "#2F8F95", white: "#FFFFFF", bg: "#F7F5F1",
 };
-const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", roster: "#4F78D6", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8" };
+const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", roster: "#4F78D6", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145" };
 
 const MODULES = [
   { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "17 campuses monitored", tagline: "Know what happened before your students arrive." },
@@ -22,6 +23,7 @@ const MODULES = [
   { id: "shield", label: "Guard", category: "RISK MANAGEMENT INTELLIGENCE", icon: "⚖️", color: MOD.shield, desc: "Compliance monitoring, incident tracking, insurance analysis, regulatory deadline tracking.", status: "LIVE", metrics: "12 compliance areas", tagline: "Every deadline. Every policy. Every campus." },
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "1.5M sq ft managed", tagline: "The building is the first thing families see." },
   { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Noble's advocacy intelligence layer.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
+  { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Noble's development intelligence layer.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
 ];
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -286,6 +288,7 @@ const Dashboard = ({ onModuleClick }) => {
    ═══════════════════════════════════════════════════════════ */
 export default function SlatePlatform() {
   const [showSplash, setShowSplash] = useState(true);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [activeModule, setActiveModule] = useState("dashboard");
   const strikeRef = useRef(false);
   const handleModuleClick = (mod) => {
@@ -326,16 +329,26 @@ export default function SlatePlatform() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const activeModuleData = MODULES.find(m => m.id === activeModule);
 
-  if (showSplash) return (<><GlobalCSS /><SplashScreen onComplete={() => setShowSplash(false)} /></>);
+  if (showSplash) return (<><GlobalCSS /><SplashScreen onComplete={() => { setShowSplash(false); setShowDisclaimer(true); }} /></>);
 
   const renderModule = () => {
     const mod = activeModuleData;
     if (!mod) return null;
-    const apps = { sentinel: <SentinelApp />, ledger: <LedgerApp />, brief: <BriefApp />, roster: <RosterApp />, shield: <ShieldApp />, grounds: <GroundsApp />, capitol: <PublicAffairsApp /> };
+    const apps = { sentinel: <SentinelApp />, ledger: <LedgerApp />, brief: <BriefApp />, roster: <RosterApp />, shield: <ShieldApp />, grounds: <GroundsApp />, capitol: <PublicAffairsApp />, raise: <FundApp /> };
    return (<><ModuleHeader module={mod} /><div className="slate-module-box">{apps[mod.id]}</div></>);
   };
 
   return (
+    {showDisclaimer && (
+      <div style={{ position:"fixed", inset:0, zIndex:9998, background:"rgba(0,0,0,0.72)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'Inter', system-ui, sans-serif" }}>
+        <div style={{ background:"#FFFFFF", borderRadius:16, padding:"40px 48px", maxWidth:520, textAlign:"center", boxShadow:"0 24px 80px rgba(0,0,0,0.4)" }}>
+          <div style={{ fontSize:11, fontWeight:800, color:"#B79145", textTransform:"uppercase", letterSpacing:"3px", marginBottom:16 }}>Important Notice</div>
+          <div style={{ fontSize:22, fontWeight:900, color:"#0D1B2A", marginBottom:16, letterSpacing:"-0.02em" }}>Illustrative Platform Demo</div>
+          <div style={{ fontSize:14, color:"#374151", lineHeight:1.8, marginBottom:24 }}>All data, organizations, names, figures, and scenarios in Slate are <strong>fictional and for demonstration purposes only</strong>. This platform is not connected to any live systems and does not represent any real institution, school network, or organization.<br/><br/>Slate is a product design concept by <strong>Madden Education Advisory</strong>.</div>
+          <button onClick={() => setShowDisclaimer(false)} style={{ padding:"12px 36px", borderRadius:8, background:"#0D1B2A", color:"#FFFFFF", fontSize:13, fontWeight:700, border:"none", cursor:"pointer", letterSpacing:"0.02em" }}>I Understand — Enter Slate</button>
+        </div>
+      </div>
+    )}
     <div style={{ display: "flex", height: "100vh", width: "100vw", fontFamily: "'Inter', system-ui, sans-serif", background: C.bg, overflow: "hidden" }}>
       <GlobalCSS />
       <Sidebar activeModule={activeModule} setActiveModule={handleModuleClick} collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
