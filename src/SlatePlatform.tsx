@@ -7,13 +7,14 @@ import RosterApp from "./RosterApp";
 import ShieldApp from "./ShieldApp";
 import GroundsApp from "./GroundsApp";
 import FundApp from "./FundApp";
+import HomeApp from "./HomeApp";
 import PublicAffairsApp from "./PublicAffairsApp";
 
 const C = {
   deep: "#121315", rock: "#23272F", mid: "#2C3440", light: "#6B7280",
   brass: "#B79145", chalk: "#E7E2D8", signal: "#2F8F95", white: "#FFFFFF", bg: "#F7F5F1",
 };
-const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", roster: "#4F78D6", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145" };
+const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", roster: "#4F78D6", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145", home: "#0D1B2A" };
 
 const MODULES = [
   { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "17 campuses monitored", tagline: "Know what happened before your students arrive." },
@@ -24,6 +25,7 @@ const MODULES = [
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "1.5M sq ft managed", tagline: "The building is the first thing families see." },
   { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Noble's advocacy intelligence layer.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
   { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Noble's development intelligence layer.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
+  { id: "home", label: "Briefing", category: "NETWORK INTELLIGENCE", icon: "🧠", color: MOD.home, desc: "AI-generated cross-module briefing synthesizing live data across all Slate systems.", status: "LIVE", metrics: "8 modules", tagline: "Everything you need to know, right now." },
 ];
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -334,7 +336,7 @@ export default function SlatePlatform() {
   const renderModule = () => {
     const mod = activeModuleData;
     if (!mod) return null;
-    const apps = { sentinel: <SentinelApp />, ledger: <LedgerApp />, brief: <BriefApp />, roster: <RosterApp />, shield: <ShieldApp />, grounds: <GroundsApp />, capitol: <PublicAffairsApp />, raise: <FundApp /> };
+    const apps = { sentinel: <SentinelApp />, ledger: <LedgerApp />, brief: <BriefApp />, roster: <RosterApp />, shield: <ShieldApp />, grounds: <GroundsApp />, capitol: <PublicAffairsApp />, raise: <FundApp />, home: <HomeApp /> };
    return (<><ModuleHeader module={mod} /><div className="slate-module-box">{apps[mod.id]}</div></>);
   };
 
