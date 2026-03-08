@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
-import { useRoster } from '../roster-context/RosterDataContext';
+import { useRoster } from '../scholar-context/RosterDataContext';
 import AIEnrollmentAdvisor from './AIEnrollmentAdvisor';
 
 const C = { card: '#161B22', border: '#30363D', text: '#E6EDF3', muted: '#8B949E', gold: '#F0B429', red: '#F85149', green: '#3FB950', amber: '#F59E0B' };

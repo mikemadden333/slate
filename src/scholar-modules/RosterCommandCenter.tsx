@@ -3,7 +3,7 @@ import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer, ReferenceLine, Area, AreaChart,
 } from 'recharts';
-import { useRoster } from '../roster-context/RosterDataContext';
+import { useRoster } from '../scholar-context/RosterDataContext';
 
 const C = {
   bg: '#0D1117', card: '#161B22', border: '#30363D',

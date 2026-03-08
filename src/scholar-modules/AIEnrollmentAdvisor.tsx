@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Bot } from 'lucide-react';
-import { useRoster } from '../roster-context/RosterDataContext';
+import { useRoster } from '../scholar-context/RosterDataContext';
 
 const C = {
   card: '#161B22', border: '#30363D', text: '#E6EDF3',
