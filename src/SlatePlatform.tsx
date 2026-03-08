@@ -21,7 +21,7 @@ const MODULES = [
   { id: "home", label: "Briefing", category: "NETWORK INTELLIGENCE", icon: "🧠", color: MOD.home, desc: "AI-generated cross-module briefing synthesizing live data across all Slate systems.", status: "LIVE", metrics: "8 modules", tagline: "Everything you need to know, right now." },
   { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "17 campuses monitored", tagline: "Know what happened before your students arrive." },
   { id: "ledger", label: "Ledger", category: "FINANCIAL INTELLIGENCE", icon: "📊", color: MOD.ledger, desc: "Budget visibility, cash flow forecasting, variance analysis. CFO-grade financial intelligence.", status: "LIVE", metrics: "$240M budget tracked", tagline: "See your money the way your board needs to." },
-  { id: "scholar", label: "Scholar", category: "ENROLLMENT INTELLIGENCE", icon: "📋", color: MOD.scholar, desc: "Enrollment forecasting, recruitment funnel tracking, yield modeling, attrition early warning.", status: "LIVE", metrics: "12,120 students", tagline: "Stop managing enrollment in spreadsheets." },
+  { id: "scholar", label: "Scholar", category: "ENROLLMENT INTELLIGENCE", icon: "📋", color: MOD.scholar, desc: "Enrollment forecasting, recruitment funnel tracking, yield modeling, attrition early warning.", status: "LIVE", metrics: "12,120 students", tagline: "Stop managing enrollment in spreadsheets.", noHeader: true },
   { id: "roster", label: "Roster", category: "PEOPLE INTELLIGENCE", icon: "👥", color: MOD.roster, desc: "Staff directory, position management, vacancy tracking, licensure compliance, and HR Q&A.", status: "LIVE", metrics: "1,556 staff", tagline: "Know your people the way you know your data." },
   { id: "brief", label: "Brief", category: "COMMUNICATIONS INTELLIGENCE", icon: "✉️", color: MOD.brief, desc: "AI-drafted communications grounded in live Slate data. In your voice. Out in seconds.", status: "LIVE", metrics: "Powered by Claude", tagline: "Your voice. Your data. Seconds, not hours." },
   { id: "shield", label: "Guard", category: "RISK MANAGEMENT INTELLIGENCE", icon: "⚖️", color: MOD.shield, desc: "Compliance monitoring, incident tracking, insurance analysis, regulatory deadline tracking.", status: "LIVE", metrics: "12 compliance areas", tagline: "Every deadline. Every policy. Every campus." },
@@ -342,7 +342,7 @@ export default function SlatePlatform() {
       raise: <FundApp />,
       home: <HomeApp />,
     };
-    return (<><ModuleHeader module={mod} /><div className="slate-module-box">{apps[mod.id]}</div></>);
+    return (<>{!mod.noHeader && <ModuleHeader module={mod} />}<div className="slate-module-box">{apps[mod.id]}</div></>);
   };
 
   return (<>
