@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from "react";
 import SentinelApp from "./SentinelApp";
 import LedgerApp from "./LedgerApp";
 import BriefApp from "./BriefApp";
-import RosterApp from "./RosterApp";
+import ScholarApp from "./ScholarApp";
 import ShieldApp from "./ShieldApp";
 import GroundsApp from "./GroundsApp";
+import RosterApp from "./RosterApp";
 import FundApp from "./FundApp";
 import HomeApp from "./HomeApp";
 import PublicAffairsApp from "./PublicAffairsApp";
@@ -14,14 +15,14 @@ const C = {
   deep: "#121315", rock: "#23272F", mid: "#2C3440", light: "#6B7280",
   brass: "#B79145", chalk: "#E7E2D8", signal: "#2F8F95", white: "#FFFFFF", bg: "#F7F5F1",
 };
-const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", roster: "#4F78D6", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145", home: "#0D1B2A" };
+const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", scholar: "#4F78D6", roster: "#3D6B8E", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145", home: "#0D1B2A" };
 
 const MODULES = [
   { id: "home", label: "Briefing", category: "NETWORK INTELLIGENCE", icon: "🧠", color: MOD.home, desc: "AI-generated cross-module briefing synthesizing live data across all Slate systems.", status: "LIVE", metrics: "8 modules", tagline: "Everything you need to know, right now." },
   { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "17 campuses monitored", tagline: "Know what happened before your students arrive." },
-
   { id: "ledger", label: "Ledger", category: "FINANCIAL INTELLIGENCE", icon: "📊", color: MOD.ledger, desc: "Budget visibility, cash flow forecasting, variance analysis. CFO-grade financial intelligence.", status: "LIVE", metrics: "$240M budget tracked", tagline: "See your money the way your board needs to." },
-  { id: "roster", label: "Roster", category: "ENROLLMENT INTELLIGENCE", icon: "📋", color: MOD.roster, desc: "Enrollment forecasting, recruitment funnel tracking, yield modeling, attrition early warning.", status: "LIVE", metrics: "12,120 students", tagline: "Stop managing enrollment in spreadsheets." },
+  { id: "scholar", label: "Scholar", category: "ENROLLMENT INTELLIGENCE", icon: "📋", color: MOD.scholar, desc: "Enrollment forecasting, recruitment funnel tracking, yield modeling, attrition early warning.", status: "LIVE", metrics: "12,120 students", tagline: "Stop managing enrollment in spreadsheets." },
+  { id: "roster", label: "Roster", category: "PEOPLE INTELLIGENCE", icon: "👥", color: MOD.roster, desc: "Staff directory, position management, vacancy tracking, licensure compliance, and HR Q&A.", status: "LIVE", metrics: "1,556 staff", tagline: "Know your people the way you know your data." },
   { id: "brief", label: "Brief", category: "COMMUNICATIONS INTELLIGENCE", icon: "✉️", color: MOD.brief, desc: "AI-drafted communications grounded in live Slate data. In your voice. Out in seconds.", status: "LIVE", metrics: "Powered by Claude", tagline: "Your voice. Your data. Seconds, not hours." },
   { id: "shield", label: "Guard", category: "RISK MANAGEMENT INTELLIGENCE", icon: "⚖️", color: MOD.shield, desc: "Compliance monitoring, incident tracking, insurance analysis, regulatory deadline tracking.", status: "LIVE", metrics: "12 compliance areas", tagline: "Every deadline. Every policy. Every campus." },
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "1.5M sq ft managed", tagline: "The building is the first thing families see." },
@@ -50,36 +51,26 @@ const GlobalCSS = () => (<style>{`
   .slate-module-box > * {
     animation: fadeIn 0.35s ease both;
   }
-  /* Custom scrollbar — thin, dark, elegant */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(45,55,72,0.25); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(45,55,72,0.45); }
-  /* Sidebar nav hover */
   .nav-item { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 10px; }
   .nav-item:hover { background: rgba(255,255,255,0.06); }
   .nav-item.active { background: rgba(255,255,255,0.08); }
-  /* Module card hover lift */
   .mod-card { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
   .mod-card:hover { transform: translateY(-4px); }
   .mod-card:active { transform: translateY(-1px); transition-duration: 0.1s; }
-  /* KPI card hover */
   .dash-card { transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: default; }
   .dash-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-  /* Smooth page transitions */
   .slate-module-box { transition: opacity 0.3s ease; }
-  /* Selection color */
   ::selection { background: rgba(183,145,69,0.2); color: #121315; }
-  .dash-card {
-    animation: fadeSlideUp 0.5s ease both;
-  }
+  .dash-card { animation: fadeSlideUp 0.5s ease both; }
   .dash-card:nth-child(1) { animation-delay: 0.05s; }
   .dash-card:nth-child(2) { animation-delay: 0.1s; }
   .dash-card:nth-child(3) { animation-delay: 0.15s; }
   .dash-card:nth-child(4) { animation-delay: 0.2s; }
-  .mod-card {
-    animation: fadeSlideUp 0.5s ease both;
-  }
+  .mod-card { animation: fadeSlideUp 0.5s ease both; }
   .mod-card:nth-child(1) { animation-delay: 0.15s; }
   .mod-card:nth-child(2) { animation-delay: 0.2s; }
   .mod-card:nth-child(3) { animation-delay: 0.25s; }
@@ -89,14 +80,13 @@ const GlobalCSS = () => (<style>{`
   .slate-scroll::-webkit-scrollbar { width: 6px; }
   .slate-scroll::-webkit-scrollbar-track { background: transparent; }
   .slate-scroll::-webkit-scrollbar-thumb { background: ${C.chalk}; border-radius: 3px; }
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
   * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
   @keyframes taglineGlow { 0% { opacity:0; letter-spacing:6px; text-shadow:none; color:rgba(255,255,255,0.2); } 35% { opacity:1; letter-spacing:11px; text-shadow:0 0 50px rgba(255,255,255,0.85),0 0 100px rgba(255,255,255,0.3); color:rgba(255,255,255,1); } 100% { opacity:1; letter-spacing:8px; text-shadow:none; color:rgba(255,255,255,0.65); } } @keyframes slateGlow { 0%,100%{opacity:0.04;transform:scale(1)} 50%{opacity:0.08;transform:scale(1.05)} }
   @keyframes slateDotPulse { 0%,100%{box-shadow:0 0 12px currentColor} 50%{box-shadow:0 0 22px currentColor} }
 `}</style>);
 
 /* ═══════════════════════════════════════════════════════════
-   SPLASH SCREEN — Slow dissolve, gold dot slides in as period
+   SPLASH SCREEN
    ═══════════════════════════════════════════════════════════ */
 const SplashScreen = ({ onComplete }) => {
   const [p, setP] = useState(0);
@@ -113,7 +103,6 @@ const SplashScreen = ({ onComplete }) => {
     return () => t.forEach(clearTimeout);
   }, [onComplete]);
 
-  // Dot slides in from left ~800ms after logo appears
   useEffect(() => {
     if (p >= 1) {
       const t = setTimeout(() => setDotX(0), 100);
@@ -144,7 +133,6 @@ const SplashScreen = ({ onComplete }) => {
         </svg>
       </div>
 
-      {/* Wordmark with animated gold dot */}
       <div style={{ position: "relative", marginTop: 24, display: "flex", alignItems: "baseline", gap: 0, opacity: p >= 1 ? 1 : 0, transform: p >= 1 ? "translateY(0)" : "translateY(24px)", transition: "all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s" }}>
         <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 900, fontSize: 88, color: C.white, letterSpacing: "-0.04em", lineHeight: 1 }}>Slate</span>
         <span style={{
@@ -213,7 +201,7 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
   const w = collapsed ? 64 : 232;
   return (
     <div style={{ width: w, minWidth: w, height: "100vh", background: C.deep, borderRight: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", transition: "width 0.25s ease, min-width 0.25s ease", overflow: "hidden", flexShrink: 0, zIndex: 200 }}>
-      <div onClick={() => setActiveModule("dashboard")} style={{ padding: collapsed ? "22px 0" : "22px 24px", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", gap: 10, cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.06)", minHeight: 72, flexShrink: 0, transition: "opacity 0.2s", }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+      <div onClick={() => setActiveModule("dashboard")} style={{ padding: collapsed ? "22px 0" : "22px 24px", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start", gap: 10, cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.06)", minHeight: 72, flexShrink: 0, transition: "opacity 0.2s" }} onMouseEnter={e => e.currentTarget.style.opacity = "0.8"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
         <svg width={collapsed ? 24 : 26} height={collapsed ? 18 : 19.5} viewBox="0 0 40 30" fill="none"><path d="M8 2 L36 2 L32 28 L4 28 Z" fill="rgba(255,255,255,0.12)" /><line x1="10" y1="13" x2="30" y2="13" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" /><line x1="10" y1="19" x2="22" y2="19" stroke={C.chalk} strokeWidth="2.5" strokeLinecap="round" opacity="0.5" /></svg>
         {!collapsed && <span style={{ fontFamily: "'Inter', system-ui, sans-serif", fontWeight: 900, fontSize: 18, color: C.white, letterSpacing: "-0.02em" }}>Slate<span style={{ color: C.brass }}>.</span></span>}
       </div>
@@ -230,6 +218,7 @@ const Sidebar = ({ activeModule, setActiveModule, collapsed, setCollapsed }) => 
     </div>
   );
 };
+
 const NI = ({ label, icon, color, active, collapsed, onClick }) => (
   <div onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 12, padding: collapsed ? "11px 0" : "11px 24px", justifyContent: collapsed ? "center" : "flex-start", cursor: "pointer", margin: "1px 10px", borderRadius: 10, background: active ? `${color}12` : "transparent", borderLeft: active ? `3px solid ${color}` : "3px solid transparent", transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)" }} onMouseEnter={e => { if (!active) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }} onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? `${color}12` : "transparent"; }}>
     <span style={{ fontSize: 15, width: 22, textAlign: "center", flexShrink: 0, filter: active ? `drop-shadow(0 0 6px ${color})` : "none", transform: active ? "scale(1.15)" : "scale(1)", transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)" }}>{icon}</span>
@@ -252,7 +241,12 @@ const Dashboard = ({ onModuleClick }) => {
         <div style={{ width: 48, height: 3, background: C.brass, borderRadius: 2, marginTop: 14 }} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
-        {[{ l: "Campuses", v: "17", s: "All operational", c: MOD.sentinel }, { l: "Students", v: "12,120", s: "98.4% of capacity", c: MOD.roster }, { l: "YTD Budget", v: "+$5.9M", s: "Surplus — tracking ahead", c: MOD.ledger }, { l: "DSCR", v: "3.47x", s: "Covenant: 1.0x", c: MOD.brief }].map((k, i) => (
+        {[
+          { l: "Campuses", v: "17", s: "All operational", c: MOD.sentinel },
+          { l: "Students", v: "12,120", s: "98.4% of capacity", c: MOD.scholar },
+          { l: "YTD Budget", v: "+$5.9M", s: "Surplus — tracking ahead", c: MOD.ledger },
+          { l: "DSCR", v: "3.47x", s: "Covenant: 1.0x", c: MOD.brief }
+        ].map((k, i) => (
           <div key={i} className="dash-card" style={{ background: C.white, borderRadius: 14, padding: "22px 24px", borderTop: `3px solid ${k.c}`, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 6 }}>{k.l}</div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 28, fontWeight: 700, color: C.deep }}>{k.v}</div>
@@ -294,13 +288,13 @@ export default function SlatePlatform() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [activeModule, setActiveModule] = useState("home");
   const strikeRef = useRef(false);
+
   const handleModuleClick = (mod) => {
     if (strikeRef.current === false) {
       strikeRef.current = true;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const now = ctx.currentTime;
-        // Note 1: E5 — bright, clean entry
         const o1 = ctx.createOscillator(); const g1 = ctx.createGain();
         o1.type = 'sine'; o1.frequency.value = 659.25;
         g1.gain.setValueAtTime(0, now);
@@ -308,7 +302,6 @@ export default function SlatePlatform() {
         g1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
         o1.connect(g1); g1.connect(ctx.destination);
         o1.start(now); o1.stop(now + 0.7);
-        // Note 2: B5 — perfect fifth up, the lift
         const o2 = ctx.createOscillator(); const g2 = ctx.createGain();
         o2.type = 'sine'; o2.frequency.value = 987.77;
         g2.gain.setValueAtTime(0, now + 0.08);
@@ -316,7 +309,6 @@ export default function SlatePlatform() {
         g2.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
         o2.connect(g2); g2.connect(ctx.destination);
         o2.start(now + 0.08); o2.stop(now + 0.9);
-        // Shimmer: E6 — octave harmonic, barely there
         const o3 = ctx.createOscillator(); const g3 = ctx.createGain();
         o3.type = 'sine'; o3.frequency.value = 1318.5;
         g3.gain.setValueAtTime(0, now + 0.12);
@@ -329,6 +321,7 @@ export default function SlatePlatform() {
     }
     setActiveModule(mod);
   };
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const activeModuleData = MODULES.find(m => m.id === activeModule);
 
@@ -337,8 +330,19 @@ export default function SlatePlatform() {
   const renderModule = () => {
     const mod = activeModuleData;
     if (!mod) return null;
-    const apps = { sentinel: <SentinelApp />, ledger: <LedgerApp />, brief: <BriefApp />, roster: <RosterApp />, shield: <ShieldApp />, grounds: <GroundsApp />, capitol: <PublicAffairsApp />, raise: <FundApp />, home: <HomeApp /> };
-   return (<><ModuleHeader module={mod} /><div className="slate-module-box">{apps[mod.id]}</div></>);
+    const apps = {
+      sentinel: <SentinelApp />,
+      ledger: <LedgerApp />,
+      brief: <BriefApp />,
+      scholar: <ScholarApp />,
+      roster: <RosterApp />,
+      shield: <ShieldApp />,
+      grounds: <GroundsApp />,
+      capitol: <PublicAffairsApp />,
+      raise: <FundApp />,
+      home: <HomeApp />,
+    };
+    return (<><ModuleHeader module={mod} /><div className="slate-module-box">{apps[mod.id]}</div></>);
   };
 
   return (<>
@@ -361,7 +365,6 @@ export default function SlatePlatform() {
             {activeModule !== "dashboard" && activeModuleData ? (<><div style={{ width: 8, height: 8, borderRadius: "50%", background: activeModuleData.color, boxShadow: `0 0 8px ${activeModuleData.color}40` }} /><span style={{ fontSize: 13, fontWeight: 700, color: C.deep }}>Slate {activeModuleData.label}</span><span style={{ fontSize: 10, fontWeight: 600, color: C.light, textTransform: "uppercase", letterSpacing: "1px", marginLeft: 8 }}>{activeModuleData.category}</span></>) : (<span style={{ fontSize: 13, fontWeight: 700, color: C.deep }}>Slate Dashboard</span>)}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            
             <div style={{ width: 32, height: 32, borderRadius: "50%", background: `linear-gradient(135deg, ${C.brass}, ${C.deep})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: C.white, boxShadow: `0 2px 8px ${C.brass}30` }}>MM</div>
           </div>
         </div>
