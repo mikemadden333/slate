@@ -1,19 +1,18 @@
-
 import { useState, useRef, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line
 } from "recharts";
 
-const SYSTEM_PROMPT = `You are a concise, knowledgeable HR assistant for Noble Schools — a network of 17 public charter high schools in Chicago serving 12,000 students. You help staff quickly understand their benefits, policies, and career resources. Be direct and specific. If unsure, direct staff to humanresources@nobleschools.org or 312-555-0100.
+const SYSTEM_PROMPT = `You are a concise, knowledgeable HR assistant for Veritas Charter Schools — a network of 10 public charter high schools in Chicago serving 6,823 students. You help staff quickly understand their benefits, policies, and career resources. Be direct and specific. If unsure, direct staff to humanresources@veritascharters.org or 312-555-0100.
 
 === MEDICAL INSURANCE (BlueCross BlueShield) ===
 Five plan options:
-1. Noble HMO – In-network only, requires a Primary Care Physician. Office: $25 copay, Specialist: $45 copay. ER: $300. Generic Rx: $10, Brand: $45, Non-preferred: $65. Employee-only semi-monthly premium: $36.00. No out-of-network benefits.
+1. Veritas HMO – In-network only, requires a Primary Care Physician. Office: $25 copay, Specialist: $45 copay. ER: $300. Generic Rx: $10, Brand: $45, Non-preferred: $65. Employee-only semi-monthly premium: $36.00. No out-of-network benefits.
 2. Narrow Network PPO – Curated network. Deductible: $1,200 individual / $3,600 family. Coinsurance: 80% in-network, 50% out. ER: $300 copay. Employee-only: $70.00/semi-monthly.
 3. Choice PPO (Tiered T1/T2/T3) – T1 deductible $1,100 individual. Coinsurance 80%. Office: $25/$45. ER: $300. Employee-only: $118.00/semi-monthly.
-4. HDHP Plan A + HSA – Deductible $3,500 individual. Coinsurance 90% after deductible. Noble contributes $900 (EE only) or $1,500 (family) to HSA. Employee-only premium: $44.00/semi-monthly.
-5. HDHP Plan B + HSA – Deductible $4,400. Noble contributes $1,800 (EE only) or $3,000 (family). Employee-only: $22.00/semi-monthly.
+4. HDHP Plan A + HSA – Deductible $3,500 individual. Coinsurance 90% after deductible. Veritas contributes $900 (EE only) or $1,500 (family) to HSA. Employee-only premium: $44.00/semi-monthly.
+5. HDHP Plan B + HSA – Deductible $4,400. Veritas contributes $1,800 (EE only) or $3,000 (family). Employee-only: $22.00/semi-monthly.
 2026 HSA IRS max: $4,450 (EE only), $8,850 (family). Age 55+ catch-up contribution: $1,000.
 
 === DENTAL (BlueCross BlueShield) ===
@@ -30,17 +29,17 @@ Limited Purpose FSA: HDHP/HSA enrollees only — dental and vision costs only.
 Commuter Benefits (WEX): Up to $345/month pre-tax for parking and/or mass transit.
 
 === LIFE & DISABILITY ===
-Basic Life & AD&D: 2x annual salary, up to $500,000. Fully paid by Noble.
+Basic Life & AD&D: 2x annual salary, up to $500,000. Fully paid by Veritas.
 Voluntary Life: Employee up to $500,000; spouse up to $100,000; children up to $10,000.
-Short-Term Disability: Begins day 11. Pays 60% weekly earnings, up to $3,100/week, for 13 weeks. Noble pays 100%.
-Long-Term Disability: Begins day 91. Pays 66.67% monthly earnings, up to $15,000/month, to retirement age. Noble pays 100%.
+Short-Term Disability: Begins day 11. Pays 60% weekly earnings, up to $3,100/week, for 13 weeks. Veritas pays 100%.
+Long-Term Disability: Begins day 91. Pays 66.67% monthly earnings, up to $15,000/month, to retirement age. Veritas pays 100%.
 
 === RETIREMENT ===
-401(k) via Fidelity: Auto-enrolled. 2026 max $23,500 ($7,000 catch-up if 50+). Noble matches 100% of first 5% after 1 year of service.
-CTPF Pension: Required for licensed educators. Employee 2%, Noble 7% + 10% admin fee. No Social Security while enrolled.
+401(k) via Fidelity: Auto-enrolled. 2026 max $23,500 ($7,000 catch-up if 50+). Veritas matches 100% of first 5% after 1 year of service.
+CTPF Pension: Required for licensed educators. Employee 2%, Veritas 7% + 10% admin fee. No Social Security while enrolled.
 
 === WELLNESS ===
-EAP (AllOne Health): Free, confidential 24/7. Call 800-555-0190, ers-eap.com (code: noble26). First 3 counseling sessions free.
+EAP (AllOne Health): Free, confidential 24/7. Call 800-555-0190, ers-eap.com (code: veritas26). First 3 counseling sessions free.
 Headspace: Free premium for all staff + 5 guests.
 Care Solace: Free mental health/substance use navigation. 888-555-0120.
 Maven: Free virtual clinic for family planning, parenting, pediatrics.
@@ -51,7 +50,7 @@ Divvy Bike: Discounted annual membership. Code via HR.
 Eligible after 6 months of service. Up to 18 weeks (20 for c-section). All benefits continue during leave.
 Birthing parent: 6-8 weeks disability (paid) + 6 weeks bonding (paid) + 6 weeks extended bonding (unpaid or PTO).
 Non-birthing parent: 12 weeks bonding (paid) + 6 weeks extended bonding (unpaid or PTO).
-Initiate: GroupAbsenceManagement.com/noble.
+Initiate: GroupAbsenceManagement.com/veritas.
 
 === TIME OFF ===
 PTO Year: August 1 – July 31.
@@ -60,66 +59,66 @@ Admin (52-week) staff: Up to 13 days year 1 (grows with tenure). 7-day carryover
 All full-time staff: 27 fixed paid days in SY26, plus PTO and 5-day sick bank. Sick days reset August 1, no carryover.
 
 === HANDBOOK POLICIES ===
-Core Commitments: Excellence, Belonging, Integrity, Growth, Service, Community.
+Core Commitments: Truth, Service, Students First, Respect, Stewardship, Results, Experience.
 Attendance: Arrive 15 minutes before scheduled start. Three unexcused absences per semester triggers a formal performance conversation.
 Dress Code: Business professional on testing days, family nights, board events. Business casual all other days.
 Cell Phones: Personal use during the school day limited to prep periods, breaks, and lunch.
-Social Media: No student content without written family consent. No posts that could compromise student privacy or embarrass Noble.
+Social Media: No student content without written family consent. No posts that could compromise student privacy or embarrass Veritas.
 Conflicts of Interest: Disclose to HR within 30 days.
 Harassment: All forms prohibited. Report to supervisor or HR. Retaliation against good-faith reports is prohibited.
 Confidentiality: Student records, family info, and personnel matters are confidential. Violations may result in disciplinary action.
 
 === CAREER DEVELOPMENT ===
-Teacher Licensure: On-staff licensure specialist. 75% tuition coverage for MAT and alt-licensure at partner universities. Contact credentials@nobleschools.org.
+Teacher Licensure: On-staff licensure specialist. 75% tuition coverage for MAT and alt-licensure at partner universities. Contact credentials@veritascharters.org.
 Subject Endorsements: 75% coverage in Math, ELA, Science, Social Science, Foreign Language, ESL/Bilingual.
 Leadership Pathways: Diverse Leaders Fellowship, Principal Fellowship, Management Accelerator (year-long mentorship cohort).
 Distinguished Teacher: Annual cohort. Recipients earn a permanent $10,000 salary increase.
 Referral Bonus: $1,000 for hiring referrals completing 120 days. Details in staff handbook.`;
 
 const CAMPUSES = [
-  "All Campuses","Rowe-Clark","Bulls College Prep","Chicago Lights Prep",
-  "Comer","DRW","Gary Comer","ITW Speer","Johnson","Mansueto",
-  "Muchin","Noble Street","Pritzker","UIC Prep","Baker","Butler",
-  "Hansberry","Golder"
+  "All Campuses",
+  "Loop", "Englewood", "Woodlawn", "Auburn Gresham",
+  "Roseland", "Chatham", "Austin",
+  "North Lawndale", "Garfield Park", "Humboldt Park"
 ];
 
 const ROLES = [
-  {id:1,name:"Jada Morris",title:"Math Teacher",dept:"Instruction",campus:"Rowe-Clark",status:"Active",fte:"1.0",licensed:true},
-  {id:2,name:"Marcus Webb",title:"English Teacher",dept:"Instruction",campus:"Bulls College Prep",status:"Active",fte:"1.0",licensed:true},
-  {id:3,name:"Priya Nair",title:"Learning Specialist",dept:"Special Education",campus:"Mansueto",status:"Active",fte:"1.0",licensed:true},
-  {id:4,name:"Devon Castillo",title:"Dean of Students",dept:"Student Services",campus:"Rowe-Clark",status:"Active",fte:"1.0",licensed:false},
-  {id:5,name:"Aaliyah Thomas",title:"Science Teacher",dept:"Instruction",campus:"Pritzker",status:"On Leave",fte:"1.0",licensed:true},
-  {id:6,name:"[VACANT]",title:"SPED Teacher",dept:"Special Education",campus:"Baker",status:"Open",fte:"1.0",licensed:true},
-  {id:7,name:"Chris Okonkwo",title:"Assistant Principal",dept:"Administration",campus:"Muchin",status:"Active",fte:"1.0",licensed:true},
-  {id:8,name:"Fatima Diallo",title:"Counselor",dept:"Student Services",campus:"Johnson",status:"Active",fte:"1.0",licensed:false},
-  {id:9,name:"[VACANT]",title:"Learning Specialist",dept:"Special Education",campus:"Rowe-Clark",status:"Open",fte:"1.0",licensed:true},
-  {id:10,name:"Sam Rivera",title:"Office Manager",dept:"Operations",campus:"DRW",status:"Active",fte:"1.0",licensed:false},
-  {id:11,name:"[VACANT]",title:"Math Teacher",dept:"Instruction",campus:"UIC Prep",status:"Open",fte:"1.0",licensed:true},
-  {id:12,name:"Nadia Brooks",title:"Registrar",dept:"Administration",campus:"Hansberry",status:"Active",fte:"1.0",licensed:false},
-  {id:13,name:"Elijah Park",title:"History Teacher",dept:"Instruction",campus:"Noble Street",status:"Active",fte:"1.0",licensed:true},
-  {id:14,name:"[VACANT]",title:"SPED Teacher",dept:"Special Education",campus:"Golder",status:"Open",fte:"1.0",licensed:true},
-  {id:15,name:"Tanya Hill",title:"Data Manager",dept:"Operations",campus:"Comer",status:"Active",fte:"1.0",licensed:false},
-  {id:16,name:"Jerome Banks",title:"Biology Teacher",dept:"Instruction",campus:"Butler",status:"Active",fte:"1.0",licensed:true},
-  {id:17,name:"[VACANT]",title:"English Teacher",dept:"Instruction",campus:"ITW Speer",status:"Open",fte:"1.0",licensed:true},
-  {id:18,name:"Keisha Moore",title:"Social Worker",dept:"Student Services",campus:"Gary Comer",status:"Active",fte:"1.0",licensed:false},
+  {id:1,  name:"Jada Morris",       title:"Math Teacher",        dept:"Instruction",       campus:"Loop",           status:"Active",   fte:"1.0", licensed:true},
+  {id:2,  name:"Marcus Webb",       title:"English Teacher",     dept:"Instruction",       campus:"Englewood",      status:"Active",   fte:"1.0", licensed:true},
+  {id:3,  name:"Priya Nair",        title:"Learning Specialist", dept:"Special Education", campus:"Woodlawn",       status:"Active",   fte:"1.0", licensed:true},
+  {id:4,  name:"Devon Castillo",    title:"Dean of Students",    dept:"Student Services",  campus:"Loop",           status:"Active",   fte:"1.0", licensed:false},
+  {id:5,  name:"Aaliyah Thomas",    title:"Science Teacher",     dept:"Instruction",       campus:"Chatham",        status:"On Leave", fte:"1.0", licensed:true},
+  {id:6,  name:"[VACANT]",          title:"SPED Teacher",        dept:"Special Education", campus:"Garfield Park",  status:"Open",     fte:"1.0", licensed:true},
+  {id:7,  name:"Chris Okonkwo",     title:"Assistant Principal", dept:"Administration",    campus:"Auburn Gresham", status:"Active",   fte:"1.0", licensed:true},
+  {id:8,  name:"Fatima Diallo",     title:"Counselor",           dept:"Student Services",  campus:"Austin",         status:"Active",   fte:"1.0", licensed:false},
+  {id:9,  name:"[VACANT]",          title:"Learning Specialist", dept:"Special Education", campus:"Englewood",      status:"Open",     fte:"1.0", licensed:true},
+  {id:10, name:"Sam Rivera",        title:"Office Manager",      dept:"Operations",        campus:"Woodlawn",       status:"Active",   fte:"1.0", licensed:false},
+  {id:11, name:"[VACANT]",          title:"Math Teacher",        dept:"Instruction",       campus:"Humboldt Park",  status:"Open",     fte:"1.0", licensed:true},
+  {id:12, name:"Nadia Brooks",      title:"Registrar",           dept:"Administration",    campus:"Roseland",       status:"Active",   fte:"1.0", licensed:false},
+  {id:13, name:"Elijah Park",       title:"History Teacher",     dept:"Instruction",       campus:"Chatham",        status:"Active",   fte:"1.0", licensed:true},
+  {id:14, name:"[VACANT]",          title:"SPED Teacher",        dept:"Special Education", campus:"North Lawndale", status:"Open",     fte:"1.0", licensed:true},
+  {id:15, name:"Tanya Hill",        title:"Data Manager",        dept:"Operations",        campus:"Garfield Park",  status:"Active",   fte:"1.0", licensed:false},
+  {id:16, name:"Jerome Banks",      title:"Biology Teacher",     dept:"Instruction",       campus:"Austin",         status:"Active",   fte:"1.0", licensed:true},
+  {id:17, name:"[VACANT]",          title:"English Teacher",     dept:"Instruction",       campus:"North Lawndale", status:"Open",     fte:"1.0", licensed:true},
+  {id:18, name:"Keisha Moore",      title:"Social Worker",       dept:"Student Services",  campus:"Humboldt Park",  status:"Active",   fte:"1.0", licensed:false},
 ];
 
 const headcountData = [
-  {campus:"Rowe-Clark",total:92,licensed:61},
-  {campus:"Bulls",total:88,licensed:58},
-  {campus:"Mansueto",total:95,licensed:63},
-  {campus:"Baker",total:79,licensed:51},
-  {campus:"Muchin",total:84,licensed:56},
-  {campus:"Pritzker",total:97,licensed:65},
-  {campus:"DRW",total:76,licensed:49},
+  {campus:"Loop",          total:112, licensed:74},
+  {campus:"Chatham",       total:105, licensed:69},
+  {campus:"Woodlawn",      total:97,  licensed:64},
+  {campus:"Englewood",     total:88,  licensed:58},
+  {campus:"Austin",        total:84,  licensed:55},
+  {campus:"Garfield Park", total:79,  licensed:51},
+  {campus:"Roseland",      total:62,  licensed:40},
 ];
 
 const vacancyByDept = [
-  {name:"Instruction",value:8},
-  {name:"Sp. Ed.",value:11},
-  {name:"Operations",value:3},
-  {name:"Student Svcs",value:5},
-  {name:"Admin",value:2},
+  {name:"Instruction",  value:8},
+  {name:"Sp. Ed.",      value:11},
+  {name:"Operations",   value:3},
+  {name:"Student Svcs", value:5},
+  {name:"Admin",        value:2},
 ];
 
 const turnoverTrend = [
@@ -136,7 +135,7 @@ export default function RosterModule() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [messages, setMessages] = useState([
-    {role:"assistant",text:"Hi — I'm your Noble HR Assistant. Ask me about benefits, policies, time off, career support, or anything in the staff handbook."}
+    {role:"assistant", text:"Hi — I'm your Veritas HR Assistant. Ask me about benefits, policies, time off, career support, or anything in the staff handbook."}
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -146,7 +145,7 @@ export default function RosterModule() {
 
   async function sendMessage() {
     if (!input.trim() || loading) return;
-    const userMsg = {role:"user",text:input.trim()};
+    const userMsg = {role:"user", text:input.trim()};
     setMessages(m => [...m, userMsg]);
     setInput("");
     setLoading(true);
@@ -166,10 +165,10 @@ export default function RosterModule() {
         })
       });
       const data = await res.json();
-      const reply = data.content?.[0]?.text || "I'm unable to retrieve that right now. Please contact humanresources@nobleschools.org.";
-      setMessages(m => [...m, {role:"assistant",text:reply}]);
+      const reply = data.content?.[0]?.text || "I'm unable to retrieve that right now. Please contact humanresources@veritascharters.org.";
+      setMessages(m => [...m, {role:"assistant", text:reply}]);
     } catch {
-      setMessages(m => [...m, {role:"assistant",text:"Something went wrong. Please contact humanresources@nobleschools.org or call 312-555-0100."}]);
+      setMessages(m => [...m, {role:"assistant", text:"Something went wrong. Please contact humanresources@veritascharters.org or call 312-555-0100."}]);
     }
     setLoading(false);
   }
@@ -189,10 +188,10 @@ export default function RosterModule() {
   const licRate = Math.round((ROLES.filter(r => r.licensed && r.status !== "Open").length / activeStaff) * 100);
 
   const statusBadge = (s) => {
-    if (s === "Active") return {bg:"#d1fae5",color:"#065f46"};
-    if (s === "Open") return {bg:"#fee2e2",color:"#991b1b"};
-    if (s === "On Leave") return {bg:"#fef3c7",color:"#92400e"};
-    return {bg:"#f3f4f6",color:"#374151"};
+    if (s === "Active")   return {bg:"#d1fae5", color:"#065f46"};
+    if (s === "Open")     return {bg:"#fee2e2", color:"#991b1b"};
+    if (s === "On Leave") return {bg:"#fef3c7", color:"#92400e"};
+    return {bg:"#f3f4f6", color:"#374151"};
   };
 
   const SUGGESTED = [
@@ -221,9 +220,9 @@ export default function RosterModule() {
       {/* ── Header ── */}
       <div style={{background:"#0d1f35",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"3px solid #1e5799",position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",gap:14}}>
-          <div style={{background:"#f5c518",borderRadius:5,padding:"4px 9px",fontWeight:800,fontSize:14,color:"#0d1f35",letterSpacing:1}}>N</div>
+          <div style={{background:"#B79145",borderRadius:5,padding:"4px 9px",fontWeight:800,fontSize:14,color:"#0d1f35",letterSpacing:1}}>V</div>
           <div>
-            <div style={{fontSize:17,fontWeight:700,color:"#fff",letterSpacing:"0.01em"}}>Noble Schools</div>
+            <div style={{fontSize:17,fontWeight:700,color:"#fff",letterSpacing:"0.01em"}}>Veritas Charter Schools</div>
             <div style={{fontSize:10,color:"#6699bb",letterSpacing:"0.1em",textTransform:"uppercase",marginTop:1}}>Roster &nbsp;·&nbsp; People Intelligence</div>
           </div>
         </div>
@@ -306,10 +305,10 @@ export default function RosterModule() {
           <div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:22}}>
               {[
-                {label:"Active Staff",value:activeStaff,sub:"across 17 campuses",accent:"#0d1f35"},
-                {label:"Open Positions",value:vacantCount,sub:"network-wide vacancies",accent:"#b91c1c"},
-                {label:"On Leave",value:onLeaveCount,sub:"on approved leave",accent:"#b45309"},
-                {label:"Licensed Staff",value:`${licRate}%`,sub:"hold valid IL licensure",accent:"#15803d"},
+                {label:"Active Staff",    value:activeStaff, sub:"across 10 campuses",       accent:"#0d1f35"},
+                {label:"Open Positions",  value:vacantCount, sub:"network-wide vacancies",    accent:"#b91c1c"},
+                {label:"On Leave",        value:onLeaveCount,sub:"on approved leave",         accent:"#b45309"},
+                {label:"Licensed Staff",  value:`${licRate}%`,sub:"hold valid IL licensure",  accent:"#15803d"},
               ].map(k=>(
                 <div key={k.label} style={{background:"#fff",borderRadius:10,padding:"18px 20px",boxShadow:"0 1px 4px rgba(0,0,0,0.07)",borderTop:`4px solid ${k.accent}`}}>
                   <div style={{fontSize:30,fontWeight:800,color:k.accent,lineHeight:1}}>{k.value}</div>
@@ -329,7 +328,7 @@ export default function RosterModule() {
                     <XAxis dataKey="campus" tick={{fontSize:10,fill:"#8a9bb0"}} axisLine={false} tickLine={false}/>
                     <YAxis tick={{fontSize:10,fill:"#8a9bb0"}} axisLine={false} tickLine={false}/>
                     <Tooltip contentStyle={{fontSize:12,borderRadius:7,border:"1px solid #dce6f0",boxShadow:"0 2px 8px rgba(0,0,0,0.08)"}}/>
-                    <Bar dataKey="total" fill="#1e5799" name="Total" radius={[3,3,0,0]}/>
+                    <Bar dataKey="total"    fill="#1e5799" name="Total"    radius={[3,3,0,0]}/>
                     <Bar dataKey="licensed" fill="#7dbfe8" name="Licensed" radius={[3,3,0,0]}/>
                   </BarChart>
                 </ResponsiveContainer>
@@ -371,7 +370,7 @@ export default function RosterModule() {
           <div style={{display:"grid",gridTemplateColumns:"1fr 270px",gap:18,alignItems:"start"}}>
             <div style={{background:"#fff",borderRadius:10,boxShadow:"0 1px 4px rgba(0,0,0,0.07)",display:"flex",flexDirection:"column",height:580,overflow:"hidden"}}>
               <div style={{background:"#0d1f35",padding:"14px 20px",borderRadius:"10px 10px 0 0",flexShrink:0}}>
-                <div style={{color:"#fff",fontWeight:700,fontSize:14}}>Noble HR Assistant</div>
+                <div style={{color:"#fff",fontWeight:700,fontSize:14}}>Veritas HR Assistant</div>
                 <div style={{color:"#6699bb",fontSize:11,marginTop:2}}>Benefits &nbsp;·&nbsp; Policies &nbsp;·&nbsp; Career Support</div>
               </div>
 
@@ -427,7 +426,7 @@ export default function RosterModule() {
               <div style={{background:"#eef4fb",borderRadius:10,padding:"14px 16px",border:"1px solid #cdd8e6"}}>
                 <div style={{fontSize:11,fontWeight:700,color:"#0d1f35",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:8}}>Direct HR Contact</div>
                 <div style={{fontSize:12,color:"#374f65",lineHeight:1.7}}>
-                  <div>✉ humanresources@nobleschools.org</div>
+                  <div>✉ humanresources@veritascharters.org</div>
                   <div>✆ 312-555-0100</div>
                   <div style={{marginTop:6,fontSize:11,color:"#7a92a8"}}>Mon – Fri, 7:30 am – 4:30 pm</div>
                 </div>
