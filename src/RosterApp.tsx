@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -154,7 +155,7 @@ export default function RosterModule() {
         role: m.role === "assistant" ? "assistant" : "user",
         content: m.text
       }));
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/anthropic-proxy", {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
