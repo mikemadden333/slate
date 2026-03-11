@@ -18,16 +18,16 @@ const C = {
 const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", scholar: "#4F78D6", roster: "#3D6B8E", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145", home: "#0D1B2A" };
 
 const MODULES = [
-  { id: "home", label: "Briefing", category: "NETWORK INTELLIGENCE", icon: "🧠", color: MOD.home, desc: "AI-generated cross-module briefing synthesizing live data across all Slate systems.", status: "LIVE", metrics: "8 modules", tagline: "Everything you need to know, right now." },
-  { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "17 campuses monitored", tagline: "Know what happened before your students arrive." },
-  { id: "ledger", label: "Ledger", category: "FINANCIAL INTELLIGENCE", icon: "📊", color: MOD.ledger, desc: "Budget visibility, cash flow forecasting, variance analysis. CFO-grade financial intelligence.", status: "LIVE", metrics: "$240M budget tracked", tagline: "See your money the way your board needs to." },
-  { id: "scholar", label: "Scholar", category: "ENROLLMENT INTELLIGENCE", icon: "📋", color: MOD.scholar, desc: "Enrollment forecasting, recruitment funnel tracking, yield modeling, attrition early warning.", status: "LIVE", metrics: "12,120 students", tagline: "Stop managing enrollment in spreadsheets.", noHeader: true },
-  { id: "roster", label: "Roster", category: "PEOPLE INTELLIGENCE", icon: "👥", color: MOD.roster, desc: "Staff directory, position management, vacancy tracking, licensure compliance, and HR Q&A.", status: "LIVE", metrics: "1,556 staff", tagline: "Know your people the way you know your data." },
+  { id: "home", label: "Briefing", category: "NETWORK INTELLIGENCE", icon: "🧠", color: MOD.home, desc: "AI-generated cross-module briefing synthesizing live data across all Slate systems.", status: "LIVE", metrics: "10 modules", tagline: "Everything you need to know, right now." },
+  { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "10 campuses monitored", tagline: "Know what happened before your students arrive." },
+  { id: "ledger", label: "Ledger", category: "FINANCIAL INTELLIGENCE", icon: "📊", color: MOD.ledger, desc: "Budget visibility, cash flow forecasting, variance analysis. CFO-grade financial intelligence.", status: "LIVE", metrics: "$138M budget tracked", tagline: "See your money the way your board needs to." },
+  { id: "scholar", label: "Scholar", category: "ENROLLMENT INTELLIGENCE", icon: "📋", color: MOD.scholar, desc: "Enrollment forecasting, recruitment funnel tracking, yield modeling, attrition early warning.", status: "LIVE", metrics: "6,823 students", tagline: "Stop managing enrollment in spreadsheets.", noHeader: true },
+  { id: "roster", label: "Roster", category: "PEOPLE INTELLIGENCE", icon: "👥", color: MOD.roster, desc: "Staff directory, position management, vacancy tracking, licensure compliance, and HR Q&A.", status: "LIVE", metrics: "Network-wide staff", tagline: "Know your people the way you know your data." },
   { id: "brief", label: "Brief", category: "COMMUNICATIONS INTELLIGENCE", icon: "✉️", color: MOD.brief, desc: "AI-drafted communications grounded in live Slate data. In your voice. Out in seconds.", status: "LIVE", metrics: "Powered by Claude", tagline: "Your voice. Your data. Seconds, not hours." },
   { id: "shield", label: "Guard", category: "RISK MANAGEMENT INTELLIGENCE", icon: "⚖️", color: MOD.shield, desc: "Compliance monitoring, incident tracking, insurance analysis, regulatory deadline tracking.", status: "LIVE", metrics: "12 compliance areas", tagline: "Every deadline. Every policy. Every campus." },
-  { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "1.5M sq ft managed", tagline: "The building is the first thing families see." },
-  { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Noble's advocacy intelligence layer.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
-  { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Noble's development intelligence layer.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
+  { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "Network-wide facilities", tagline: "The building is the first thing families see." },
+  { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Veritas advocacy intelligence.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
+  { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Veritas development intelligence.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
 ];
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -237,14 +237,14 @@ const Dashboard = ({ onModuleClick }) => {
     <div style={{ maxWidth: 1100, margin: "0 auto" }}>
       <div style={{ marginBottom: 32, animation: "fadeSlideUp 0.6s ease both" }}>
         <div style={{ fontSize: 32, fontWeight: 900, color: C.deep, letterSpacing: "-0.03em", lineHeight: 1.2 }}>{g}, Mike.</div>
-        <div style={{ fontSize: 14, color: C.light, marginTop: 8 }}>17 Campuses · 12,120 Students · {dayName} · {timeStr}</div>
+        <div style={{ fontSize: 14, color: C.light, marginTop: 8 }}>10 Campuses · 6,823 Students · {dayName} · {timeStr}</div>
         <div style={{ width: 48, height: 3, background: C.brass, borderRadius: 2, marginTop: 14 }} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 36 }}>
         {[
-          { l: "Campuses", v: "17", s: "All operational", c: MOD.sentinel },
-          { l: "Students", v: "12,120", s: "98.4% of capacity", c: MOD.scholar },
-          { l: "YTD Budget", v: "+$5.9M", s: "Surplus — tracking ahead", c: MOD.ledger },
+          { l: "Campuses", v: "10", s: "All operational", c: MOD.sentinel },
+          { l: "Students", v: "6,823", s: "Network enrollment", c: MOD.scholar },
+          { l: "YTD Budget", v: "+$4.3M", s: "Surplus — tracking ahead", c: MOD.ledger },
           { l: "DSCR", v: "3.47x", s: "Covenant: 1.0x", c: MOD.brief }
         ].map((k, i) => (
           <div key={i} className="dash-card" style={{ background: C.white, borderRadius: 14, padding: "22px 24px", borderTop: `3px solid ${k.c}`, boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
@@ -254,7 +254,7 @@ const Dashboard = ({ onModuleClick }) => {
           </div>
         ))}
       </div>
-      <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "3px", marginBottom: 18, animation: "fadeSlideUp 0.5s ease 0.12s both" }}>Six Intelligences — One Platform</div>
+      <div style={{ fontSize: 10, fontWeight: 700, color: C.light, textTransform: "uppercase", letterSpacing: "3px", marginBottom: 18, animation: "fadeSlideUp 0.5s ease 0.12s both" }}>Ten Intelligences — One Platform</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
         {MODULES.map((m, idx) => (
           <div key={m.id} className="mod-card" onClick={() => onModuleClick(m.id)} style={{ background: C.white, borderRadius: 16, cursor: "pointer", overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "transform 0.2s ease, box-shadow 0.2s ease" }}>
