@@ -35,12 +35,12 @@ interface Bill {
   sponsorParty: 'D' | 'R' | 'I' | 'Bipartisan';
   chamber: string;
   status: string;
-  stage: number; // 1–5
+  stage: number;
   lastAction: string;
   lastActionDate: string;
   summary: string;
-  noblePosition: 'support' | 'oppose' | 'monitor' | 'neutral';
-  trajectoryScore: number; // 1–10
+  veritasPosition: 'support' | 'oppose' | 'monitor' | 'neutral';
+  trajectoryScore: number;
   charterImpact: 'high' | 'medium' | 'low';
   impactType: 'positive' | 'negative' | 'mixed';
   url: string;
@@ -75,8 +75,8 @@ const SEED_BILLS: Bill[] = [
     stage: 2,
     lastAction: 'Referred to Senate HELP Committee',
     lastActionDate: '2025-11-14',
-    summary: 'Increases federal reporting requirements for charter schools, mandates financial audits, and restricts federal Charter School Program grants to schools meeting new transparency standards. Would require Noble to produce significantly expanded federal disclosures and could constrain CSP grant eligibility.',
-    noblePosition: 'oppose',
+    summary: 'Increases federal reporting requirements for charter schools, mandates financial audits, and restricts federal Charter School Program grants to schools meeting new transparency standards. Would require Veritas to produce significantly expanded federal disclosures and could constrain CSP grant eligibility.',
+    veritasPosition: 'oppose',
     trajectoryScore: 4,
     charterImpact: 'high',
     impactType: 'negative',
@@ -97,7 +97,7 @@ const SEED_BILLS: Bill[] = [
     lastAction: 'Markup scheduled',
     lastActionDate: '2026-01-22',
     summary: 'Creates federal tax credit scholarships for private and charter school choice. Could expand the pool of students choosing charter schools and increase competition for enrollment, but may also redirect federal attention toward private voucher programs over public charters.',
-    noblePosition: 'monitor',
+    veritasPosition: 'monitor',
     trajectoryScore: 5,
     charterImpact: 'medium',
     impactType: 'mixed',
@@ -117,8 +117,8 @@ const SEED_BILLS: Bill[] = [
     stage: 2,
     lastAction: 'Cosponsors added (67 total)',
     lastActionDate: '2026-02-03',
-    summary: 'Increases federal special education funding toward the original IDEA promise of 40% of excess costs. Would increase per-pupil federal revenue for Noble\'s students with disabilities by an estimated $800–$1,200 per qualifying student. Broadly supported by charter networks.',
-    noblePosition: 'support',
+    summary: 'Increases federal special education funding toward the original IDEA promise of 40% of excess costs. Would increase per-pupil federal revenue for Veritas students with disabilities by an estimated $800–$1,200 per qualifying student. Broadly supported by charter networks.',
+    veritasPosition: 'support',
     trajectoryScore: 3,
     charterImpact: 'high',
     impactType: 'positive',
@@ -139,8 +139,8 @@ const SEED_BILLS: Bill[] = [
     stage: 2,
     lastAction: 'Hearing held Feb 18, 2026',
     lastActionDate: '2026-02-18',
-    summary: 'Requires Chicago Public Schools to fund charter schools at 100% of per-pupil funding parity, eliminating the current ~12% funding gap. Estimated to increase Noble\'s annual revenue by $3–4M if enacted. Strong charter network support. CPS and CTU opposed.',
-    noblePosition: 'support',
+    summary: 'Requires Chicago Public Schools to fund charter schools at 100% of per-pupil funding parity, eliminating the current ~12% funding gap. Estimated to increase Veritas annual revenue by $2–3M if enacted. Strong charter network support. CPS and CTU opposed.',
+    veritasPosition: 'support',
     trajectoryScore: 6,
     charterImpact: 'high',
     impactType: 'positive',
@@ -160,8 +160,8 @@ const SEED_BILLS: Bill[] = [
     stage: 2,
     lastAction: 'Second reading postponed',
     lastActionDate: '2026-02-25',
-    summary: 'Extends the existing Chicago charter school enrollment cap and moratorium on new charter authorizations through 2030. Would prevent Noble from opening any new campuses in Chicago for four years. CTU-backed. Governor has not indicated a position.',
-    noblePosition: 'oppose',
+    summary: 'Extends the existing Chicago charter school enrollment cap and moratorium on new charter authorizations through 2030. Would prevent Veritas from opening any new campuses in Chicago for four years. CTU-backed. Governor has not indicated a position.',
+    veritasPosition: 'oppose',
     trajectoryScore: 5,
     charterImpact: 'high',
     impactType: 'negative',
@@ -181,8 +181,8 @@ const SEED_BILLS: Bill[] = [
     stage: 3,
     lastAction: 'Passed Senate 38-18, sent to House',
     lastActionDate: '2026-02-14',
-    summary: 'Raises the state PEL requirement for charter instructional staff from 75% to 85% by 2028, and to 90% by 2030. Noble is currently at approximately 77% PEL compliance. Would require aggressive licensure push and could limit flexible hiring. ISBE supports.',
-    noblePosition: 'oppose',
+    summary: 'Raises the state PEL requirement for charter instructional staff from 75% to 85% by 2028, and to 90% by 2030. Veritas is currently at approximately 77% PEL compliance. Would require aggressive licensure push and could limit flexible hiring. ISBE supports.',
+    veritasPosition: 'oppose',
     trajectoryScore: 7,
     charterImpact: 'high',
     impactType: 'negative',
@@ -202,8 +202,8 @@ const SEED_BILLS: Bill[] = [
     stage: 2,
     lastAction: 'Committee hearing scheduled Mar 12',
     lastActionDate: '2026-03-01',
-    summary: 'Amends the Evidence-Based Funding formula to fully include charter school students in Tier 3 and Tier 4 calculations, correcting a structural inequity in how EBF adequacy targets are calculated for charter students. Could increase Noble\'s state funding by $2–3M annually.',
-    noblePosition: 'support',
+    summary: 'Amends the Evidence-Based Funding formula to fully include charter school students in Tier 3 and Tier 4 calculations, correcting a structural inequity in how EBF adequacy targets are calculated for charter students. Could increase Veritas state funding by $1.5–2.5M annually.',
+    veritasPosition: 'support',
     trajectoryScore: 5,
     charterImpact: 'high',
     impactType: 'positive',
@@ -224,8 +224,8 @@ const SEED_BILLS: Bill[] = [
     stage: 2,
     lastAction: 'Public comment period open through Mar 20, 2026',
     lastActionDate: '2026-03-01',
-    summary: 'Revises CPS charter performance framework to add enrollment volatility, demographic shift, and financial reserves as renewal risk factors. New metrics could affect three Noble campuses with enrollment declines. Comment period is key advocacy window.',
-    noblePosition: 'monitor',
+    summary: 'Revises CPS charter performance framework to add enrollment volatility, demographic shift, and financial reserves as renewal risk factors. New metrics could affect Veritas campuses with enrollment declines. Comment period is the key advocacy window.',
+    veritasPosition: 'monitor',
     trajectoryScore: 8,
     charterImpact: 'high',
     impactType: 'mixed',
@@ -245,8 +245,8 @@ const SEED_BILLS: Bill[] = [
     stage: 2,
     lastAction: 'Committee hearing held Mar 2',
     lastActionDate: '2026-03-02',
-    summary: 'Creates a new citywide framework for school facility utilization review, including charter schools leasing CPS space. Could create new reporting obligations and trigger utilization reviews for Noble campuses in CPS-owned facilities. Legal review recommended.',
-    noblePosition: 'monitor',
+    summary: 'Creates a new citywide framework for school facility utilization review, including charter schools leasing CPS space. Could create new reporting obligations and trigger utilization reviews for Veritas campuses in CPS-owned facilities. Legal review recommended.',
+    veritasPosition: 'monitor',
     trajectoryScore: 4,
     charterImpact: 'medium',
     impactType: 'mixed',
@@ -276,19 +276,19 @@ const levelLabel = { federal: '🇺🇸 Federal', illinois: '🏛 Illinois', loc
 
 // ─── PULSE BAR ─────────────────────────────────────────────────────────────
 function PulseBar({ bills }: { bills: Bill[] }) {
-  const priority  = bills.filter(b => b.charterImpact === 'high').length;
-  const supporting= bills.filter(b => b.noblePosition === 'support').length;
-  const opposing  = bills.filter(b => b.noblePosition === 'oppose').length;
-  const monitoring= bills.filter(b => b.noblePosition === 'monitor').length;
-  const highTraj  = bills.filter(b => b.trajectoryScore >= 7).length;
+  const priority   = bills.filter(b => b.charterImpact === 'high').length;
+  const supporting = bills.filter(b => b.veritasPosition === 'support').length;
+  const opposing   = bills.filter(b => b.veritasPosition === 'oppose').length;
+  const monitoring = bills.filter(b => b.veritasPosition === 'monitor').length;
+  const highTraj   = bills.filter(b => b.trajectoryScore >= 7).length;
 
   const tiles = [
-    { v: String(bills.length),  l: 'Bills Tracked',     c: T.ink    },
-    { v: String(priority),      l: 'High Impact',       c: T.orange },
-    { v: String(highTraj),      l: 'High Trajectory',   c: T.purple },
-    { v: String(supporting),    l: 'Noble Supports',    c: T.green  },
-    { v: String(opposing),      l: 'Noble Opposes',     c: T.red    },
-    { v: String(monitoring),    l: 'Monitoring',        c: T.amber  },
+    { v: String(bills.length),  l: 'Bills Tracked',        c: T.ink    },
+    { v: String(priority),      l: 'High Impact',           c: T.orange },
+    { v: String(highTraj),      l: 'High Trajectory',       c: T.purple },
+    { v: String(supporting),    l: 'Veritas Supports',      c: T.green  },
+    { v: String(opposing),      l: 'Veritas Opposes',       c: T.red    },
+    { v: String(monitoring),    l: 'Monitoring',            c: T.amber  },
   ];
 
   return (
@@ -316,9 +316,9 @@ function BillCard({ bill, onSelect, selected }: { bill: Bill; onSelect: (b: Bill
         <div style={{ flex:1 }}>
           <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:6 }}>
             <span style={{ fontSize:10, fontWeight:800, fontFamily:mono, color:T.muted }}>{bill.number}</span>
-            <span style={{ fontSize:9, padding:'2px 7px', borderRadius:10, background:positionBg(bill.noblePosition),
-              color:positionColor(bill.noblePosition), fontWeight:800, textTransform:'uppercase', letterSpacing:'0.07em' }}>
-              {bill.noblePosition === 'support' ? '✓ Support' : bill.noblePosition === 'oppose' ? '✕ Oppose' : bill.noblePosition === 'monitor' ? '◉ Monitor' : '— Neutral'}
+            <span style={{ fontSize:9, padding:'2px 7px', borderRadius:10, background:positionBg(bill.veritasPosition),
+              color:positionColor(bill.veritasPosition), fontWeight:800, textTransform:'uppercase', letterSpacing:'0.07em' }}>
+              {bill.veritasPosition === 'support' ? '✓ Support' : bill.veritasPosition === 'oppose' ? '✕ Oppose' : bill.veritasPosition === 'monitor' ? '◉ Monitor' : '— Neutral'}
             </span>
             {bill.charterImpact === 'high' && (
               <span style={{ fontSize:9, padding:'2px 7px', borderRadius:10, background:'#FFF1E6', color:T.orange, fontWeight:800, textTransform:'uppercase', letterSpacing:'0.07em' }}>High Impact</span>
@@ -333,7 +333,6 @@ function BillCard({ bill, onSelect, selected }: { bill: Bill; onSelect: (b: Bill
         </div>
       </div>
 
-      {/* Stage bar */}
       <div style={{ marginBottom:10 }}>
         <div style={{ display:'flex', justifyContent:'space-between', marginBottom:3 }}>
           <span style={{ fontSize:9, color:T.muted, textTransform:'uppercase', letterSpacing:'0.08em' }}>{STAGE_LABELS[bill.stage]}</span>
@@ -362,9 +361,9 @@ function BillDetail({ bill, onAction }: { bill: Bill; onAction: (b: Bill, type: 
     <div style={{ background:T.surface, border:`1px solid ${T.border}`, borderRadius:12, padding:24, position:'sticky', top:16 }}>
       <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:12 }}>
         <span style={{ fontSize:10, fontWeight:800, fontFamily:mono, color:T.muted }}>{bill.number}</span>
-        <span style={{ fontSize:9, padding:'2px 8px', borderRadius:10, background:positionBg(bill.noblePosition),
-          color:positionColor(bill.noblePosition), fontWeight:800, textTransform:'uppercase' }}>
-          Noble: {bill.noblePosition}
+        <span style={{ fontSize:9, padding:'2px 8px', borderRadius:10, background:positionBg(bill.veritasPosition),
+          color:positionColor(bill.veritasPosition), fontWeight:800, textTransform:'uppercase' }}>
+          Veritas: {bill.veritasPosition}
         </span>
         <span style={{ fontSize:9, padding:'2px 8px', borderRadius:10,
           background: bill.impactType==='positive' ? T.greenBg : bill.impactType==='negative' ? T.redBg : T.amberBg,
@@ -375,7 +374,6 @@ function BillDetail({ bill, onAction }: { bill: Bill; onAction: (b: Bill, type: 
       <div style={{ fontSize:15, fontWeight:800, color:T.ink, lineHeight:1.4, marginBottom:8 }}>{bill.title}</div>
       <div style={{ fontSize:11, color:T.muted, marginBottom:16 }}>{bill.sponsor} · {bill.chamber} · {levelLabel[bill.level]}</div>
 
-      {/* Progress */}
       <div style={{ marginBottom:20 }}>
         <div style={{ display:'flex', justifyContent:'space-between', marginBottom:6 }}>
           {stages.map((s,i) => (
@@ -403,7 +401,7 @@ function BillDetail({ bill, onAction }: { bill: Bill; onAction: (b: Bill, type: 
           <div style={{ fontSize:8, color:T.muted, textTransform:'uppercase', letterSpacing:'0.08em' }}>Impact Level</div>
         </div>
         <div style={{ flex:1, textAlign:'center', padding:'10px 8px', background:T.bg, borderRadius:8 }}>
-          <div style={{ fontSize:10, fontWeight:800, color:positionColor(bill.noblePosition) }}>{bill.sponsorParty}</div>
+          <div style={{ fontSize:10, fontWeight:800, color:positionColor(bill.veritasPosition) }}>{bill.sponsorParty}</div>
           <div style={{ fontSize:8, color:T.muted, textTransform:'uppercase', letterSpacing:'0.08em' }}>Sponsor Party</div>
         </div>
       </div>
@@ -449,7 +447,7 @@ function LegislativeRadar({ bills, onAction, onRefresh, refreshing }: {
 
   const filtered = useMemo(() => bills
     .filter(b => level === 'all' || b.level === level)
-    .filter(b => position === 'all' || b.noblePosition === position)
+    .filter(b => position === 'all' || b.veritasPosition === position)
     .sort((a, b) => sortBy === 'trajectory' ? b.trajectoryScore - a.trajectoryScore
                   : sortBy === 'impact' ? (b.charterImpact === 'high' ? 3 : b.charterImpact === 'medium' ? 2 : 1) - (a.charterImpact === 'high' ? 3 : a.charterImpact === 'medium' ? 2 : 1)
                   : b.stage - a.stage)
@@ -457,7 +455,6 @@ function LegislativeRadar({ bills, onAction, onRefresh, refreshing }: {
 
   return (
     <div style={{ display:'flex', gap:20 }}>
-      {/* Left: filters + bill list */}
       <div style={{ flex:1, minWidth:0 }}>
         <div style={{ background:T.surface, border:`1px solid ${T.border}`, borderRadius:10,
           padding:'10px 14px', marginBottom:14, display:'flex', gap:8, flexWrap:'wrap', alignItems:'center' }}>
@@ -500,7 +497,6 @@ function LegislativeRadar({ bills, onAction, onRefresh, refreshing }: {
         </div>
       </div>
 
-      {/* Right: detail panel */}
       <div style={{ width:320, flexShrink:0 }}>
         {selected ? (
           <BillDetail bill={selected} onAction={(b, t) => { onAction(b, t); }} />
@@ -521,44 +517,59 @@ function ActionCenter({ bills, initialBill, initialType, onHistoryAdd }: {
 }) {
   const [selBill, setSelBill] = useState<Bill | null>(initialBill ?? null);
   const [actionType, setActionType] = useState(initialType ?? 'witness_slip');
-  const [who, setWho] = useState('Claudia Rodriguez, Chief of External Affairs, Noble Schools');
-  const [notes, setNotes] = useState('');
+  const [who, setWho] = useState('Office of External Affairs, Veritas Charter Schools');
   const [draft, setDraft] = useState('');
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => { if (initialBill) setSelBill(initialBill); }, [initialBill]);
   useEffect(() => { if (initialType) setActionType(initialType); }, [initialType]);
 
   const generate = async () => {
     if (!selBill) return;
-    setLoading(true); setDraft(''); setSaved(false);
+    setLoading(true); setDraft(''); setSaved(false); setError('');
 
     const context = `Bill: ${selBill.number} — ${selBill.title}
 Sponsor: ${selBill.sponsor} | Chamber: ${selBill.chamber} | Level: ${selBill.level}
 Current status: ${selBill.status} | Last action: ${selBill.lastAction} (${selBill.lastActionDate})
-Noble's position: ${selBill.noblePosition.toUpperCase()}
+Veritas position: ${selBill.veritasPosition.toUpperCase()}
 Charter impact: ${selBill.charterImpact} / ${selBill.impactType}
 Summary: ${selBill.summary}
-Organization: Noble Schools — Chicago's largest charter network, 17 campuses, 12,000 students, predominantly low-income and first-generation college students.
-Author: ${who}`;
+Organization: Veritas Charter Schools — a network of 10 public charter high schools in Chicago serving 6,823 students, predominantly low-income and first-generation college students on the South and West Sides.
+Author / On behalf of: ${who}`;
 
     const prompts: Record<string, string> = {
-      witness_slip: `${context}\n\nWrite a formal Illinois legislative witness slip statement for Noble Schools ${selBill.noblePosition === 'support' ? 'SUPPORTING' : 'OPPOSING'} ${selBill.number}.\n\nFormat: 3–4 paragraphs. Open with organization ID and clear position. Paragraph 2: specific reasons grounded in Noble's mission and student impact. Paragraph 3: data or concrete examples (enrollment, demographics, financials where relevant). Closing: clear ask. Tone: professional, confident, not combative. Under 300 words.`,
-      email: `${context}\n\nWrite an email from Noble Schools to a relevant legislator regarding ${selBill.number}. Noble ${selBill.noblePosition === 'support' ? 'supports' : selBill.noblePosition === 'oppose' ? 'opposes' : 'is monitoring'} this bill.\n\nFormat: Subject line, greeting, 3 paragraphs (position + why, student impact with data, specific ask), professional close. Tone: direct, collegial, mission-grounded. Under 250 words.`,
-      talking_points: `${context}\n\nCreate talking points for Noble Schools staff and advocates on ${selBill.number}. Noble ${selBill.noblePosition === 'support' ? 'supports' : selBill.noblePosition === 'oppose' ? 'opposes' : 'is monitoring'} this bill.\n\nFormat: 5–7 bullet points, each 1–2 sentences. Include: core position, student impact, 1–2 data points, contrast with opposition argument, call to action. Tone: clear, persuasive, conversational (these are for spoken advocacy). Include a one-sentence elevator pitch at the top.`,
+      witness_slip: `${context}\n\nWrite a formal Illinois legislative witness slip statement for Veritas Charter Schools ${selBill.veritasPosition === 'support' ? 'SUPPORTING' : 'OPPOSING'} ${selBill.number}.\n\nFormat: 3–4 paragraphs. Open with organization ID and clear position. Paragraph 2: specific reasons grounded in the Veritas mission and student impact. Paragraph 3: data or concrete examples (enrollment, demographics, financials where relevant). Closing: clear ask. Tone: professional, confident, not combative. Under 300 words.`,
+
+      email: `${context}\n\nWrite an email from Veritas Charter Schools to a relevant legislator regarding ${selBill.number}. Veritas ${selBill.veritasPosition === 'support' ? 'supports' : selBill.veritasPosition === 'oppose' ? 'opposes' : 'is monitoring'} this bill.\n\nFormat: Subject line, greeting, 3 paragraphs (position + rationale, student impact with data, specific ask), professional close. Tone: direct, collegial, mission-grounded. Under 250 words.`,
+
+      talking_points: `${context}\n\nCreate talking points for Veritas Charter Schools staff and advocates on ${selBill.number}. Veritas ${selBill.veritasPosition === 'support' ? 'supports' : selBill.veritasPosition === 'oppose' ? 'opposes' : 'is monitoring'} this bill.\n\nFormat: 5–7 bullet points, each 1–2 sentences. Include: core position, student impact, 1–2 data points, contrast with opposition argument, call to action. Tone: clear, persuasive, conversational (these are for spoken advocacy). Include a one-sentence elevator pitch at the top.`,
     };
 
     try {
-      const r = await fetch('https://api.anthropic.com/v1/messages', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{ role:'user', content: prompts[actionType] }] }),
+      const r = await fetch('/api/anthropic-proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompts[actionType] }],
+        }),
       });
+      if (!r.ok) throw new Error(`API error ${r.status}`);
       const j = await r.json();
-      setDraft(j.content?.map((b:any)=>b.type==='text'?b.text:'').join('') ?? 'Unable to generate draft.');
-    } catch { setDraft('Draft generation unavailable.'); }
-    finally { setLoading(false); }
+      const text = j.content?.map((b: any) => b.type === 'text' ? b.text : '').join('') ?? '';
+      if (text) {
+        setDraft(text);
+      } else {
+        setError('No content returned. Try again.');
+      }
+    } catch (err: any) {
+      setError(`Draft generation failed: ${err.message}. Check the proxy configuration.`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const saveToHistory = () => {
@@ -571,7 +582,7 @@ Author: ${who}`;
       billTitle: selBill.title,
       actionType: actionType as any,
       who,
-      notes: notes || draft.slice(0, 120) + '…',
+      notes: draft.slice(0, 120) + '…',
       outcome: '',
     };
     onHistoryAdd(entry);
@@ -586,7 +597,7 @@ Author: ${who}`;
 
   const ilgaInstructions = selBill?.level === 'illinois' && actionType === 'witness_slip' ? (
     <div style={{ background:'#F0F9FF', border:'1px solid #BAE6FD', borderRadius:10, padding:14, marginBottom:14, fontSize:11, color:'#0369A1', lineHeight:1.7 }}>
-      <strong>To submit on ILGA:</strong> Go to <strong>ilga.gov → Bills → Witness Slips</strong>, search {selBill.number}, select the hearing, and paste your statement into the "Slip Content" field. Sign in with your MyILGA account. This draft is for your review — Noble staff must submit manually.
+      <strong>To submit on ILGA:</strong> Go to <strong>ilga.gov → Bills → Witness Slips</strong>, search {selBill.number}, select the hearing, and paste your statement into the "Slip Content" field. Sign in with your MyILGA account. This draft is for your review — staff must submit manually.
     </div>
   ) : null;
 
@@ -599,7 +610,7 @@ Author: ${who}`;
           <select value={selBill?.id ?? ''} onChange={e => setSelBill(bills.find(b=>b.id===e.target.value)??null)}
             style={{ width:'100%', padding:'8px 10px', borderRadius:8, border:`1px solid ${T.border}`, fontSize:12, marginBottom:10 }}>
             <option value="">— Select a bill —</option>
-            {bills.filter(b=>b.noblePosition!=='neutral').map(b => (
+            {bills.filter(b=>b.veritasPosition!=='neutral').map(b => (
               <option key={b.id} value={b.id}>{b.number} — {b.title.slice(0,45)}…</option>
             ))}
           </select>
@@ -609,8 +620,8 @@ Author: ${who}`;
               <div style={{ fontSize:11, fontWeight:700, color:T.ink, marginBottom:4 }}>{selBill.title}</div>
               <div style={{ fontSize:10, color:T.muted }}>{selBill.sponsor}</div>
               <div style={{ display:'flex', gap:6, marginTop:6 }}>
-                <span style={{ fontSize:9, padding:'2px 7px', borderRadius:8, background:positionBg(selBill.noblePosition), color:positionColor(selBill.noblePosition), fontWeight:800 }}>
-                  {selBill.noblePosition}
+                <span style={{ fontSize:9, padding:'2px 7px', borderRadius:8, background:positionBg(selBill.veritasPosition), color:positionColor(selBill.veritasPosition), fontWeight:800 }}>
+                  {selBill.veritasPosition}
                 </span>
                 <span style={{ fontSize:9, padding:'2px 7px', borderRadius:8, background:T.surface, color:T.muted, border:`1px solid ${T.border}` }}>
                   Trajectory {selBill.trajectoryScore}/10
@@ -642,7 +653,7 @@ Author: ${who}`;
         </div>
       </div>
 
-      {/* Right panel: generated draft */}
+      {/* Right panel */}
       <div>
         <div style={{ background:T.surface, border:`1px solid ${T.border}`, borderRadius:12, padding:24 }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
@@ -658,7 +669,15 @@ Author: ${who}`;
           {ilgaInstructions}
 
           {loading && (
-            <div style={{ textAlign:'center', padding:40, color:T.muted, fontSize:13, fontStyle:'italic' }}>Drafting {actionLabels[actionType]}…</div>
+            <div style={{ textAlign:'center', padding:40, color:T.muted, fontSize:13, fontStyle:'italic' }}>
+              Drafting {actionLabels[actionType]}…
+            </div>
+          )}
+
+          {error && !loading && (
+            <div style={{ background:T.redBg, border:`1px solid ${T.red}30`, borderRadius:8, padding:'12px 16px', marginBottom:16, fontSize:12, color:T.red }}>
+              {error}
+            </div>
           )}
 
           {draft && !loading && (
@@ -683,7 +702,7 @@ Author: ${who}`;
             </>
           )}
 
-          {!draft && !loading && (
+          {!draft && !loading && !error && (
             <div style={{ textAlign:'center', padding:60, color:T.muted }}>
               <div style={{ fontSize:24, marginBottom:8 }}>✉️</div>
               <div style={{ fontSize:13 }}>Select a bill and action type,<br/>then click Generate Draft.</div>
@@ -715,21 +734,20 @@ function AdvocacyHistory({ history, onUpdate }: { history: HistoryEntry[]; onUpd
   };
 
   const totals = {
-    slips: history.filter(h=>h.actionType==='witness_slip').length,
+    slips:  history.filter(h=>h.actionType==='witness_slip').length,
     emails: history.filter(h=>h.actionType==='email').length,
-    calls: history.filter(h=>h.actionType==='call').length,
+    calls:  history.filter(h=>h.actionType==='call').length,
     people: Array.from(new Set(history.map(h=>h.who.split(',')[0]))).length,
   };
 
   return (
     <div>
-      {/* Summary tiles */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
         {[
-          { v:String(history.length), l:'Total Actions', c:T.ink },
-          { v:String(totals.slips), l:'Witness Slips', c:T.orange },
-          { v:String(totals.emails), l:'Emails Sent', c:T.blue },
-          { v:String(totals.people), l:'Advocates Engaged', c:T.purple },
+          { v:String(history.length), l:'Total Actions',       c:T.ink    },
+          { v:String(totals.slips),   l:'Witness Slips',       c:T.orange },
+          { v:String(totals.emails),  l:'Emails Sent',         c:T.blue   },
+          { v:String(totals.people),  l:'Advocates Engaged',   c:T.purple },
         ].map((t,i) => (
           <div key={i} style={{ background:T.surface, border:`1px solid ${T.border}`, borderRadius:10, padding:'14px 18px' }}>
             <div style={{ fontSize:9, fontWeight:800, color:T.muted, textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:4 }}>{t.l}</div>
@@ -786,8 +804,8 @@ function AdvocacyHistory({ history, onUpdate }: { history: HistoryEntry[]; onUpd
 }
 
 // ─── ROOT ───────────────────────────────────────────────────────────────────
-const HISTORY_KEY = 'noble_advocacy_history';
-const BILLS_KEY   = 'noble_tracked_bills';
+const HISTORY_KEY = 'veritas_advocacy_history';
+const BILLS_KEY   = 'veritas_tracked_bills';
 
 const TABS = [
   { id:'radar',   l:'📡 Legislative Radar' },
@@ -819,24 +837,24 @@ export default function PublicAffairsApp() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      const prompt = `You are a legislative intelligence analyst for Noble Schools, a Chicago charter school network.
+      const prompt = `You are a legislative intelligence analyst for Veritas Charter Schools, a Chicago charter school network of 10 campuses serving 6,823 students.
 Search for current (2025-2026) legislation affecting charter schools at three levels:
 1. FEDERAL: Any bills in Congress affecting charter school funding, accountability, or IDEA
 2. ILLINOIS: Any bills in the Illinois General Assembly affecting Chicago charter schools, including funding, moratoriums, licensure, or authorization
 3. LOCAL: Any Chicago City Council actions or CPS Board resolutions affecting charter schools
 
-For each bill found, provide a JSON array with fields: number, title, sponsor, sponsorParty (D/R/I/Bipartisan), chamber, level (federal/illinois/local), status, stage (1-5), lastAction, lastActionDate (YYYY-MM-DD), summary (2-3 sentences on charter school impact for Noble Schools), noblePosition (support/oppose/monitor/neutral), trajectoryScore (1-10), charterImpact (high/medium/low), impactType (positive/negative/mixed), tags (array of strings).
+For each bill found, provide a JSON array with fields: number, title, sponsor, sponsorParty (D/R/I/Bipartisan), chamber, level (federal/illinois/local), status, stage (1-5), lastAction, lastActionDate (YYYY-MM-DD), summary (2-3 sentences on charter school impact for Veritas Charter Schools), veritasPosition (support/oppose/monitor/neutral), trajectoryScore (1-10), charterImpact (high/medium/low), impactType (positive/negative/mixed), tags (array of strings).
 
 Return ONLY a valid JSON array. No markdown, no explanation. Find 3-5 real current bills.`;
 
-      const r = await fetch('https://api.anthropic.com/v1/messages', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json' },
+      const r = await fetch('/api/anthropic-proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:2000,
-          tools:[{ type:'web_search_20250305', name:'web_search' }],
-          messages:[{ role:'user', content: prompt }]
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2000,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages: [{ role: 'user', content: prompt }],
         }),
       });
       const j = await r.json();
@@ -851,6 +869,7 @@ Return ONLY a valid JSON array. No markdown, no explanation. Find 3-5 real curre
             id: 'ai_' + Date.now() + '_' + i,
             url: p.level === 'illinois' ? 'https://ilga.gov' : p.level === 'federal' ? 'https://congress.gov' : 'https://cps.edu',
             keyContacts: [],
+            veritasPosition: p.veritasPosition ?? p.noblePosition ?? 'monitor',
             ...p,
           }));
           setBills(prev => {
@@ -871,7 +890,6 @@ Return ONLY a valid JSON array. No markdown, no explanation. Find 3-5 real curre
     <div style={{ fontFamily:"'DM Sans','Inter',system-ui,sans-serif", background:T.bg, minHeight:'100%' }}>
       <PulseBar bills={bills} />
 
-      {/* Tab nav */}
       <div style={{ background:T.surface, borderBottom:`1px solid ${T.border}`, display:'flex', paddingLeft:20 }}>
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
@@ -882,7 +900,7 @@ Return ONLY a valid JSON array. No markdown, no explanation. Find 3-5 real curre
           }}>{t.l}</button>
         ))}
         <div style={{ marginLeft:'auto', padding:'12px 20px', fontSize:11, color:T.muted, alignSelf:'center' }}>
-          Noble Schools · Slate Civic · {new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'})}
+          Veritas Charter Schools · Slate Civic · {new Date().toLocaleDateString('en-US',{month:'short',year:'numeric'})}
         </div>
       </div>
 
