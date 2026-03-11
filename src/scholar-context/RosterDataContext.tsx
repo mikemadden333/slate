@@ -193,7 +193,7 @@ export function useRoster() {
   return ctx;
 }
 
-const STORAGE_KEY = 'roster-data-v2';
+const STORAGE_KEY = 'roster-data-v1';
 
 const DEFAULT_DATA: RosterData = {
   sy: 'SY26',
