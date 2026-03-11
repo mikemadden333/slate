@@ -5,7 +5,7 @@ const COLORS = {
   rock: "#1C2333",
   mid: "#2D3748",
   lightText: "#4A5568",
-  gold: "#F0B429",
+  gold: "#B79145",
   chalk: "#E8EDF2",
   bg: "#F5F7FA",
   white: "#FFFFFF",
@@ -13,24 +13,28 @@ const COLORS = {
 };
 
 const CAMPUSES = [
-  "Baker College Prep", "Chicago Bulls College Prep", "Butler College Prep",
-  "Gary Comer College Prep", "DRW College Prep", "Golder College Prep",
-  "Hansberry College Prep", "Johnson College Prep", "Mansueto High School",
-  "Muchin College Prep", "Noble Street College Prep", "Pritzker College Prep",
-  "Rauner College Prep", "Rowe-Clark Math & Science", "ITW David Speer Academy",
-  "The Noble Academy", "UIC College Prep",
+  "Veritas Loop Academy",
+  "Veritas Englewood Academy",
+  "Veritas Woodlawn Academy",
+  "Veritas Auburn Gresham Academy",
+  "Veritas Roseland Academy",
+  "Veritas Chatham Academy",
+  "Veritas Austin Academy",
+  "Veritas North Lawndale Academy",
+  "Veritas Garfield Park Academy",
+  "Veritas Humboldt Park Academy",
 ];
 
 const QUICK_PROMPTS = [
-  { label: "Safety Update", prompt: "Draft a safety update for families at Johnson College Prep. Reference that we monitor campus safety conditions daily and that current conditions are stable. Reassure families while being transparent." },
-  { label: "Board Summary", prompt: "Write an executive summary for the Noble Schools board meeting. Include our current financial position ($240M budget, +$5.9M YTD surplus, 3.47x DSCR), enrollment at 12,080 students across 17 campuses, and safety status across the network." },
-  { label: "Weather Closure", prompt: "Draft a school closure notification for all 17 Noble campuses due to severe winter weather. Include safety guidance for families, information about meal distribution, and remote learning expectations." },
-  { label: "Budget Update", prompt: "Write a staff memo explaining Noble's current financial health. We have a $240M annual budget, a $5.9M YTD surplus, and a DSCR of 3.47x against a 1.0x covenant. Frame this as responsible stewardship while acknowledging the work ahead." },
+  { label: "Safety Update", prompt: "Draft a safety update for families at Veritas Englewood Academy. Reference that we monitor campus safety conditions daily and that current conditions are stable. Reassure families while being transparent." },
+  { label: "Board Summary", prompt: "Write an executive summary for the Veritas Charter Schools board meeting. Include our current financial position ($138M budget, +$4.3M YTD surplus, 3.47x DSCR), enrollment at 6,823 students across 10 campuses, and safety status across the network." },
+  { label: "Weather Closure", prompt: "Draft a school closure notification for all 10 Veritas campuses due to severe winter weather. Include safety guidance for families, information about meal distribution, and remote learning expectations." },
+  { label: "Budget Update", prompt: "Write a staff memo explaining Veritas Charter Schools' current financial health. We have a $138M annual budget, a $4.3M YTD surplus, and a DSCR of 3.47x against a 1.0x covenant. Frame this as responsible stewardship while acknowledging the work ahead." },
   { label: "Crisis Response", prompt: "Draft an initial community communication following a safety incident near one of our campuses. The incident occurred off-campus and no students were involved. Acknowledge the community's concern, outline our response protocols, and describe enhanced safety measures." },
-  { label: "Enrollment Drive", prompt: "Write a recruitment communication for prospective families. Noble serves 12,000+ students across 17 Chicago campuses, with a focus on first-generation college students. Emphasize our track record, campus options, and application process." },
-  { label: "Bond Investor", prompt: "Draft talking points for a meeting with bond investors or rating agencies. Cover Noble's S&P BBB-Stable rating, the $33M deficit we eliminated, our 3.47x DSCR against a 1.0x covenant, and our long-range financial stability strategy." },
-  { label: "Staff Recognition", prompt: "Write a network-wide staff recognition message from leadership. Acknowledge the extraordinary work of Noble's 1,600 employees in serving 12,000 students, reference our shared mission, and highlight recent organizational achievements." },
-  { label: "Donor Stewardship", prompt: "Draft a stewardship letter to a major Noble Schools donor. Thank them for their contribution, connect it to student outcomes, reference our financial health and BBB bond rating as evidence of organizational strength, and paint a picture of impact." },
+  { label: "Enrollment Drive", prompt: "Write a recruitment communication for prospective families. Veritas Charter Schools serves 6,800+ students across 10 Chicago campuses, with a focus on first-generation college students from Chicago's south and west sides. Emphasize our track record, campus options, and application process." },
+  { label: "Bond Investor", prompt: "Draft talking points for a meeting with bond investors or rating agencies. Cover Veritas Charter Schools' strong DSCR of 3.47x against a 1.0x covenant, 215 days cash on hand, a current ratio of 3.0x, and our long-range financial stability strategy." },
+  { label: "Staff Recognition", prompt: "Write a network-wide staff recognition message from leadership. Acknowledge the extraordinary work of Veritas Charter Schools employees in serving 6,823 students across Chicago's most underserved communities, reference our shared mission, and highlight recent organizational achievements." },
+  { label: "Donor Stewardship", prompt: "Draft a stewardship letter to a major Veritas Charter Schools donor. Thank them for their contribution, connect it to student outcomes in communities like Englewood, Roseland, Austin, and North Lawndale, reference our financial health as evidence of organizational strength, and paint a picture of impact." },
 ];
 
 const VOICE_STYLES = [
@@ -70,22 +74,24 @@ export default function BriefApp() {
     setLoading(true);
     setResponse("");
 
-    const systemPrompt = `You are a communications assistant for Noble Schools, one of the largest charter school networks in the United States. Noble operates 17 campuses across Chicago serving 12,000+ predominantly low-income and first-generation college students with a $240M annual budget.
+    const systemPrompt = `You are a communications assistant for Veritas Charter Schools, a network of 10 public charter high schools in Chicago serving students from the city's most underserved communities on the South and West sides. Veritas serves 6,823 students with a $138M annual budget.
 
 Key institutional data:
-- 17 campuses across Chicago's South and West sides
-- 12,120 current enrolled students
-- $240M annual operating budget
-- $5.9M YTD surplus
+- 10 campuses across Chicago's South and West sides, plus one downtown campus
+- 6,823 current enrolled students (9th-12th grade)
+- $138M annual operating budget
+- $4.3M YTD surplus
 - DSCR: 3.47x (covenant: 1.0x)
-- S&P BBB-Stable bond rating
-- 1,600 employees
+- 215 days cash on hand
+- Current ratio: 3.0x
 - Safety status: All campuses currently LOW risk
-- President: Mike Madden | CEO: Constance Jones
+- Network President: Dr. Sandra Okonkwo
 
 Campus names: ${CAMPUSES.join(", ")}
 
-Voice style: ${voiceConfig.label} — ${voiceConfig.desc}
+Campus communities served: Loop (downtown), Englewood, Woodlawn, Auburn Gresham, Roseland, Chatham (South Side); Austin, North Lawndale, East Garfield Park, Humboldt Park (West Side)
+
+Voice style: ${voiceConfig?.label} — ${voiceConfig?.desc}
 Channel: ${channel}
 ${campus !== "all" ? `Specific campus: ${campus}` : "Network-wide communication"}
 ${language === "es" ? "Write in Spanish." : language === "pl" ? "Write in Polish." : "Write in English."}
@@ -93,9 +99,9 @@ ${language === "es" ? "Write in Spanish." : language === "pl" ? "Write in Polish
 Write a polished, ready-to-send ${channel === "email" ? "email" : channel === "sms" ? "text message (under 160 characters if possible, max 320)" : channel === "letter" ? "formal letter" : "internal memo"}.
 
 ${channel === "email" ? "Include a subject line formatted as 'Subject: ...' on the first line." : ""}
-${channel === "letter" ? "Include proper letterhead formatting with Noble Schools, date, and signature block." : ""}
+${channel === "letter" ? "Include proper letterhead formatting with Veritas Charter Schools, date, and signature block." : ""}
 
-Be specific, not generic. Reference real Noble details. Never fabricate incident details — if discussing safety, keep it appropriately general while being reassuring and transparent.`;
+Be specific, not generic. Reference real Veritas details. Never fabricate incident details — if discussing safety, keep it appropriately general while being reassuring and transparent.`;
 
     try {
       const res = await fetch("/api/anthropic-proxy", {
@@ -141,8 +147,8 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
         <div style={{ fontSize: 22, fontWeight: 700, color: COLORS.white, marginBottom: 4 }}>
           Slate Brief
         </div>
-        <div style={{ fontSize: 13, color: "rgba(16, 185, 129, 0.7)", lineHeight: 1.5 }}>
-          AI-powered communications grounded in Noble Schools data. Every draft draws from live platform intelligence.
+        <div style={{ fontSize: 13, color: "rgba(183, 145, 69, 0.8)", lineHeight: 1.5 }}>
+          AI-powered communications grounded in Veritas Charter Schools data. Every draft draws from live platform intelligence.
         </div>
       </div>
 
@@ -178,7 +184,7 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
               ref={textareaRef}
               value={prompt}
               onChange={e => setPrompt(e.target.value)}
-              placeholder="e.g., Draft a family update about our safety monitoring program for Johnson College Prep..."
+              placeholder="e.g., Draft a family update about our safety monitoring program for Veritas Englewood Academy..."
               rows={5}
               style={{
                 width: "100%", padding: "14px 16px", borderRadius: 10,
@@ -258,7 +264,7 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
               color: !prompt.trim() ? COLORS.lightText : COLORS.white,
               fontSize: 15, fontWeight: 600, cursor: loading || !prompt.trim() ? "default" : "pointer",
               transition: "all 0.2s ease",
-              boxShadow: prompt.trim() && !loading ? "0 4px 12px rgba(16, 185, 129, 0.3)" : "none",
+              boxShadow: prompt.trim() && !loading ? "0 4px 12px rgba(183, 145, 69, 0.3)" : "none",
             }}
           >
             {loading ? "Drafting..." : "Generate Draft"}
@@ -269,7 +275,7 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
             marginTop: 12, padding: "10px 14px", background: "#F0F4F8", borderRadius: 8,
             fontSize: 11, color: "#0D1117", lineHeight: 1.5,
           }}>
-            <strong>Grounded in Slate data:</strong> 17 campuses, 12,120 students, $240M budget, live safety status, FY26 financials. Every draft references real Noble intelligence.
+            <strong>Grounded in Slate data:</strong> 10 campuses, 6,823 students, $138M budget, live safety status, FY26 financials. Every draft references real Veritas intelligence.
           </div>
         </div>
 
@@ -286,7 +292,7 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
                 borderBottom: "1px solid " + COLORS.chalk,
               }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "#0D1117" }}>
-                  Generated Draft — {voiceConfig.label} / {channel}
+                  Generated Draft — {voiceConfig?.label} / {channel}
                 </div>
                 <button onClick={copyToClipboard} style={{
                   padding: "4px 12px", borderRadius: 6, border: "1px solid #E8EDF2",
