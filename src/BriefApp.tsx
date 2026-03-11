@@ -98,7 +98,7 @@ ${channel === "letter" ? "Include proper letterhead formatting with Noble School
 Be specific, not generic. Reference real Noble details. Never fabricate incident details — if discussing safety, keep it appropriately general while being reassuring and transparent.`;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/anthropic-proxy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -138,7 +138,6 @@ Be specific, not generic. Reference real Noble details. Never fabricate incident
         background: "linear-gradient(135deg, #0D1117 0%, #1C2333 100%)",
         borderRadius: 16, padding: "32px 36px", marginBottom: 24, position: "relative", overflow: "hidden",
       }}>
-        
         <div style={{ fontSize: 22, fontWeight: 700, color: COLORS.white, marginBottom: 4 }}>
           Slate Brief
         </div>
