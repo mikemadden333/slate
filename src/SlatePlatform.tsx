@@ -9,6 +9,7 @@ import GroundsApp from "./GroundsApp";
 import RosterApp from "./RosterApp";
 import FundApp from "./FundApp";
 import HomeApp from "./HomeApp";
+import AdminApp from "./AdminApp";
 import PublicAffairsApp from "./PublicAffairsApp";
 
 const C = {
