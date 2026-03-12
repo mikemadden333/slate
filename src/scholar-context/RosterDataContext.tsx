@@ -2,16 +2,13 @@ import { createContext, useContext, useState, useCallback, ReactNode } from 'rea
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA SOURCE: FY26_Enrollment_Projections — Veritas Charter Schools
-// Historicals SY18–SY25: C1 actuals (Census 1 / October count)
-// Projections SY26–SY30: C1 projected
-// Network target = SY26 C1 projection = 6,823
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface CampusEnrollment {
   name: string;
   short: string;
   capacity: number;
-  enrolled: number;     // SY25 C1 actual
+  enrolled: number;
   applied: number;
   accepted: number;
   yield: number;
@@ -20,9 +17,8 @@ export interface CampusEnrollment {
   grade10: number;
   grade11: number;
   grade12: number;
-  // C1 historical + projections
-  history: number[];    // [SY18, SY19, SY20, SY21, SY22, SY23, SY24, SY25]
-  forecast: number[];   // [SY26, SY27, SY28, SY29, SY30]
+  history: number[];    // [SY18–SY25]
+  forecast: number[];   // [SY26–SY30]
 }
 
 export interface HistoricalYear {
@@ -61,9 +57,7 @@ export interface RosterData {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CAMPUS DATA — C1 actuals & projections
-// history = [SY18, SY19, SY20, SY21, SY22, SY23, SY24, SY25]
-// forecast = [SY26, SY27, SY28, SY29, SY30]
+// CAMPUS DATA
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_CAMPUSES: CampusEnrollment[] = [
   {
@@ -139,15 +133,15 @@ const DEFAULT_CAMPUSES: CampusEnrollment[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NETWORK HISTORICAL — C1 actuals (Census 1 / October count)
+// NETWORK HISTORICAL
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_HISTORICAL: HistoricalYear[] = [
-  { year: 'SY18', label: 'SY18', totalEnrolled: 6993, applications: 9100, accepted: 5100, yieldRate: 0.56, attritionRate: 0.035, campusCount: 10, revenuePerPupil: 14200, isActual: true  },
-  { year: 'SY19', label: 'SY19', totalEnrolled: 7085, applications: 9400, accepted: 5300, yieldRate: 0.56, attritionRate: 0.036, campusCount: 10, revenuePerPupil: 14600, isActual: true  },
-  { year: 'SY20', label: 'SY20', totalEnrolled: 7135, applications: 9600, accepted: 5400, yieldRate: 0.56, attritionRate: 0.038, campusCount: 10, revenuePerPupil: 15200, isActual: true  },
-  { year: 'SY21', label: 'SY21', totalEnrolled: 6976, applications: 8600, accepted: 4900, yieldRate: 0.57, attritionRate: 0.052, campusCount: 10, revenuePerPupil: 15200, isActual: true  },
-  { year: 'SY22', label: 'SY22', totalEnrolled: 7150, applications: 9300, accepted: 5150, yieldRate: 0.55, attritionRate: 0.041, campusCount: 10, revenuePerPupil: 15500, isActual: true  },
-  { year: 'SY23', label: 'SY23', totalEnrolled: 7301, applications: 9750, accepted: 5400, yieldRate: 0.55, attritionRate: 0.038, campusCount: 10, revenuePerPupil: 15700, isActual: true  },
+  { year: 'SY18', label: 'SY18', totalEnrolled: 6993, applications: 9100,  accepted: 5100, yieldRate: 0.56, attritionRate: 0.035, campusCount: 10, revenuePerPupil: 14200, isActual: true  },
+  { year: 'SY19', label: 'SY19', totalEnrolled: 7085, applications: 9400,  accepted: 5300, yieldRate: 0.56, attritionRate: 0.036, campusCount: 10, revenuePerPupil: 14600, isActual: true  },
+  { year: 'SY20', label: 'SY20', totalEnrolled: 7135, applications: 9600,  accepted: 5400, yieldRate: 0.56, attritionRate: 0.038, campusCount: 10, revenuePerPupil: 15200, isActual: true  },
+  { year: 'SY21', label: 'SY21', totalEnrolled: 6976, applications: 8600,  accepted: 4900, yieldRate: 0.57, attritionRate: 0.052, campusCount: 10, revenuePerPupil: 15200, isActual: true  },
+  { year: 'SY22', label: 'SY22', totalEnrolled: 7150, applications: 9300,  accepted: 5150, yieldRate: 0.55, attritionRate: 0.041, campusCount: 10, revenuePerPupil: 15500, isActual: true  },
+  { year: 'SY23', label: 'SY23', totalEnrolled: 7301, applications: 9750,  accepted: 5400, yieldRate: 0.55, attritionRate: 0.038, campusCount: 10, revenuePerPupil: 15700, isActual: true  },
   { year: 'SY24', label: 'SY24', totalEnrolled: 6447, applications: 10050, accepted: 5500, yieldRate: 0.55, attritionRate: 0.036, campusCount: 10, revenuePerPupil: 16000, isActual: true  },
   { year: 'SY25', label: 'SY25', totalEnrolled: 6607, applications: 10200, accepted: 5440, yieldRate: 0.53, attritionRate: 0.035, campusCount: 10, revenuePerPupil: 16345, isActual: true  },
   { year: 'SY26', label: 'SY26', totalEnrolled: 6823, applications: 10460, accepted: 5550, yieldRate: 0.53, attritionRate: 0.035, campusCount: 10, revenuePerPupil: 16345, isActual: false },
@@ -155,8 +149,6 @@ const DEFAULT_HISTORICAL: HistoricalYear[] = [
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FORECASTS SY27–SY30
-// Optimistic / pessimistic = ±3% from probable
-// Revenue at $16,345/pupil held flat for conservatism
 // ─────────────────────────────────────────────────────────────────────────────
 const DEFAULT_FORECASTS: EnrollmentForecast[] = [
   { year: 'SY27', label: 'SY27', optimistic: 6910, probable: 6846, pessimistic: 6720, revenueOptimistic: 113.0, revenueProbable: 111.9, revenuePessimistic: 109.8 },
@@ -164,6 +156,75 @@ const DEFAULT_FORECASTS: EnrollmentForecast[] = [
   { year: 'SY29', label: 'SY29', optimistic: 7060, probable: 6871, pessimistic: 6524, revenueOptimistic: 115.4, revenueProbable: 112.3, revenuePessimistic: 106.6 },
   { year: 'SY30', label: 'SY30', optimistic: 7120, probable: 6871, pessimistic: 6430, revenueOptimistic: 116.4, revenueProbable: 112.3, revenuePessimistic: 105.1 },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADMIN BRIDGE
+// Merges data saved by AdminApp (slate_enrollment key) into roster data.
+// Campus enrollment figures and scenario projections flow through from Admin.
+// ─────────────────────────────────────────────────────────────────────────────
+function mergeAdminData(base: RosterData): RosterData {
+  try {
+    const raw = localStorage.getItem('slate_enrollment');
+    if (!raw) return base;
+    const admin = JSON.parse(raw);
+
+    // Build a lookup from short campus name → new enrollment value
+    const enrollmentMap: Record<string, number> = {};
+    if (Array.isArray(admin.campuses)) {
+      admin.campuses.forEach((c: { name: string; enrollment: number }) => {
+        enrollmentMap[c.name] = c.enrollment;
+      });
+    }
+
+    // Update campus enrolled figures
+    const updatedCampuses = base.campuses.map(c => {
+      const newEnrolled = enrollmentMap[c.short] ?? enrollmentMap[c.name] ?? null;
+      if (newEnrolled === null) return c;
+      // Recalculate grade split proportionally
+      const ratio = newEnrolled / c.enrolled;
+      return {
+        ...c,
+        enrolled: newEnrolled,
+        grade9:  Math.round(c.grade9  * ratio),
+        grade10: Math.round(c.grade10 * ratio),
+        grade11: Math.round(c.grade11 * ratio),
+        grade12: Math.round(c.grade12 * ratio),
+      };
+    });
+
+    // Update forecasts from Admin scenarios if present
+    let updatedForecasts = base.forecasts;
+    if (admin.scenarios) {
+      const { optimistic, probable, pessimistic } = admin.scenarios;
+      const rpp = admin.revenuePerPupil ?? base.revenuePerPupil;
+      const years = ['SY27','SY28','SY29','SY30'];
+      const adminYears = ['sy27','sy28','sy29','sy30'];
+      updatedForecasts = base.forecasts.map((f, i) => {
+        if (!years.includes(f.year)) return f;
+        const key = adminYears[i];
+        return {
+          ...f,
+          optimistic:         optimistic?.[key]  ?? f.optimistic,
+          probable:           probable?.[key]    ?? f.probable,
+          pessimistic:        pessimistic?.[key] ?? f.pessimistic,
+          revenueOptimistic:  Math.round((optimistic?.[key]  ?? f.optimistic)  * rpp) / 1_000_000,
+          revenueProbable:    Math.round((probable?.[key]    ?? f.probable)    * rpp) / 1_000_000,
+          revenuePessimistic: Math.round((pessimistic?.[key] ?? f.pessimistic) * rpp) / 1_000_000,
+        };
+      });
+    }
+
+    return {
+      ...base,
+      campuses:        updatedCampuses,
+      forecasts:       updatedForecasts,
+      targetEnrollment: admin.targetEnrollment ?? base.targetEnrollment,
+      revenuePerPupil:  admin.revenuePerPupil  ?? base.revenuePerPupil,
+    };
+  } catch {
+    return base;
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Context
@@ -208,12 +269,16 @@ const DEFAULT_DATA: RosterData = {
 
 function loadFromStorage(): RosterData {
   try {
+    // 1. Try own saved state (edits made within Scholar itself)
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_DATA;
-    const p = JSON.parse(raw);
-    return { ...p, lastUpdated: new Date(p.lastUpdated) };
+    const base: RosterData = raw
+      ? { ...JSON.parse(raw), lastUpdated: new Date(JSON.parse(raw).lastUpdated) }
+      : DEFAULT_DATA;
+
+    // 2. Merge Admin panel data on top — Admin values win for enrollment & forecasts
+    return mergeAdminData(base);
   } catch {
-    return DEFAULT_DATA;
+    return mergeAdminData(DEFAULT_DATA);
   }
 }
 
