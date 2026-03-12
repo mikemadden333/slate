@@ -29,6 +29,7 @@ const MODULES = [
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "Network-wide facilities", tagline: "The building is the first thing families see." },
   { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Veritas advocacy intelligence.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
   { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Veritas development intelligence.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
+  { id: "admin", label: "Admin", category: "DATA MANAGEMENT", icon: "⚙️", color: "#6B7280", desc: "Update enrollment, financials, staff, and risk data across all Slate modules.", status: "LIVE", metrics: "Browser storage", tagline: "Your data. Your numbers. Your demo." },
 ];
 
 /* ═══════════════════════════════════════════════════════════ */
