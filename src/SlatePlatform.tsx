@@ -342,6 +342,7 @@ export default function SlatePlatform() {
       grounds: <GroundsApp />,
       capitol: <PublicAffairsApp />,
       raise: <FundApp />,
+      admin: <AdminApp />,
       home: <HomeApp />,
     };
     return (<>{!mod.noHeader && <ModuleHeader module={mod} />}<div className="slate-module-box">{apps[mod.id]}</div></>);
