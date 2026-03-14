@@ -280,9 +280,13 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       if (!inc.date) return false;
       const incMs = new Date(inc.date).getTime();
       if (isNaN(incMs)) return false;
-      if (incMs < cutoffMs) return false;
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
       if (d > distanceRadius) return false;
+      // CPD verified data has structural 8-10 day lag — show as pattern, no time filter
+      // News and dispatch are live — apply time filter
+      if (inc.source === 'NEWS' || inc.source === 'DISPATCH') {
+        if (incMs < cutoffMs) return false;
+      }
       if (inc.source === 'NEWS') {
         if (!typeFilters['NEWS']) return false;
       } else {
