@@ -92,7 +92,7 @@ function getTopSentence(risk: CampusRisk): { headline: string; context: string }
   if (risk.label === 'ELEVATED') {
     return {
       headline: 'Increased activity detected near your campus.',
-      context: 'Violent incidents or weapons activity within 0.5 miles in the last 24 hours. Stay aware today.',
+      context: 'Recent violent activity in your campus pattern area. Check the last 24 hours below.',
     };
   }
   return {

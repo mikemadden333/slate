@@ -501,7 +501,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
         borderBottom: 'none',
       }}>
         <span>
-          <strong>Showing {visibleCount} incident{visibleCount !== 1 ? 's' : ''}</strong> within {distanceRadius.toFixed(1)}mi — {fmtTimeLabel(timeWindowH)}
+          <strong>Showing {visibleCount} incident{visibleCount !== 1 ? 's' : ''}</strong> within {distanceRadius.toFixed(1)}mi — 24 hours
         </span>
         <span style={{ fontSize: 11, color: '#6B7280' }}>
           {incidents.length} total loaded
