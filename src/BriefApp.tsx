@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import LocalNewsBlock from "./LocalNewsBlock";
 
 const COLORS = {
   deep: "#0D1117",
