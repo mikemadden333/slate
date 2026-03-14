@@ -14,6 +14,7 @@ import {
 import L from 'leaflet';
 import type { Campus } from '../../sentinel-data/campuses';
 import type { Incident, ShotSpotterEvent, ContagionZone, CampusRisk, SafeCorridor } from '../../sentinel-engine/types';
+import type { ScannerSummary } from '../../sentinel-api/scanner';
 import { RISK_COLORS } from '../../sentinel-data/weights';
 import { haversine, bearing, compassLabel, fmtAgo } from '../../sentinel-engine/geo';
 import 'leaflet/dist/leaflet.css';
@@ -25,6 +26,7 @@ interface Props {
   shotSpotterEvents: ShotSpotterEvent[];
   contagionZones: ContagionZone[];
   corridors: SafeCorridor[];
+  scannerData?: ScannerSummary | null;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -59,6 +61,22 @@ const TYPE_LABELS: Record<string, string> = {
 const ALL_TYPES = ['HOMICIDE', 'WEAPONS VIOLATION', 'BATTERY', 'ASSAULT', 'ROBBERY', 'NARCOTICS', 'SHOTSPOTTER', 'NEWS'] as const;
 
 const CORRIDOR_COLORS: Record<string, string> = { CLEAR: '#16A34A', CAUTION: '#B79145', AVOID: '#D45B4F' };
+
+const TALKGROUP_DISTRICTS: Record<number, { name: string; lat: number; lng: number }> = {
+  2:  { name: 'D2 Wentworth',      lat: 41.830, lng: -87.629 },
+  3:  { name: 'D3 Grand Crossing', lat: 41.760, lng: -87.612 },
+  4:  { name: 'D4 South Chicago',  lat: 41.738, lng: -87.565 },
+  6:  { name: 'D6 Gresham',        lat: 41.749, lng: -87.694 },
+  7:  { name: 'D7 Englewood',      lat: 41.779, lng: -87.645 },
+  8:  { name: 'D8 Chicago Lawn',   lat: 41.773, lng: -87.720 },
+  9:  { name: 'D9 Deering',        lat: 41.714, lng: -87.624 },
+  11: { name: 'D11 Harrison',      lat: 41.881, lng: -87.728 },
+  12: { name: 'D12 Near West',     lat: 41.872, lng: -87.676 },
+  13: { name: 'D13 Wood',          lat: 41.838, lng: -87.661 },
+  15: { name: 'D15 Austin',        lat: 41.893, lng: -87.766 },
+  17: { name: 'D17 Albany Park',   lat: 41.970, lng: -87.720 },
+  20: { name: 'D20 Rogers Park',   lat: 42.009, lng: -87.670 },
+};
 
 const SNAP_HOURS = [2, 6, 24, 168, 336, 720];
 const SNAP_LABELS = ['2h', '6h', '24h', '7d', '14d', '30d'];
@@ -187,7 +205,7 @@ function CampusCenterController({ campusId, lat, lng }: { campusId: number; lat:
 
 interface ToastItem { id: string; text: string; isHomicide: boolean }
 
-export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, contagionZones, corridors }: Props) {
+export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, contagionZones, corridors, scannerData }: Props) {
   /* ---- Slider state ---- */
   const [timeSnapIdx, setTimeSnapIdx] = useState(4); // 14d default
   const timeWindowH = SNAP_HOURS[timeSnapIdx];
@@ -206,6 +224,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   const [showZones, setShowZones] = useState(true);
   const [showRadius, setShowRadius] = useState(true);
   const [showCorridors, setShowCorridors] = useState(true);
+  const [showScanner, setShowScanner] = useState(true);
 
   /* ---- UI ---- */
   const [fullscreen, setFullscreen] = useState(false);
@@ -453,6 +472,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
           <LayerToggle label="Contagion Zones" on={showZones} onToggle={() => setShowZones(v => !v)} />
           <LayerToggle label="Campus Radius" on={showRadius} onToggle={() => setShowRadius(v => !v)} />
           <LayerToggle label="Safe Corridors" on={showCorridors} onToggle={() => setShowCorridors(v => !v)} />
+          <LayerToggle label="Scanner Activity" on={showScanner} onToggle={() => setShowScanner(v => !v)} />
         </div>
       </div>
     </div>
@@ -589,6 +609,38 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
                     {zone.retWin && <><br /><strong style={{ color: '#D45B4F' }}>RETALIATION WINDOW ACTIVE</strong></>}
                   </div>
                 </Popup>
+              </Circle>
+            );
+          })}
+
+          {/* Scanner activity district bubbles */}
+          {showScanner && scannerData && Object.entries(scannerData.talkgroupCounts).map(([tgStr, count]) => {
+            const tg = Number(tgStr);
+            const district = TALKGROUP_DISTRICTS[tg];
+            if (!district) return null;
+            const maxCount = Math.max(...Object.values(scannerData.talkgroupCounts));
+            const intensity = count / Math.max(maxCount, 1);
+            const radius = 400 + intensity * 1200; // 400m quiet → 1600m busy
+            const color = intensity > 0.6 ? '#D95F0C' : intensity > 0.3 ? '#B79145' : '#6B7280';
+            const dist = haversine(campus.lat, campus.lng, district.lat, district.lng);
+            if (dist > 8) return null; // only show districts within 8mi
+            return (
+              <Circle
+                key={`scanner_${tg}`}
+                center={[district.lat, district.lng]}
+                radius={radius}
+                pathOptions={{
+                  color, fillColor: color,
+                  fillOpacity: 0.08 + intensity * 0.12,
+                  weight: 1.5, opacity: 0.4 + intensity * 0.4,
+                  dashArray: '6 4',
+                }}
+              >
+                <Tooltip>
+                  <span style={{ fontSize: 11 }}>
+                    📡 {district.name} — {count} scanner call{count !== 1 ? 's' : ''} (2h window)
+                  </span>
+                </Tooltip>
               </Circle>
             );
           })}

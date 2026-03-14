@@ -578,7 +578,8 @@ export default function App() {
           {/* ── CHAPTER 5: THE MAP ── */}
           <CampusMap campus={selectedCampus} risk={selectedRisk} incidents={allIncidents}
             shotSpotterEvents={shotSpotterEvents}
-            contagionZones={selectedRisk.contagionZones} corridors={corridors} />
+            contagionZones={selectedRisk.contagionZones} corridors={corridors}
+            scannerData={scannerData} />
 
           {/* ── CHAPTER 6: TOOLS — collapsed by default ── */}
           <CampusToolsDrawer>

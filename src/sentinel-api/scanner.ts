@@ -89,6 +89,7 @@ export interface ScannerSummary {
   activeCampusZones: string[];
   spikeZones: ZoneActivity[];
   lastUpdate: string;
+  talkgroupCounts: Record<number, number>;
   error?: string;
 }
 
@@ -159,6 +160,7 @@ export async function fetchScannerActivity(windowMinutes: number = 120): Promise
       activeCampusZones,
       spikeZones,
       lastUpdate: new Date().toISOString(),
+      talkgroupCounts: tgDist,
     };
 
   } catch (err) {
@@ -238,6 +240,7 @@ function emptySummary(windowMinutes: number, error: string): ScannerSummary {
     activeCampusZones: [],
     spikeZones: [],
     lastUpdate: new Date().toISOString(),
+    talkgroupCounts: {},
     error,
   };
 }
