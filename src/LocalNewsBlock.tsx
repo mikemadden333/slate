@@ -30,6 +30,11 @@ const RSS_FEEDS = [
     url: "https://chicago.suntimes.com/rss/index.xml",
     color: "#7A9E7E",
   },
+  {
+    name: "Chalkbeat Chicago",
+    url: "https://www.chalkbeat.org/chicago/rss/",
+    color: "#E07B4F",
+  },
 ];
 
 const CORS_PROXY = "https://api.allorigins.win/get?url=";
