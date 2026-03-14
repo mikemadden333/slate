@@ -89,31 +89,9 @@ export default function LocalNewsBlock() {
     setLoading(true);
     setError(false);
     try {
-      const results = await Promise.allSettled(
-        RSS_FEEDS.map(async (feed) => {
-          const res = await fetch(
-            `${CORS_PROXY}${encodeURIComponent(feed.url)}`
-          );
-          const json = await res.json();
-          return parseRSS(json.contents, feed.name, feed.color);
-        })
-      );
-
-      const all: NewsItem[] = [];
-      results.forEach((r) => {
-        if (r.status === "fulfilled") all.push(...r.value);
-      });
-
-      // Sort by pubDate descending, take top MAX_ITEMS
-      const sorted = all
-        .filter((i) => i.title && i.link)
-        .sort(
-          (a, b) =>
-            new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
-        )
-        .slice(0, MAX_ITEMS);
-
-      setItems(sorted);
+      const res = await fetch("/api/news");
+      const json = await res.json();
+      setItems(json.items ?? []);
       setLastRefresh(new Date());
     } catch {
       setError(true);
