@@ -6,15 +6,12 @@
 import { useEffect, useState, useCallback } from "react";
 
 const CAMPUS_KEYWORDS = [
-  // Neighborhood names
-  "loop", "englewood", "woodlawn", "auburn gresham", "roseland",
-  "chatham", "austin", "north lawndale", "garfield park", "humboldt park",
-  // Charter/education context
-  "charter school", "noble schools", "cps", "chicago public schools",
-  "chicago schools", "education", "students", "school shooting",
-  // Safety signals
-  "shooting", "crime", "arrest", "fire", "protest", "violence",
-  "police", "weapons", "homicide",
+  "chicago", "south side", "west side", "loop",
+  "englewood", "woodlawn", "auburn gresham", "roseland",
+  "chatham", "austin", "lawndale", "garfield park", "humboldt park",
+  "charter", "cps", "school", "student", "education",
+  "shooting", "crime", "arrest", "fire", "protest",
+  "police", "violence", "weather", "traffic",
 ];
 
 const RSS_FEEDS = [
@@ -52,18 +49,20 @@ function parseRSS(xmlText: string, sourceName: string, sourceColor: string): New
   const doc = parser.parseFromString(xmlText, "text/xml");
   const items = Array.from(doc.querySelectorAll("item"));
 
-  return items
-    .map((item) => ({
-      title: item.querySelector("title")?.textContent?.trim() ?? "",
-      link: item.querySelector("link")?.textContent?.trim() ?? "",
-      pubDate: item.querySelector("pubDate")?.textContent?.trim() ?? "",
-      source: sourceName,
-      sourceColor,
-    }))
-    .filter((item) => {
-      const lower = item.title.toLowerCase();
-      return CAMPUS_KEYWORDS.some((kw) => lower.includes(kw));
-    });
+  const all = items.map((item) => ({
+    title: item.querySelector("title")?.textContent?.trim() ?? "",
+    link: item.querySelector("link")?.textContent?.trim() ?? "",
+    pubDate: item.querySelector("pubDate")?.textContent?.trim() ?? "",
+    source: sourceName,
+    sourceColor,
+  })).filter((item) => item.title && item.link);
+
+  const filtered = all.filter((item) => {
+    const lower = item.title.toLowerCase();
+    return CAMPUS_KEYWORDS.some((kw) => lower.includes(kw));
+  });
+
+  return filtered.length > 0 ? filtered : all.slice(0, 3);
 }
 
 function timeAgo(dateStr: string): string {
