@@ -79,10 +79,12 @@ export default function LedgerApp() {
       case 'covenant-stress-lab':    return <CovenantStressLab />;
       case 'scenario-war-room':      return <ScenarioWarRoom />;
       case 'nst-spending':           return <NSTTracker />;
+      case 'reports':               return <ReportsApp context="ledger" />;
       case 'compensation-radar':     return <CompensationRadar />;
       case 'campus-overview':        return <CampusDashboard campusName={selectedCampus ?? ''} />;
       case 'network-context':        return <CampusNetworkContext campusName={selectedCampus ?? ''} />;
       case 'budget-detail':          return <CampusBudgetDetail campusName={selectedCampus ?? ''} />;
+      case 'reports':               return <ReportsApp context="ledger" />;
       default:                       return <CommandCenter />;
     }
   };
