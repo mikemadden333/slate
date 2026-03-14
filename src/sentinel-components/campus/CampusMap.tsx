@@ -253,9 +253,11 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       }
       return;
     }
-    // Subsequent refreshes: only alert on genuinely new incidents (not in initial seed set)
+    // Subsequent refreshes: only alert on genuinely new incidents within 3mi
     for (const inc of incidents) {
       if (prevIdsRef.current.has(inc.id)) continue;
+      const toastDist = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+      if (toastDist > 3.0) continue;
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
       if (d > 3.0) continue; // never toast beyond 3mi
       const dir = compassLabel(bearing(campus.lat, campus.lng, inc.lat, inc.lng));
