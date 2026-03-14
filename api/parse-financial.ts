@@ -6,8 +6,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
   res.setHeader("Access-Control-Allow-Origin", "*");
 
-  const { pdfBase64, fileType } = req.body as { pdfBase64: string; fileType: string };
-  if (!pdfBase64) return res.status(400).json({ error: "No file provided" });
+  const { pdfBase64, fileType, textContent } = req.body as { pdfBase64?: string; fileType: string; textContent?: string };
+  if (!pdfBase64 && !textContent) return res.status(400).json({ error: "No file provided" });
 
   const apiKey = process.env.VITE_ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
@@ -71,10 +71,12 @@ Return ONLY valid JSON. No markdown, no backticks, no explanation.`;
         max_tokens: 4000,
         messages: [{
           role: "user",
-          content: [
+          content: textContent ? [
+            { type: "text", text: "Here is the financial data extracted from the Excel file:\n\n" + textContent + "\n\n" + prompt },
+          ] : [
             {
               type: "document",
-              source: { type: "base64", media_type: mediaType, data: pdfBase64 },
+              source: { type: "base64", media_type: "application/pdf", data: pdfBase64 },
             },
             { type: "text", text: prompt },
           ],

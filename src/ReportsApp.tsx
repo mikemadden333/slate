@@ -62,15 +62,31 @@ export default function ReportsApp() {
     setStage("parsing");
     setParseError("");
     setParseLog(["Reading PDF...", "Sending to Slate AI..."]);
-    const base64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
     setParseLog(prev => [...prev, "Extracting financial data (this takes ~20 seconds)..."]);
     try {
-      const res = await fetch("/api/parse-financial", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ pdfBase64: base64, fileType: file.type }) });
+      let body;
+      if (isExcel) {
+        // For Excel: extract text with SheetJS, send as plain text
+        const XLSX = await import("https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs");
+        const arrayBuffer = await file.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        let text = "";
+        workbook.SheetNames.forEach(name => {
+          const sheet = workbook.Sheets[name];
+          text += `\n\n=== Sheet: ${name} ===\n`;
+          text += XLSX.utils.sheet_to_csv(sheet);
+        });
+        body = JSON.stringify({ textContent: text, fileType: file.type, fileName: file.name });
+      } else {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(",")[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        body = JSON.stringify({ pdfBase64: base64, fileType: file.type });
+      }
+      const res = await fetch("/api/parse-financial", { method:"POST", headers:{"Content-Type":"application/json"}, body });
       const json = await res.json();
       if (!json.success || !json.data) { setParseError(json.error + (json.detail ? ": " + JSON.stringify(json.detail).slice(0,200) : "") ?? "Failed to extract data."); setStage("upload"); return; }
       setParseLog(prev => [...prev, `✓ Extracted ${Object.keys(json.data).length} data points`, "Ready for review."]);
