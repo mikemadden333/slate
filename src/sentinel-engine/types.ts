@@ -13,7 +13,7 @@ export interface Incident {
   lat: number;
   lng: number;
   description: string;
-  source?: 'CPD' | 'CPD_REALTIME' | 'NEWS' | 'CITIZEN';
+  source?: 'CPD' | 'CPD_REALTIME' | 'NEWS' | 'CITIZEN' | 'DISPATCH';
   confidence?: 'VERIFIED' | 'NEWS_REPORTED' | 'SCANNER_DERIVED';
   headline?: string;
   url?: string;
