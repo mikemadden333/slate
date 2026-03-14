@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect, useCallback } from "react";
+import LocalNewsBlock from "./LocalNewsBlock";
 
 const C = {
   carbon:"#0D1B2A",brass:"#B79145",brassLight:"#D4AF6A",brassGlow:"rgba(183,145,69,0.12)",
