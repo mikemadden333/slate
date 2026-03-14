@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import LocalNewsBlock from "./LocalNewsBlock";
 
 const COLORS = {
   deep: "#0D1117",
@@ -325,9 +324,6 @@ Be specific, not generic. Reference real Veritas details. Never fabricate incide
           </div>
         )}
 </div>
-
-      <LocalNewsBlock />
-
     </div>
   );
 }
