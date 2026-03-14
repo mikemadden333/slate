@@ -324,7 +324,10 @@ Be specific, not generic. Reference real Veritas details. Never fabricate incide
             </button>
           </div>
         )}
-      </div>
+</div>
+
+      <LocalNewsBlock />
+
     </div>
   );
 }
