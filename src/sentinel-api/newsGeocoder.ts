@@ -117,13 +117,11 @@ CHICAGO STREET GRID:
 - N/S streets W→E: Cicero(4800W), Pulaski(4000W), Kedzie(3200W), California(2800W), Western(2400W), Ashland(1600W), Halsted(800W), State(0), Cottage Grove(800E), Stony Island(1600E), Jeffrey(2000E)
 - E/W streets: North Ave(1600N), Chicago Ave(800N), Madison(0), Roosevelt(1200S), Cermak(2200S), 35th, Pershing(3900S), 47th, 51st, 55th, 59th, 63rd, 67th, 71st, 75th, 79th, 83rd, 87th, 91st, 95th, 103rd, 111th, 115th
 
-NOBLE CAMPUSES:
-Butler:41.890,-87.669 | Comer:41.764,-87.605 | DRW:41.856,-87.719
-Gary Comer:41.720,-87.604 | Golder:41.777,-87.644 | Hansberry:41.879,-87.702
-IIT:41.835,-87.627 | Johnson:41.746,-87.642 | Muchin:41.882,-87.630
-Pritzker:41.848,-87.661 | Rauner:41.890,-87.669 | Rowe-Clark:41.909,-87.753
-Baker:41.825,-87.653 | Bulls:41.869,-87.707 | Mansueto:41.788,-87.663
-Speer:41.851,-87.725 | TIC:41.883,-87.650
+VERITAS CAMPUSES:
+Loop:41.882,-87.630 | Englewood:41.779,-87.645 | Woodlawn:41.781,-87.599
+Auburn Gresham:41.749,-87.655 | Roseland:41.714,-87.624 | Chatham:41.742,-87.613
+Austin:41.893,-87.766 | North Lawndale:41.860,-87.719 | Garfield Park:41.882,-87.702
+Humboldt Park:41.902,-87.722
 
 77 COMMUNITY AREAS:
 Rogers Park:42.009,-87.670 | West Ridge:41.998,-87.692 | Uptown:41.966,-87.654
@@ -225,9 +223,12 @@ ${candidates.map((item, i) => {
       const nearCampus = CAMPUSES.some(c => {
         const dlat = (c.lat - r.lat) * 69;
         const dlng = (c.lng - r.lng) * 55;
-        return Math.sqrt(dlat * dlat + dlng * dlng) <= 3.0;
+        return Math.sqrt(dlat * dlat + dlng * dlng) <= 5.0;
       });
-      if (!nearCampus) continue;
+      if (!nearCampus) {
+        console.log(`News geocoder: dropping ${r.confidence} incident at ${r.lat},${r.lng} — >5mi from all campuses`);
+        continue;
+      }
 
       const item = candidates[r.id];
       if (!item) continue;
