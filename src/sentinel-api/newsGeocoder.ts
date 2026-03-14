@@ -28,6 +28,15 @@ const VIOLENCE_KEYWORDS = [
   'critical condition', 'assault', 'attacked',
 ];
 
+const DISQUALIFY_KEYWORDS = [
+  'bears', 'bulls', 'cubs', 'white sox', 'blackhawks', 'sky ',
+  'free agency', 'trade deadline', 'draft pick', 'roster move',
+  'box score', 'game recap', 'highlights', 'nfl', 'nba', 'mlb', 'nhl',
+  'stock', 'earnings', 'ipo', 'revenue', 'quarterly',
+  'recipe', 'restaurant review', 'weather forecast',
+  'obituary', 'memorial', 'funeral',  
+];
+
 const geocodeCache = new Map<string, Incident[]>();
 const CACHE_MAX = 300;
 
@@ -57,12 +66,14 @@ export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incid
   }
   (geocodeNewsIncidents as any)._running = true;
   try {
-  const candidates = newsItems.filter(item =>
-    REALTIME_NEWS_SOURCES.includes(item.source) &&
-    VIOLENCE_KEYWORDS.some(k =>
-      (item.title + ' ' + (item.description ?? '')).toLowerCase().includes(k)
-    )
-  );
+  const candidates = newsItems.filter(item => {
+    if (!REALTIME_NEWS_SOURCES.includes(item.source)) return false;
+    const fullText = (item.title + ' ' + (item.description ?? '')).toLowerCase();
+    // Disqualify sports, business, lifestyle stories first
+    if (DISQUALIFY_KEYWORDS.some(k => fullText.includes(k))) return false;
+    // Must contain a violence keyword
+    return VIOLENCE_KEYWORDS.some(k => fullText.includes(k));
+  });
 
   if (candidates.length === 0) {
     console.log('News geocoder v2: no violence headlines found');
@@ -165,6 +176,8 @@ CONFIDENCE:
 - UNKNOWN: not Chicago or no location
 
 CRIME TYPE: HOMICIDE | SHOOTING | WEAPONS VIOLATION | BATTERY | ROBBERY | UNKNOWN
+
+CRITICAL: If the story is NOT about a real crime or safety incident (e.g. sports, politics, weather, business, entertainment), return lat:0, lng:0, confidence:UNKNOWN.
 
 Return ONLY a JSON array. No markdown. No backticks. Start with [ end with ]:
 [{"id": NUMBER, "lat": NUMBER, "lng": NUMBER, "confidence": "STRING", "type": "STRING"}]
