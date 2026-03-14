@@ -207,7 +207,7 @@ interface ToastItem { id: string; text: string; isHomicide: boolean }
 
 export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, contagionZones, corridors, scannerData }: Props) {
   /* ---- Slider state ---- */
-  const [timeSnapIdx, setTimeSnapIdx] = useState(4); // 14d default
+  const [timeSnapIdx, setTimeSnapIdx] = useState(2); // 24h default — overnight is the whole ballgame
   const timeWindowH = SNAP_HOURS[timeSnapIdx];
   const [distanceRadius, setDistanceRadius] = useState(1.5);
   const [zoneOpacity, setZoneOpacity] = useState(60);
@@ -274,19 +274,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   const filteredInc = useMemo(() => {
     const cutoffMs = Date.now() - (timeWindowH * 60 * 60 * 1000);
 
-    // TIME FILTER DIAGNOSTIC
-    console.log('TIME FILTER DIAGNOSTIC:');
-    console.log('Slider value:', timeSnapIdx, '→ windowHours:', timeWindowH);
-    console.log('Window hours:', timeWindowH);
-    console.log('Cutoff time:', new Date(cutoffMs).toISOString());
-    console.log('Total incidents before filter:', incidents.length);
-    if (incidents.length > 0) {
-      console.log('Sample incident date raw:', incidents[0]?.date);
-      console.log('Sample incident date parsed:', new Date(incidents[0]?.date).toISOString());
-      console.log('Sample incident ms:', new Date(incidents[0]?.date).getTime());
-      console.log('Cutoff ms:', cutoffMs);
-      console.log('Sample passes filter:', new Date(incidents[0]?.date).getTime() >= cutoffMs);
-    }
+
 
     const result = incidents.filter(inc => {
       if (!inc.date) return false;

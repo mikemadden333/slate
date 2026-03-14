@@ -348,15 +348,14 @@ export default function App() {
     const data = await fetchScannerActivity(120);
     setScannerData(data);
     console.log('Scanner: ' + data.totalCalls + ' calls, ' + data.spikeZones.length + ' spike zones');
-    // Transcribe spike zone calls for real-time dispatch intelligence
-    if (data.spikeZones.length > 0) {
-      const spikeCalls = data.spikeZones.flatMap(z => z.recentCalls);
-      console.log('Scanner intel: spike detected, transcribing ' + spikeCalls.length + ' calls');
-      transcribeSpikeCalls(spikeCalls).then(dispatches => {
-        if (dispatches.length > 0) {
-          console.log('Scanner intel: ' + dispatches.length + ' dispatch incidents geolocated');
-          setDispatchIncidents(dispatches);
-        }
+    // Transcribe ALL scanner calls for real-time dispatch intelligence
+    // This is the 24h overnight picture — the whole ballgame
+    const allCalls = data.zones.flatMap(z => z.recentCalls);
+    if (allCalls.length > 0) {
+      console.log('Scanner intel: transcribing ' + allCalls.length + ' calls (no spike gate)');
+      transcribeSpikeCalls(allCalls).then(dispatches => {
+        console.log('Scanner intel: ' + dispatches.length + ' dispatch incidents geolocated');
+        setDispatchIncidents(dispatches);
       }).catch(err => console.log('Scanner intel error:', String(err)));
     }
   }, []);

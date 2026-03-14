@@ -17,8 +17,8 @@ export interface DispatchIncident {
 export async function transcribeSpikeCalls(calls: ScannerCall[]): Promise<DispatchIncident[]> {
   const withAudio = calls.filter(c => c.url && c.url.startsWith('http'));
   if (withAudio.length === 0) { console.log('Scanner intel: no audio URLs'); return []; }
-  const toProcess = withAudio.slice(-5);
-  console.log('Scanner intel: transcribing ' + toProcess.length + ' calls');
+  const toProcess = withAudio.slice(-15); // last 15 calls = ~30min of overnight activity
+  console.log('Scanner intel: transcribing ' + toProcess.length + ' calls (overnight sweep)');
   const transcripts: Array<{ call: ScannerCall; text: string }> = [];
   for (const call of toProcess) {
     try {
