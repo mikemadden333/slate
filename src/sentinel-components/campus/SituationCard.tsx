@@ -91,8 +91,8 @@ function getTopSentence(risk: CampusRisk): { headline: string; context: string }
   }
   if (risk.label === 'ELEVATED') {
     return {
-      headline: 'Increased activity detected near your campus.',
-      context: 'Recent violent activity in your campus pattern area. Check the last 24 hours below.',
+      headline: 'Elevated neighborhood risk pattern near your campus.',
+      context: 'This area has elevated violence patterns based on recent weeks. Check the map below for context.',
     };
   }
   return {
@@ -140,7 +140,7 @@ function getRecommendedProtocol(risk: CampusRisk): string | null {
 /* ---- Human descriptors for risk labels ---- */
 const LABEL_HUMAN: Record<string, string> = {
   LOW:      "Your campus neighborhood is quiet today.",
-  ELEVATED: "Increased activity detected near your campus in the last 24 hours. Stay aware.",
+  ELEVATED: "Elevated risk pattern detected near your campus. Review conditions below.",
   HIGH:     "A serious incident occurred near your campus. Review protocols.",
   CRITICAL: "Immediate attention required. Act now.",
 };

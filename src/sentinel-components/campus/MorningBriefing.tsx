@@ -396,7 +396,7 @@ async function generateAIBriefing(
     ? `RECENT HOMICIDES (72h): ${recentHomicides.map(i =>
         `${i.block}, ${i.distance.toFixed(1)}mi away, ${i.hoursAgo}h ago`
       ).join('; ')}`
-    : 'No homicides near campus in last 72 hours.';
+    : 'No homicides near campus in the last 24 hours.';
 
   // News near campus
   const proximateNews = newsItems

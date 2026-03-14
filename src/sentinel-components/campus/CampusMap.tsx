@@ -257,6 +257,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
     for (const inc of incidents) {
       if (prevIdsRef.current.has(inc.id)) continue;
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+      if (d > 3.0) continue; // never toast beyond 3mi
       const dir = compassLabel(bearing(campus.lat, campus.lng, inc.lat, inc.lng));
       const t: ToastItem = {
         id: inc.id,
@@ -281,6 +282,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       const incMs = new Date(inc.date).getTime();
       if (isNaN(incMs)) return false;
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+      if (d > 3.0) continue; // never toast beyond 3mi
       if (d > distanceRadius) return false;
       // CPD verified data has structural 8-10 day lag — show as pattern, no time filter
       // News and dispatch are live — apply time filter
@@ -655,6 +657,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
             const isNews = inc.source === 'NEWS';
             const s = isNews ? TYPE_STYLES['NEWS'] : getStyle(inc.type);
             const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+      if (d > 3.0) continue; // never toast beyond 3mi
             const dir = compassLabel(bearing(campus.lat, campus.lng, inc.lat, inc.lng));
             const inZone = contagionZones.find(z =>
               haversine(z.lat, z.lng, inc.lat, inc.lng) <= z.radius,
