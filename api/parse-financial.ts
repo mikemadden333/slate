@@ -59,12 +59,14 @@ CFO narrative context:
 Return ONLY valid JSON. No markdown, no backticks, no explanation.`;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:5173";
+
+    const response = await fetch(`${baseUrl}/api/anthropic-proxy`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY ?? "",
-        "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
