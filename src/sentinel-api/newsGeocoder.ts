@@ -250,10 +250,13 @@ ${candidates.map((item, i) => {
         : r.confidence === 'BLOCK' ? 0.0015
         : r.confidence === 'NEIGHBORHOOD' ? 0.004 : 0.008;
 
+      // If pubDate is older than 24h, use now — article is in today's feed so it's relevant today
+      const pubMs = item.pubDate ? new Date(item.pubDate).getTime() : 0;
+      const incidentDate = (Date.now() - pubMs) > 86400000 ? new Date().toISOString() : (item.pubDate ?? new Date().toISOString());
       incidents.push({
         id: `news_${item.id ?? item.title.slice(0, 20).replace(/\s/g, '_')}`,
         type: r.type === 'UNKNOWN' ? inferCrimeType(item.title + ' ' + (item.description ?? '')) : r.type,
-        date: item.pubDate ?? new Date().toISOString(),
+        date: incidentDate,
         // Fall back to keyword inference if Claude returned UNKNOWN
         block: `~${r.confidence} — ${item.source}`,
         lat: r.lat + (Math.random() - 0.5) * jitter,

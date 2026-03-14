@@ -209,7 +209,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   /* ---- Slider state ---- */
   const [timeSnapIdx, setTimeSnapIdx] = useState(2); // 24h default — overnight is the whole ballgame
   const timeWindowH = SNAP_HOURS[timeSnapIdx];
-  const [distanceRadius, setDistanceRadius] = useState(1.5);
+  const [distanceRadius, setDistanceRadius] = useState(3.0);
   const [zoneOpacity, setZoneOpacity] = useState(60);
 
   /* ---- Type filters ---- */
