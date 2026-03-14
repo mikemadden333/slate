@@ -22,10 +22,10 @@ const REALTIME_NEWS_SOURCES = [
 
 const VIOLENCE_KEYWORDS = [
   'shot', 'shooting', 'shoot', 'homicide', 'killed', 'kill',
-  'stabbed', 'stab', 'stabbing', 'murder', 'wounded', 'fatal', 'weapon',
-  'dead', 'gunfire', 'victim', 'robbery', 'carjack', 'carjacking', 'gang',
-  'gunshot', 'firearm', 'slain', 'dies', 'body found', 'armed',
-  'critical condition', 'assault', 'attacked',
+  'stabbed', 'stabbing', 'murder', 'wounded', 'gunfire',
+  'gunshot', 'firearm', 'slain', 'body found',
+  'carjacked', 'carjacking',
+  'shot and killed', 'found dead', 'fatal shooting',
 ];
 
 const DISQUALIFY_KEYWORDS = [
@@ -66,8 +66,12 @@ export async function geocodeNewsIncidents(newsItems: NewsItem[]): Promise<Incid
   }
   (geocodeNewsIncidents as any)._running = true;
   try {
+  const fortyEightHoursAgo = Date.now() - 48 * 60 * 60 * 1000;
   const candidates = newsItems.filter(item => {
     if (!REALTIME_NEWS_SOURCES.includes(item.source)) return false;
+    // Must be from last 48 hours
+    const pubMs = item.pubDate ? new Date(item.pubDate).getTime() : 0;
+    if (pubMs < fortyEightHoursAgo) return false;
     const fullText = (item.title + ' ' + (item.description ?? '')).toLowerCase();
     // Disqualify sports, business, lifestyle stories first
     if (DISQUALIFY_KEYWORDS.some(k => fullText.includes(k))) return false;
@@ -250,13 +254,10 @@ ${candidates.map((item, i) => {
         : r.confidence === 'BLOCK' ? 0.0015
         : r.confidence === 'NEIGHBORHOOD' ? 0.004 : 0.008;
 
-      // If pubDate is older than 24h, use now — article is in today's feed so it's relevant today
-      const pubMs = item.pubDate ? new Date(item.pubDate).getTime() : 0;
-      const incidentDate = (Date.now() - pubMs) > 86400000 ? new Date().toISOString() : (item.pubDate ?? new Date().toISOString());
       incidents.push({
         id: `news_${item.id ?? item.title.slice(0, 20).replace(/\s/g, '_')}`,
         type: r.type === 'UNKNOWN' ? inferCrimeType(item.title + ' ' + (item.description ?? '')) : r.type,
-        date: incidentDate,
+        date: item.pubDate ?? new Date().toISOString(),
         // Fall back to keyword inference if Claude returned UNKNOWN
         block: `~${r.confidence} — ${item.source}`,
         lat: r.lat + (Math.random() - 0.5) * jitter,
