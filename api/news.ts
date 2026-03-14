@@ -4,6 +4,7 @@ const FEEDS = [
   { name: "Block Club Chicago", url: "https://blockclubchicago.org/feed/", color: "#B79145" },
   { name: "Chicago Tribune", url: "https://www.chicagotribune.com/arcio/rss/", color: "#6B8CAE" },
   { name: "Chicago Sun-Times", url: "https://chicago.suntimes.com/rss/index.xml", color: "#7A9E7E" },
+  { name: "Chalkbeat Chicago", url: "https://www.chalkbeat.org/chicago/rss/", color: "#E07B4F" },
 ];
 
 const KEYWORDS = [
