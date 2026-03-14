@@ -443,6 +443,8 @@ Sentence 1: The single most important thing they need to know about their campus
 Sentence 2: What this means for TODAY — for arrivals, the school day, or dismissal depending on current time (${isMorning ? 'morning arrivals' : isPreDismissal ? 'approaching dismissal' : 'school day'}). Specific and actionable.
 Sentence 3: One thing to watch or one action to consider. Forward-looking. Ends on a note of clarity, not anxiety.
 
+SCORING CONTEXT: The risk score (${risk.score} ${risk.label}) reflects 14-day historical neighborhood patterns from CPD data, NOT necessarily the last 24 hours. CPD data has a structural 8-10 day publication lag. Acute live sources (scanner dispatch, breaking news) are separate. If there are zero acute incidents in the last 24 hours, say so clearly and directly in your first sentence — the pattern score is background context, not an overnight alarm. Never imply something happened last night if the acute incident count is zero.
+
 TONE: You are a trusted colleague, not a system. Use "your campus", "your students", "your neighborhood." Speak directly to the principal as a person. If conditions are genuinely quiet, say so clearly and warmly — silence is good news and deserves to be communicated as such.
 
 NEVER use: "As of this writing", "It is important to note", "Please be advised", "At this time", or any bureaucratic filler.
