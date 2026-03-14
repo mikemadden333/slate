@@ -66,7 +66,7 @@ function parseItems(xml: string, name: string, color: string) {
     const link = extractLink(block);
     const pubDate = extractTag(block, "pubDate") || extractTag(block, "dc:date") || extractTag(block, "published");
     if (title && link) {
-      items.push({ title, link, pubDate, source: name, sourceColor: color });
+      items.push({ title: decodeEntities(title), link, pubDate, source: name, sourceColor: color });
     }
   }
 
