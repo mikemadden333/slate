@@ -14,40 +14,87 @@ const KEYWORDS = [
   "police", "violence", "weather",
 ];
 
+function extractTag(block: string, tag: string): string {
+  // Try CDATA first
+  const cdata = block.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>`, "i"));
+  if (cdata) return cdata[1].trim();
+  // Plain tag
+  const plain = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"));
+  if (plain) return plain[1].trim();
+  return "";
+}
+
+function extractLink(block: string): string {
+  // Try <link> tag content first
+  const plain = block.match(/<link>([^<]+)<\/link>/i);
+  if (plain) return plain[1].trim();
+  // Try self-closing or atom link
+  const atom = block.match(/<link[^>]+href=["']([^"']+)["']/i);
+  if (atom) return atom[1].trim();
+  return "";
+}
+
 function parseItems(xml: string, name: string, color: string) {
-  const items: { title: string; link: string; pubDate: string; source: string; sourceColor: string }[] = [];
-  const itemMatches = xml.matchAll(/<item[\s\S]*?<\/item>/g);
-  for (const match of itemMatches) {
-    const block = match[0];
-    const title = block.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>|<title>(.*?)<\/title>/)?.[1] ?? "";
-    const link = block.match(/<link>(.*?)<\/link>/)?.[1] ?? "";
-    const pubDate = block.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? "";
-    if (title && link) items.push({ title: title.trim(), link: link.trim(), pubDate, source: name, sourceColor: color });
+  const items: {
+    title: string;
+    link: string;
+    pubDate: string;
+    source: string;
+    sourceColor: string;
+  }[] = [];
+
+  // Split on <item> boundaries
+  const parts = xml.split(/<item[\s>]/i);
+  // Skip first part (it's the channel header)
+  for (let i = 1; i < parts.length; i++) {
+    const block = parts[i].split(/<\/item>/i)[0];
+    const title = extractTag(block, "title");
+    const link = extractLink(block);
+    const pubDate = extractTag(block, "pubDate") || extractTag(block, "dc:date") || extractTag(block, "published");
+    if (title && link) {
+      items.push({ title, link, pubDate, source: name, sourceColor: color });
+    }
   }
+
   return items;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Cache-Control", "s-maxage=120");
+
   try {
     const results = await Promise.allSettled(
       FEEDS.map(async (feed) => {
-        const r = await fetch(feed.url, { headers: { "User-Agent": "Mozilla/5.0" } });
+        const r = await fetch(feed.url, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (compatible; SlateBot/1.0)",
+            "Accept": "application/rss+xml, application/xml, text/xml, */*",
+          },
+        });
+        if (!r.ok) return [];
         const xml = await r.text();
         return parseItems(xml, feed.name, feed.color);
       })
     );
 
-    let all: typeof results[0] extends PromiseFulfilledResult<infer T> ? T : never = [];
-    results.forEach((r) => { if (r.status === "fulfilled") all = [...all, ...r.value]; });
+    let all: ReturnType<typeof parseItems> = [];
+    results.forEach((r) => {
+      if (r.status === "fulfilled") all = [...all, ...r.value];
+    });
 
-    const filtered = all.filter(i => KEYWORDS.some(kw => i.title.toLowerCase().includes(kw)));
+    // Filter by keywords
+    const filtered = all.filter((i) =>
+      KEYWORDS.some((kw) => i.title.toLowerCase().includes(kw))
+    );
+
+    // Fall back to all items if filter returns nothing
     const final = (filtered.length > 0 ? filtered : all)
       .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
       .slice(0, 6);
 
-    res.json({ items: final });
+    res.json({ items: final, debug: { total: all.length, filtered: filtered.length } });
   } catch (e) {
-    res.status(500).json({ error: String(e) });
+    res.status(500).json({ error: String(e), items: [] });
   }
 }
