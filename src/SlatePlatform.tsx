@@ -10,14 +10,13 @@ import RosterApp from "./RosterApp";
 import FundApp from "./FundApp";
 import HomeApp from "./HomeApp";
 import AdminApp from "./AdminApp";
-import ReportsApp from "./ReportsApp";
 import PublicAffairsApp from "./PublicAffairsApp";
 
 const C = {
   deep: "#121315", rock: "#23272F", mid: "#2C3440", light: "#6B7280",
   brass: "#B79145", chalk: "#E7E2D8", signal: "#2F8F95", white: "#FFFFFF", bg: "#F7F5F1",
 };
-const MOD = { reports: "#4F7942", sentinel: "#D45B4F", ledger: "#C79D39", scholar: "#4F78D6", roster: "#3D6B8E", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145", home: "#0D1B2A" };
+const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", scholar: "#4F78D6", roster: "#3D6B8E", brief: "#4EA27A", shield: "#7B63E1", grounds: "#C66C3D", capitol: "#1D4ED8", raise: "#B79145", home: "#0D1B2A" };
 
 const MODULES = [
   { id: "home", label: "Briefing", category: "NETWORK INTELLIGENCE", icon: "🧠", color: MOD.home, desc: "AI-generated cross-module briefing synthesizing live data across all Slate systems.", status: "LIVE", metrics: "10 modules", tagline: "Everything you need to know, right now." },
@@ -30,7 +29,6 @@ const MODULES = [
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "Network-wide facilities", tagline: "The building is the first thing families see." },
   { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Veritas advocacy intelligence.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
   { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Veritas development intelligence.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
-  { id: "reports", label: "Reports", category: "FINANCIAL INTELLIGENCE", icon: "📈", color: MOD.reports },
     { id: "admin", label: "Admin", category: "DATA MANAGEMENT", icon: "⚙️", color: "#6B7280", desc: "Update enrollment, financials, staff, and risk data across all Slate modules.", status: "LIVE", metrics: "Browser storage", tagline: "Your data. Your numbers. Your demo." },
 ];
 
