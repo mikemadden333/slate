@@ -388,7 +388,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       {/* Slider 1: Time Window */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontWeight: 600, color: '#121315' }}>Time Window</span>
+          <span style={{ fontWeight: 600, color: '#121315' }}>Live Source Window</span>
           <span style={{ color: '#6B7280', fontSize: 13 }}>Last {fmtTimeLabel(timeWindowH)}</span>
         </div>
         <input
@@ -401,7 +401,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
           {SNAP_LABELS.map(l => <span key={l}>{l}</span>)}
         </div>
         <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
-          Showing incidents from the last {fmtTimeLabel(timeWindowH)}
+          News + dispatch filtered to last {fmtTimeLabel(timeWindowH)} · CPD pattern always shown
         </div>
       </div>
 
@@ -504,7 +504,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
         borderBottom: 'none',
       }}>
         <span>
-          <strong>Showing {visibleCount} incident{visibleCount !== 1 ? 's' : ''}</strong> within {distanceRadius.toFixed(1)}mi — 24 hours
+          <strong>Showing {visibleCount} incident{visibleCount !== 1 ? 's' : ''}</strong> within {distanceRadius.toFixed(1)}mi — CPD pattern + {fmtTimeLabel(timeWindowH)} live
         </span>
         <span style={{ fontSize: 11, color: '#6B7280' }}>
           {incidents.length} total loaded
