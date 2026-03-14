@@ -379,10 +379,9 @@ export default function HomeApp() {
           <div style={{fontSize:18,fontWeight:700,color:C.carbon,marginBottom:8}}>Intelligence Briefing</div>
           <div style={{fontSize:13,color:C.midGray,marginBottom:24}}>Synthesizes live data across all Slate modules into a single morning briefing.</div>
           <button onClick={runBriefing} style={{padding:"12px 32px",borderRadius:8,background:C.carbon,color:C.white,fontSize:13,fontWeight:700,border:"none",cursor:"pointer"}}>Generate My Briefing</button>
-        </div>
-
+  </div>
+      )}
       <LocalNewsBlock />
-
     </div>
   );
 }
