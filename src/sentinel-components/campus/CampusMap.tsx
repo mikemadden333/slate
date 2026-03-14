@@ -658,7 +658,6 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
             const isNews = inc.source === 'NEWS';
             const s = isNews ? TYPE_STYLES['NEWS'] : getStyle(inc.type);
             const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-      if (d > 3.0) continue; // never toast beyond 3mi
             const dir = compassLabel(bearing(campus.lat, campus.lng, inc.lat, inc.lng));
             const inZone = contagionZones.find(z =>
               haversine(z.lat, z.lng, inc.lat, inc.lng) <= z.radius,
