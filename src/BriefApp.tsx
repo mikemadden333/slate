@@ -145,7 +145,7 @@ Be specific, not generic. Reference real Veritas details. Never fabricate incide
         borderRadius: 16, padding: "32px 36px", marginBottom: 24, position: "relative", overflow: "hidden",
       }}>
         <div style={{ fontSize: 22, fontWeight: 700, color: COLORS.white, marginBottom: 4 }}>
-          Slate Brief
+          Slate Draft
         </div>
         <div style={{ fontSize: 13, color: "rgba(183, 145, 69, 0.8)", lineHeight: 1.5 }}>
           AI-powered communications grounded in Veritas Charter Schools data. Every draft draws from live platform intelligence.

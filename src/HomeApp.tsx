@@ -12,7 +12,7 @@ const MODULES = [
   { id:"sentinel",label:"Watch",icon:"🔍",color:"#D45B4F",domain:"Safety" },
   { id:"ledger",label:"Ledger",icon:"📊",color:"#C79D39",domain:"Finance" },
   { id:"roster",label:"Roster",icon:"👥",color:"#4F78D6",domain:"Enrollment" },
-  { id:"brief",label:"Brief",icon:"✉️",color:"#4EA27A",domain:"Communications" },
+  { id:"brief",label:"Draft",icon:"✉️",color:"#4EA27A",domain:"Communications" },
   { id:"shield",label:"Guard",icon:"🛡️",color:"#7B63E1",domain:"Risk & Compliance" },
   { id:"grounds",label:"Grounds",icon:"🏫",color:"#C66C3D",domain:"Operations" },
   { id:"capitol",label:"Civic",icon:"🏛️",color:"#1D4ED8",domain:"Gov. Affairs" },
