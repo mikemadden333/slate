@@ -57,7 +57,7 @@ export default function ReportsApp() {
   const fileRef = useRef(null);
 
   const processFile = useCallback(async (file) => {
-    if (!file.type.includes("pdf")) { setParseError("Please upload a PDF file."); return; }
+    const isPdf = file.type.includes("pdf"); const isExcel = file.type.includes("spreadsheet") || file.type.includes("excel") || file.name.endsWith(".xlsx") || file.name.endsWith(".xls"); if (!isPdf && !isExcel) { setParseError("Please upload a PDF or Excel file."); return; }
     setFileName(file.name);
     setStage("parsing");
     setParseError("");
@@ -70,7 +70,7 @@ export default function ReportsApp() {
     });
     setParseLog(prev => [...prev, "Extracting financial data (this takes ~20 seconds)..."]);
     try {
-      const res = await fetch("/api/parse-financial", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ pdfBase64: base64 }) });
+      const res = await fetch("/api/parse-financial", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ pdfBase64: base64, fileType: file.type }) });
       const json = await res.json();
       if (!json.success || !json.data) { setParseError(json.error ?? "Failed to extract data."); setStage("upload"); return; }
       setParseLog(prev => [...prev, `✓ Extracted ${Object.keys(json.data).length} data points`, "Ready for review."]);
@@ -148,9 +148,9 @@ export default function ReportsApp() {
       <div onDragOver={(e)=>{e.preventDefault();setDragOver(true);}} onDragLeave={()=>setDragOver(false)} onDrop={handleDrop} onClick={()=>fileRef.current?.click()} style={{ border:`2px dashed ${dragOver?C.brass:C.border}`, borderRadius:16, padding:"60px 40px", textAlign:"center", cursor:"pointer", background:dragOver?"#FEFCE8":C.paper, marginBottom:20 }}>
         <div style={{ fontSize:40, marginBottom:16 }}>📄</div>
         <div style={{ fontSize:18, fontWeight:700, color:C.navy, marginBottom:8 }}>Drop your financial close PDF here</div>
-        <div style={{ fontSize:13, color:C.gray, marginBottom:20 }}>Monthly close, auditor PDF, or financial summary</div>
+        <div style={{ fontSize:13, color:C.gray, marginBottom:20 }}>Monthly close PDF, Excel (.xlsx), or financial summary</div>
         <div style={{ display:"inline-block", padding:"10px 28px", borderRadius:8, background:C.navy, color:C.white, fontSize:13, fontWeight:600 }}>Browse Files</div>
-        <input ref={fileRef} type="file" accept=".pdf" onChange={handleInput} style={{ display:"none" }} />
+        <input ref={fileRef} type="file" accept=".pdf,.xlsx,.xls" onChange={handleInput} style={{ display:"none" }} />
       </div>
       {parseError && <div style={{ padding:"12px 16px", background:"#FEF2F2", border:"1px solid #FCA5A5", borderRadius:8, color:C.red, fontSize:13, marginBottom:16 }}>{parseError}</div>}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:12 }}>
