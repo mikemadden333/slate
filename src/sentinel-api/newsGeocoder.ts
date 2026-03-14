@@ -240,7 +240,7 @@ ${candidates.map((item, i) => {
       const nearCampus = CAMPUSES.some(c => {
         const dlat = (c.lat - r.lat) * 69;
         const dlng = (c.lng - r.lng) * 55;
-        return Math.sqrt(dlat * dlat + dlng * dlng) <= 5.0;
+        return Math.sqrt(dlat * dlat + dlng * dlng) <= 8.0;
       });
       if (!nearCampus) {
         console.log(`News geocoder: dropping ${r.confidence} incident at ${r.lat},${r.lng} — >5mi from all campuses`);

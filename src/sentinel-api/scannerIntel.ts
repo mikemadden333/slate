@@ -17,7 +17,7 @@ export interface DispatchIncident {
 export async function transcribeSpikeCalls(calls: ScannerCall[]): Promise<DispatchIncident[]> {
   const withAudio = calls.filter(c => c.url && c.url.startsWith('http'));
   if (withAudio.length === 0) { console.log('Scanner intel: no audio URLs'); return []; }
-  const toProcess = withAudio.slice(-15); // last 15 calls = ~30min of overnight activity
+  const toProcess = withAudio; // ALL calls with audio — every call is intelligence
   console.log('Scanner intel: transcribing ' + toProcess.length + ' calls (overnight sweep)');
   const transcripts: Array<{ call: ScannerCall; text: string }> = [];
   for (const call of toProcess) {
@@ -36,7 +36,7 @@ export async function transcribeSpikeCalls(calls: ScannerCall[]): Promise<Dispat
   }
   if (transcripts.length === 0) return [];
   const lines = transcripts.map((t, i) => i + ': [Zone ' + (t.call.zone ?? '?') + ', ' + t.call.time + '] "' + t.text + '"').join('\n');
-  const prompt = 'You are a Chicago police dispatch interpreter for a school safety system.\n\nExtract location and incident type from these CPD radio transcripts.\nReturn ONLY a JSON array. No preamble, no markdown.\n\nTranscripts:\n' + lines + '\n\nFor each return: {"id":<index>,"lat":<decimal or 0>,"lng":<decimal or 0>,"type":<SHOOTING|BATTERY|ROBBERY|TRAFFIC|OTHER>,"block":<address or "">,"confidence":<HIGH|MEDIUM|LOW>}\n\nChicago: lat 41.6-42.1, lng -87.95 to -87.5. Return 0,0 if location unknown.\n\nIMPORTANT: Only include incidents where type is SHOOTING, BATTERY, or ROBBERY. Ignore all traffic, administrative, and non-violent calls.';
+  const prompt = 'You are a Chicago police dispatch interpreter for a school safety system.\n\nExtract location and incident type from these CPD radio transcripts.\nReturn ONLY a JSON array. No preamble, no markdown.\n\nTranscripts:\n' + lines + '\n\nFor each return: {"id":<index>,"lat":<decimal or 0>,"lng":<decimal or 0>,"type":<SHOOTING|BATTERY|ROBBERY|TRAFFIC|OTHER>,"block":<address or "">,"confidence":<HIGH|MEDIUM|LOW>}\n\nChicago: lat 41.6-42.1, lng -87.95 to -87.5. Return 0,0 if location unknown.\n\nReturn ALL incidents with a extractable Chicago location, including SHOOTING, BATTERY, ROBBERY, DOMESTIC, PERSON WITH GUN, ASSAULT. Ignore pure administrative calls with no location.';
   try {
     const res = await fetch('/api/anthropic-proxy', {
       method: 'POST',
@@ -54,7 +54,7 @@ export async function transcribeSpikeCalls(calls: ScannerCall[]): Promise<Dispat
       if (p.lng < -87.95 || p.lng > -87.5) continue;
       const t = transcripts[p.id];
       if (!t) continue;
-      if (!['SHOOTING','BATTERY','ROBBERY'].includes(p.type)) continue;
+      if (!['SHOOTING','BATTERY','ROBBERY','ASSAULT','DOMESTIC','PERSON WITH GUN','WEAPONS'].includes(p.type)) continue;
       incidents.push({ id: 'dispatch-' + t.call.id, date: t.call.time, type: p.type, block: p.block, lat: p.lat, lng: p.lng, description: t.text, source: 'DISPATCH', transcript: t.text, confidence: p.confidence as 'HIGH' | 'MEDIUM' | 'LOW', audioUrl: t.call.url });
     }
     console.log('Scanner intel: ' + incidents.length + ' geolocated dispatch incidents');
