@@ -72,7 +72,7 @@ export default function ReportsApp() {
     try {
       const res = await fetch("/api/parse-financial", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ pdfBase64: base64, fileType: file.type }) });
       const json = await res.json();
-      if (!json.success || !json.data) { setParseError(json.error ?? "Failed to extract data."); setStage("upload"); return; }
+      if (!json.success || !json.data) { setParseError(json.error + (json.detail ? ": " + JSON.stringify(json.detail).slice(0,200) : "") ?? "Failed to extract data."); setStage("upload"); return; }
       setParseLog(prev => [...prev, `✓ Extracted ${Object.keys(json.data).length} data points`, "Ready for review."]);
       setData(json.data);
       setTimeout(() => setStage("review"), 800);
