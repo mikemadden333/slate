@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import ReportsApp from "./ReportsApp";
 
 // ─── SLATE DESIGN SYSTEM ───
 const C = {

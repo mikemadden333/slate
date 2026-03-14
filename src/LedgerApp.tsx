@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useCallback, useRef } from 'react';
+import ReportsApp from './ReportsApp';
 import { LedgerProvider } from './ledger-context/LedgerDataContext';
 import DataUploadPanel from './ledger-modules/DataUploadPanel';
 import CommandCenter from './ledger-modules/CommandCenter';
@@ -40,12 +41,14 @@ const NETWORK_TABS: { id: NetworkModule; label: string }[] = [
   { id: 'scenario-war-room',     label: 'Scenario War Room'    },
   { id: 'nst-spending',          label: 'NST Spending'         },
   { id: 'compensation-radar',    label: 'Compensation Radar'   },
+  { id: 'reports',              label: '📈 Generate Report'    },
 ];
 
 const CAMPUS_TABS: { id: CampusModule; label: string }[] = [
   { id: 'campus-overview',  label: 'Campus Overview'  },
   { id: 'network-context',  label: 'Network Context'  },
   { id: 'budget-detail',    label: 'Budget Detail'    },
+  { id: 'reports',        label: '📈 Generate Report' },
 ];
 
 export default function LedgerApp() {

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useMemo, useEffect } from 'react';
+import ReportsApp from './ReportsApp';
 
 // ─── TOKENS ────────────────────────────────────────────────────────────────
 const T = {
@@ -1128,6 +1129,7 @@ export default function FundApp() {
       <div style={{ padding: '22px 24px 32px' }}>
         {tab === 'pipeline'    && <PipelineTab opps={opps} onUpdate={setOpps} />}
         {tab === 'sourcer'     && <GrantSourcerTab grants={grants} onUpdate={setGrants} />}
+        {tab === 'reports'    && <ReportsApp context="raise" />}
         {tab === 'stewardship' && <StewardshipTab opps={opps} />}
       </div>
     </div>

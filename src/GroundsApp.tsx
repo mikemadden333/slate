@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useMemo } from 'react';
+import ReportsApp from './ReportsApp';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, ScatterChart, Scatter, ZAxis,
@@ -563,6 +564,7 @@ const TABS = [
   { id:'tracker', l:'📋 Project Tracker' },
   { id:'equity',  l:'⚖️ Equity Alignment'},
   { id:'ai',      l:'🤖 AI Advisor'      },
+  { id:'reports', l:'📈 Generate Report' },
 ];
 
 export default function GroundsApp() {
@@ -588,6 +590,7 @@ export default function GroundsApp() {
         {tab==='tracker' && <ProjectTracker />}
         {tab==='equity'  && <EquityAlignment />}
         {tab==='ai'      && <AIAdvisor />}
+        {tab==='reports' && <ReportsApp context="grounds" />}
       </div>
     </div>
   );
