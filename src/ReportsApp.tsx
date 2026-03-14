@@ -71,10 +71,14 @@ export default function ReportsApp() {
         const arrayBuffer = await file.arrayBuffer();
         const workbook = XLSX.read(arrayBuffer, { type: "array" });
         let text = "";
-        workbook.SheetNames.forEach(name => {
+        // Only send first 4 sheets (summary/consolidated) — detail tabs explode token count
+        const sheetsToProcess = workbook.SheetNames.slice(0, 4);
+        sheetsToProcess.forEach(name => {
           const sheet = workbook.Sheets[name];
-          text += `\n\n=== Sheet: ${name} ===\n`;
-          text += XLSX.utils.sheet_to_csv(sheet);
+          const csv = XLSX.utils.sheet_to_csv(sheet);
+          // Truncate to first 100 rows to stay within token limits
+          const rows = csv.split("\n").slice(0, 100).join("\n");
+          text += `\n\n=== Sheet: ${name} ===\n${rows}`;
         });
         body = JSON.stringify({ textContent: text, fileType: file.type, fileName: file.name });
       } else {
