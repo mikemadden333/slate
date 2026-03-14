@@ -25,6 +25,19 @@ function extractTag(block: string, tag: string): string {
   return "";
 }
 
+function decodeEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#8216;/g, "\u2018")
+    .replace(/&#8217;/g, "\u2019")
+    .replace(/&#8220;/g, "\u201C")
+    .replace(/&#8221;/g, "\u201D")
+    .replace(/&#038;/g, "&")
+    .replace(/&nbsp;/g, " ");
+}
 function extractLink(block: string): string {
   // Try <link> tag content first
   const plain = block.match(/<link>([^<]+)<\/link>/i);
