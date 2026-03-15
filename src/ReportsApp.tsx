@@ -212,7 +212,7 @@ export default function ReportsApp() {
       <div style={{ display:"flex", gap:12, marginBottom:20 }}>
         <KpiCard label="Operational Surplus" value={$M(data.revenueMinusExpenses?.actual)} sub={`${fmtVar(data.revenueMinusExpenses?.variance)} vs budget`} color={varColor(data.revenueMinusExpenses?.variance)} />
         <KpiCard label="Net Income" value={$M(data.netIncome?.actual)} sub={`${fmtVar(data.netIncome?.variance)} vs budget`} color={varColor(data.netIncome?.variance)} />
-        <KpiCard label="DSCR" value={`${data.dscr?.toFixed(2)}x`} sub={`${data.dscrCovenant}x covenant`} color={data.dscr>=data.dscrCovenant?C.green:C.red} />
+        <KpiCard label="DSCR" value={data.dscr ? `${Number(data.dscr).toFixed(2)}x` : "N/A"} sub={`${data.dscrCovenant}x covenant`} color={data.dscr>=data.dscrCovenant?C.green:C.red} />
         <KpiCard label="Days Cash" value={String(Math.round(data.daysOfCashOnHand))} sub="120-day minimum" color={data.daysOfCashOnHand>=120?C.green:C.red} />
       </div>
       <div style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden", marginBottom:20 }}>
