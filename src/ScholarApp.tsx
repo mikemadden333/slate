@@ -33,7 +33,7 @@ function RosterInner() {
               SLATE SCHOLAR
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-              <span style={{ fontSize: 28, fontWeight: 900, color: '#FFFFFF', fontFamily: "'DM Sans', sans-serif" }}>Roster</span>
+              <span style={{ fontSize: 28, fontWeight: 900, color: '#FFFFFF', fontFamily: "'DM Sans', sans-serif" }}>Scholar</span>
               <span style={{ fontSize: 11, color: C.gold, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em' }}>Enrollment Intelligence</span>
             </div>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginTop: 2, fontStyle: 'italic' }}>
