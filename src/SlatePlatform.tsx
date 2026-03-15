@@ -325,6 +325,42 @@ export default function SlatePlatform() {
   };
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [askQuery, setAskQuery] = useState("");
+  const [askAnswer, setAskAnswer] = useState("");
+  const [askLoading, setAskLoading] = useState(false);
+  const [askOpen, setAskOpen] = useState(false);
+
+  const handleAsk = async () => {
+    if (!askQuery.trim()) return;
+    setAskLoading(true);
+    setAskOpen(true);
+    setAskAnswer("");
+    try {
+      const snap = {
+        network: "Veritas Charter Schools",
+        campuses: 10,
+        enrollment: "6,823 students",
+        modules: "Safety (Watch), Finance (Ledger), Enrollment (Scholar), HR (Roster), Compliance (Guard), Facilities (Grounds), Government Affairs (Civic), Fundraising (Raise), Communications (Draft)"
+      };
+      const res = await fetch("/api/anthropic-proxy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 400,
+          system: `You are Slate Intelligence, an AI advisor for Veritas Charter Schools — a network of 10 public charter high schools serving 6,823 students across Chicago's South Side, West Side, and Loop. You have access to all platform modules covering safety, finance, enrollment, HR, compliance, facilities, government affairs, and fundraising. Answer questions directly and concisely in plain language. No bullet points. No headers. Just a clear, confident answer in 2-4 sentences maximum. Write the way a trusted colleague would answer a question across the desk.`,
+          messages: [{ role: "user", content: askQuery }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.find((b: any) => b.type === "text")?.text || "I couldn't find an answer to that.";
+      setAskAnswer(text);
+    } catch {
+      setAskAnswer("Something went wrong. Try again.");
+    } finally {
+      setAskLoading(false);
+    }
+  };
   const activeModuleData = MODULES.find(m => m.id === activeModule);
 
   if (showSplash) return (<><GlobalCSS /><SplashScreen onComplete={() => { setShowSplash(false); setShowDisclaimer(true); }} /></>);
@@ -374,6 +410,37 @@ export default function SlatePlatform() {
         <div className="slate-scroll" style={{ flex: 1, overflow: "auto", padding: activeModule === "dashboard" ? "32px 36px" : "24px 28px", background: `linear-gradient(180deg, ${C.bg} 0%, #F0EDE6 100%)` }}>
           {activeModule === "dashboard" ? <Dashboard onModuleClick={handleModuleClick} /> : renderModule()}
         </div>
+
+        {/* ── ASK SLATE — persistent intelligence bar ── */}
+        <div style={{ flexShrink: 0, borderTop: "1px solid #E5DDD5", background: "#FFFFFF" }}>
+          {askOpen && askAnswer && (
+            <div style={{ padding: "16px 28px", borderBottom: "1px solid #E5DDD5", background: "#F7F5F1" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#B79145", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 6 }}>Slate</div>
+                  <div style={{ fontSize: 13, color: "#121315", lineHeight: 1.7 }}>{askLoading ? "Thinking..." : askAnswer}</div>
+                </div>
+                <button onClick={() => { setAskOpen(false); setAskAnswer(""); setAskQuery(""); }} style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: 16, padding: "0 4px", flexShrink: 0 }}>×</button>
+              </div>
+            </div>
+          )}
+          <div style={{ padding: "10px 28px", display: "flex", gap: 12, alignItems: "center" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#B79145", letterSpacing: "0.12em", textTransform: "uppercase", flexShrink: 0 }}>Ask Slate</div>
+            <input
+              value={askQuery}
+              onChange={e => setAskQuery(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter") handleAsk(); }}
+              placeholder="Ask anything about your network..."
+              style={{ flex: 1, border: "none", outline: "none", fontSize: 13, color: "#121315", background: "transparent", fontFamily: "'Inter', system-ui, sans-serif" }}
+            />
+            {askQuery.trim() && (
+              <button onClick={handleAsk} disabled={askLoading} style={{ padding: "6px 16px", borderRadius: 6, background: askLoading ? "#E5DDD5" : "#121315", color: "#FFFFFF", fontSize: 12, fontWeight: 600, border: "none", cursor: askLoading ? "default" : "pointer", flexShrink: 0 }}>
+                {askLoading ? "..." : "Ask"}
+              </button>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   </>);
