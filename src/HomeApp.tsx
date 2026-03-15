@@ -394,6 +394,14 @@ export default function HomeApp() {
               </div>
             )}
 
+            {/* National Context */}
+            {briefing.nationalContext&&(
+              <div style={{marginBottom:44}}>
+                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>National & Illinois Context</div>
+                <div style={{fontSize:14,color:"#444",lineHeight:1.85}}>{briefing.nationalContext}</div>
+              </div>
+            )}
+
             {/* Questions to Sit With */}
             {briefing.questionsToSitWith?.length>0&&(
               <div style={{marginBottom:44}}>
@@ -406,14 +414,6 @@ export default function HomeApp() {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* National Context */}
-            {briefing.nationalContext&&(
-              <div style={{marginBottom:44}}>
-                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>National & Illinois Context</div>
-                <div style={{fontSize:14,color:"#444",lineHeight:1.85}}>{briefing.nationalContext}</div>
               </div>
             )}
 
