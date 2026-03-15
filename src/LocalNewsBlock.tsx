@@ -21,12 +21,12 @@ const RSS_FEEDS = [
     color: "#B79145",
   },
   {
-    name: "Chicago Tribune",
+    name: "NBC Chicago",
     url: "https://www.chicagotribune.com/arcio/rss/",
     color: "#6B8CAE",
   },
   {
-    name: "Chicago Sun-Times",
+    name: "WGN News",
     url: "https://chicago.suntimes.com/rss/index.xml",
     color: "#7A9E7E",
   },
