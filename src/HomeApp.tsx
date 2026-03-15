@@ -313,7 +313,7 @@ export default function HomeApp() {
         <div style={{display:"flex",flexDirection:"column",gap:0}}>
 
           {/* ── HERO — dark, commanding ── */}
-          <div style={{background:C.carbon,borderRadius:16,padding:"36px 44px",position:"relative",overflow:"hidden",marginBottom:40}}>
+          <div style={{background:C.carbon,borderRadius:16,padding:"36px 44px",position:"relative",overflow:"hidden",marginBottom:40,maxWidth:900,margin:"0 auto 40px"}}>
             <div style={{position:"absolute",top:0,right:0,width:300,height:300,background:`radial-gradient(circle at 100% 0%, ${C.brassGlow} 0%, transparent 65%)`,pointerEvents:"none"}}/>
             <div style={{fontSize:10,fontWeight:700,color:C.brass,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:16}}>Intelligence Brief · {dateStr}</div>
             <div style={{fontSize:26,fontWeight:800,color:C.white,lineHeight:1.3,marginBottom:20,letterSpacing:"-0.02em",maxWidth:720}}>{briefing.headline}</div>
@@ -348,7 +348,7 @@ export default function HomeApp() {
           </div>
 
           {/* ── MEMO BODY — white, airy, narrative ── */}
-          <div style={{background:C.white,borderRadius:16,padding:"44px 52px",border:`1px solid ${C.border}`}}>
+          <div style={{background:C.white,borderRadius:16,padding:"44px 52px",border:`1px solid ${C.border}`,maxWidth:900,margin:"0 auto",width:"100%"}}>
 
             {/* Priorities */}
             <div style={{marginBottom:44}}>
