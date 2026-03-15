@@ -468,37 +468,6 @@ export default function HomeApp() {
         </div>
       )}
 
-          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:24}}>
-            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
-              <SectionHeader title="Keep an Eye On"/>
-              <div style={{padding:"16px 20px",borderRadius:10,background:C.brassGlow,border:`1px solid ${C.brass}30`}}>
-                <div style={{fontSize:22,marginBottom:8}}>👁️</div>
-                <div style={{fontSize:14,color:C.carbon,lineHeight:1.7}}>{briefing.watchItem}</div>
-              </div>
-              {briefing.closing&&<div style={{marginTop:16,paddingTop:16,borderTop:`1px solid ${C.border}`,fontSize:13,color:C.midGray,lineHeight:1.7,fontStyle:"italic"}}>{briefing.closing}</div>}
-            </div>
-            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
-              <SectionHeader title="Upcoming Deadlines" sub="Next 30 days"/>
-              <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                {snap.guard.urgentDeadlines.map((d,i)=>(
-                  <div key={i} style={{padding:"12px 14px",borderRadius:8,background:d.daysOut<=7?"#FEF2F2":C.warm,border:`1px solid ${d.daysOut<=7?"#FECACA":C.border}`}}>
-                    <div style={{fontSize:12,fontWeight:700,color:d.daysOut<=7?C.red:C.carbon,marginBottom:2}}>{d.item}</div>
-                    <div style={{fontSize:11,color:C.midGray}}>{d.daysOut} days · {d.owner}</div>
-                  </div>
-                ))}
-                {snap.raise.proposalsDueSoon>0&&<>
-                  <div style={{fontSize:10,fontWeight:700,color:C.brass,letterSpacing:"0.1em",textTransform:"uppercase",marginTop:4}}>Proposals Due</div>
-                  {snap.raise.dueSoonItems.map((d,i)=>(
-                    <div key={i} style={{padding:"12px 14px",borderRadius:8,background:d.daysOut<=7?"#FFFBEB":C.warm,border:`1px solid ${d.daysOut<=7?"#FDE68A":C.border}`}}>
-                      <div style={{fontSize:12,fontWeight:700,color:C.carbon,marginBottom:2}}>{d.funder}</div>
-                      <div style={{fontSize:11,color:C.midGray}}>${(d.amount/1000).toFixed(0)}K · {d.daysOut} days</div>
-                    </div>
-                  ))}
-                </>}
-              </div>
-            </div>
-          </div>
-
           <div>
             <button onClick={()=>setExpanded(e=>!e)} style={{width:"100%",padding:"14px",borderRadius:10,background:"transparent",border:`1px dashed ${C.border}`,color:C.midGray,fontSize:12,fontWeight:600,cursor:"pointer",letterSpacing:"0.04em"}}>
               {expanded?"▲  Hide Network Detail":"▼  Show Full Network Detail"}
