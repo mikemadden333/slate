@@ -1,4 +1,5 @@
 // @ts-nocheck
+import SignalApp from './SignalApp';
 import { buildNetworkSnapshot } from './networkSnapshot';
 import { useState, useEffect, useRef } from "react";
 import SentinelApp from "./SentinelApp";
@@ -29,6 +30,7 @@ const MODULES = [
   { id: "shield", label: "Guard", category: "RISK MANAGEMENT INTELLIGENCE", icon: "⚖️", color: MOD.shield, desc: "Compliance monitoring, incident tracking, insurance analysis, regulatory deadline tracking.", status: "LIVE", metrics: "12 compliance areas", tagline: "Every deadline. Every policy. Every campus." },
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "Network-wide facilities", tagline: "The building is the first thing families see." },
   { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Veritas advocacy intelligence.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
+  { id: "signal", label: "Signal", category: "EARLY WARNING", icon: "◈", color: "#EF4444", status: "LIVE" },
   { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Veritas development intelligence.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
     { id: "admin", label: "Admin", category: "DATA MANAGEMENT", icon: "⚙️", color: "#6B7280", desc: "Update enrollment, financials, staff, and risk data across all Slate modules.", status: "LIVE", metrics: "Browser storage", tagline: "Your data. Your numbers. Your demo." },
 ];
@@ -376,6 +378,7 @@ ${JSON.stringify(snap, null, 2)}`,
       shield: <ShieldApp />,
       grounds: <GroundsApp />,
       capitol: <PublicAffairsApp />,
+      signal: <SignalApp />,
       raise: <FundApp />,
       admin: <AdminApp />,
       home: <HomeApp />,
