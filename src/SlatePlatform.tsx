@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { buildNetworkSnapshot } from './networkSnapshot';
 import { useState, useEffect, useRef } from "react";
 import SentinelApp from "./SentinelApp";
 import LedgerApp from "./LedgerApp";
@@ -336,19 +337,17 @@ export default function SlatePlatform() {
     setAskOpen(true);
     setAskAnswer("");
     try {
-      const snap = {
-        network: "Veritas Charter Schools",
-        campuses: 10,
-        enrollment: "6,823 students",
-        modules: "Safety (Watch), Finance (Ledger), Enrollment (Scholar), HR (Roster), Compliance (Guard), Facilities (Grounds), Government Affairs (Civic), Fundraising (Raise), Communications (Draft)"
-      };
+      const snap = buildNetworkSnapshot();
       const res = await fetch("/api/anthropic-proxy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 400,
-          system: `You are Slate Intelligence, an AI advisor for Veritas Charter Schools — a network of 10 public charter high schools serving 6,823 students across Chicago's South Side, West Side, and Loop. You have access to all platform modules covering safety, finance, enrollment, HR, compliance, facilities, government affairs, and fundraising. Answer questions directly and concisely in plain language. No bullet points. No headers. Just a clear, confident answer in 2-4 sentences maximum. Write the way a trusted colleague would answer a question across the desk.`,
+          system: `You are Slate Intelligence, the AI advisor for ${snap.network}. You have live access to all platform data. Answer questions directly in plain language — no bullets, no headers. 2-4 sentences maximum. Write the way a trusted colleague would answer across the desk.
+
+LIVE NETWORK DATA:
+${JSON.stringify(snap, null, 2)}`,
           messages: [{ role: "user", content: askQuery }]
         })
       });
