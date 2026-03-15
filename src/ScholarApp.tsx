@@ -8,7 +8,7 @@ import CampusView from './scholar-modules/CampusView';
 
 const C = {
   bg: '#F8F9FA', surface: '#FFFFFF', border: '#E5E7EB',
-  navy: '#1B2A4A', text: '#1F2937', muted: '#6B7280', gold: '#F0B429',
+  navy: '#121315', text: '#1F2937', muted: '#6B7280', gold: '#F0B429',
 };
 
 const TABS = [
