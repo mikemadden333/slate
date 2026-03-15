@@ -25,7 +25,6 @@ function slateRead(key) {
   try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : null; } catch { return null; }
 }
 
-
 };
 
 const generateBriefing = async (snapshot, userName="Mike") => {
