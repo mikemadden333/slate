@@ -143,6 +143,7 @@ export default async function handler(req:VercelRequest,res:VercelResponse){
       slides:7,
     });
   }catch(err){
-    return res.status(500).json({error:String(err)});
+    console.error("Board deck error:", err);
+    return res.status(500).json({error:String(err), stack: err instanceof Error ? err.stack : undefined});
   }
 }
