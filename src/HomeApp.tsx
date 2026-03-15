@@ -133,11 +133,76 @@ const generateBriefing = async (snapshot, userName="Mike") => {
   const hour = new Date().getHours();
   const timeOfDay = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
   const dayOfWeek = new Date().toLocaleDateString("en-US",{weekday:"long"});
-  const systemPrompt = `You are Slate, an AI intelligence system for charter school networks. You generate daily briefings for senior school leaders that synthesize operational data across all platform modules.\n\nYour voice: Direct. Clear. Warm but serious. You write the way a trusted, sharp colleague would brief a leader they respect. No corporate language. No filler. Every sentence earns its place.\n\nYou are generating a briefing for ${userName}, a senior leader at Veritas Charter Schools in Chicago — a network of 10 public charter high schools serving 6,823 students across Chicago's South Side, West Side, and downtown Loop.\n\nCampuses: Veritas Loop Academy (Loop/Downtown), Veritas Englewood Academy, Veritas Woodlawn Academy, Veritas Auburn Gresham Academy, Veritas Roseland Academy, Veritas Chatham Academy (South Side), Veritas Austin Academy, Veritas North Lawndale Academy, Veritas Garfield Park Academy, Veritas Humboldt Park Academy (West Side).\n\nStructure your response as valid JSON with this exact shape:\n{\n  "headline": "One sharp sentence (max 15 words) capturing the most important thing happening right now",\n  "executiveSummary": "Two to three sentences synthesizing the overall network picture. What does the leader most need to know in the next 60 seconds? Be specific. Reference actual numbers and situations.",\n  "topPriorities": [\n    { "priority": 1, "module": "module name", "action": "Specific action in one sentence", "urgency": "HIGH|MEDIUM|LOW" },\n    { "priority": 2, "module": "module name", "action": "Specific action in one sentence", "urgency": "HIGH|MEDIUM|LOW" },\n    { "priority": 3, "module": "module name", "action": "Specific action in one sentence", "urgency": "HIGH|MEDIUM|LOW" }\n  ],\n  "moduleInsights": {\n    "watch": "One sentence. Safety picture right now.",\n    "ledger": "One sentence. Financial health right now.",\n    "roster": "One sentence. Enrollment situation right now.",\n    "guard": "One sentence. Compliance posture right now.",\n    "grounds": "One sentence. Operations status right now.",\n    "civic": "One sentence. Legislative/government picture right now.",\n    "raise": "One sentence. Philanthropy pipeline right now."\n  },\n  "watchItem": "One thing the leader should keep an eye on today that is not yet urgent but could become so.",\n  "closing": "One sentence. Something specific and grounding for the leader as they start their day."\n}\n\nReturn ONLY the JSON object. No preamble, no markdown, no explanation.`;
-  const userPrompt = `Generate a ${timeOfDay} briefing for ${dayOfWeek}. Here is the complete network snapshot:\n\n${JSON.stringify(snapshot,null,2)}`;
-  const response = await fetch("/api/anthropic-proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:systemPrompt,messages:[{role:"user",content:userPrompt}]})});
+  const today = new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+
+  // Fetch national charter context via web search
+  let nationalContext = "";
+  try {
+    const searches = await Promise.allSettled([
+      fetch("/api/anthropic-proxy", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",max_tokens:300,
+        messages:[{role:"user",content:"In 3 sentences, what are the most important things happening RIGHT NOW in 2026 regarding: (1) federal charter school funding and policy, (2) Illinois charter school legislation, (3) Chicago enrollment trends. Be specific and current."}]
+      })}).then(r=>r.json()).then(d=>d.content?.find((b)=>b.type==="text")?.text||"")
+    ]);
+    nationalContext = searches[0].status === "fulfilled" ? searches[0].value : "";
+  } catch(e) { nationalContext = ""; }
+
+  const systemPrompt = `You are Slate Intelligence — the AI brain of a decision support system for charter school networks. You are not a dashboard. You are not a summary tool. You are a genius-level strategic advisor who thinks and researches 24 hours a day, synthesizing everything happening inside and outside this organization.
+
+Your voice: Direct. Precise. Warm but serious. No corporate language. No filler. No hedging. Every sentence earns its place or it does not appear.
+
+You see things no human could see — patterns across safety, finance, enrollment, compliance, operations, philanthropy, and the external environment simultaneously. You do the critical thinking so the leader does not have to. When they open Slate, they feel powerful, informed, and ready to move.
+
+You are generating a CEO Intelligence Brief for ${userName} at Veritas Charter Schools — 10 public charter high schools, 6,823 students, Chicago South Side, West Side, and downtown Loop.
+
+Today is ${today}, ${dayOfWeek} ${timeOfDay}.
+
+Return ONLY valid JSON — no preamble, no markdown:
+{
+  "headline": "One sentence max 18 words — the single most important thing right now",
+  "executiveSummary": "3-4 sentences. True state of affairs. Specific numbers. No softening.",
+  "crossModuleSignals": [
+    { "signal": "Pattern connecting 2+ modules", "modules": ["module1","module2"], "significance": "Why this matters", "urgency": "HIGH|MEDIUM|LOW" },
+    { "signal": "Pattern", "modules": ["module1","module2"], "significance": "Why this matters", "urgency": "HIGH|MEDIUM|LOW" },
+    { "signal": "Pattern", "modules": ["module1","module2"], "significance": "Why this matters", "urgency": "HIGH|MEDIUM|LOW" }
+  ],
+  "topPriorities": [
+    { "priority": 1, "module": "module name", "action": "Specific action", "urgency": "HIGH|MEDIUM|LOW" },
+    { "priority": 2, "module": "module name", "action": "Specific action", "urgency": "HIGH|MEDIUM|LOW" },
+    { "priority": 3, "module": "module name", "action": "Specific action", "urgency": "HIGH|MEDIUM|LOW" }
+  ],
+  "moduleInsights": {
+    "watch": "Safety picture — specific",
+    "ledger": "Financial health — specific",
+    "roster": "Enrollment — specific",
+    "guard": "Compliance — specific",
+    "grounds": "Operations — specific",
+    "civic": "Legislative — specific",
+    "raise": "Philanthropy — specific"
+  },
+  "nationalContext": "2-3 sentences on national and Illinois charter landscape relevant to Veritas today",
+  "questionsToSitWith": [
+    "First profound strategic question the CEO should think about today",
+    "Second profound strategic question",
+    "Third profound strategic question"
+  ],
+  "watchItem": "One thing not yet urgent but Slate is watching and why",
+  "closing": "One grounding sentence specific to today"
+}`;
+
+  const userPrompt = `Generate a ${timeOfDay} CEO Intelligence Brief for ${dayOfWeek}, ${today}.
+
+LIVE NETWORK SNAPSHOT:
+${JSON.stringify(snapshot,null,2)}
+
+NATIONAL & ILLINOIS CHARTER CONTEXT:
+${nationalContext || "Use your training knowledge of the 2026 national charter landscape."}
+
+See what others miss. Connect the dots. Ask the questions that matter.`;
+
+  const response = await fetch("/api/anthropic-proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:2000,system:systemPrompt,messages:[{role:"user",content:userPrompt}]})});
   const data = await response.json();
-  const text = data.content?.find(b=>b.type==="text")?.text||"";
+  const text = data.content?.find((b:any)=>b.type==="text")?.text||"";
   try { return JSON.parse(text.replace(/```json|```/g,"").trim()); } catch { return null; }
 };
 
@@ -273,6 +338,59 @@ export default function HomeApp() {
               <div>{Object.entries(briefing.moduleInsights||{}).map(([mod,insight])=><ModuleInsightRow key={mod} mod={mod} insight={insight}/>)}</div>
             </div>
           </div>
+
+          {/* Cross-Module Signals */}
+          {briefing.crossModuleSignals?.length>0&&(
+            <div style={{background:C.carbon,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.brass}40`}}>
+              <div style={{fontSize:10,fontWeight:800,color:C.brass,letterSpacing:"0.16em",textTransform:"uppercase",marginBottom:16}}>Cross-Module Intelligence — Patterns Slate Sees</div>
+              <div style={{display:"flex",flexDirection:"column",gap:12}}>
+                {briefing.crossModuleSignals.map((s,i)=>(
+                  <div key={i} style={{display:"flex",gap:16,padding:"16px 20px",borderRadius:12,background:"rgba(255,255,255,0.04)",border:`1px solid rgba(255,255,255,0.08)`}}>
+                    <div style={{flexShrink:0,marginTop:2}}>
+                      <div style={{width:8,height:8,borderRadius:"50%",background:s.urgency==="HIGH"?"#EF4444":s.urgency==="MEDIUM"?"#F59E0B":"#10B981",marginTop:4}}/>
+                    </div>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:14,fontWeight:700,color:C.white,marginBottom:4,lineHeight:1.4}}>{s.signal}</div>
+                      <div style={{fontSize:12,color:"#9CA3AF",marginBottom:6}}>{s.significance}</div>
+                      <div style={{display:"flex",gap:6}}>
+                        {s.modules?.map((m,j)=>(
+                          <span key={j} style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:4,background:"rgba(183,145,69,0.15)",color:C.brass,letterSpacing:"0.06em",textTransform:"uppercase"}}>{m}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{flexShrink:0}}>
+                      <span style={{fontSize:10,fontWeight:800,padding:"4px 10px",borderRadius:6,background:s.urgency==="HIGH"?"#FEF2F2":s.urgency==="MEDIUM"?"#FFFBEB":"#ECFDF5",color:s.urgency==="HIGH"?"#B91C1C":s.urgency==="MEDIUM"?"#B45309":"#0B7A5E",letterSpacing:"0.06em"}}>{s.urgency}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Questions to Sit With */}
+          {briefing.questionsToSitWith?.length>0&&(
+            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
+              <SectionHeader title="Questions to Sit With" sub="Slate poses these for your consideration today"/>
+              <div style={{display:"flex",flexDirection:"column",gap:12,marginTop:8}}>
+                {briefing.questionsToSitWith.map((q,i)=>(
+                  <div key={i} style={{display:"flex",gap:16,padding:"16px 20px",borderRadius:12,background:C.warm,border:`1px solid ${C.border}`}}>
+                    <div style={{flexShrink:0,width:28,height:28,borderRadius:"50%",background:C.carbon,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                      <span style={{fontSize:12,fontWeight:800,color:C.brass}}>{i+1}</span>
+                    </div>
+                    <div style={{fontSize:14,color:C.carbon,lineHeight:1.65,fontStyle:"italic"}}>{q}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* National Context */}
+          {briefing.nationalContext&&(
+            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
+              <SectionHeader title="National & Illinois Context" sub="What Slate is watching beyond your walls"/>
+              <div style={{fontSize:14,color:C.carbon,lineHeight:1.75,padding:"16px 20px",borderRadius:10,background:C.warm,border:`1px solid ${C.border}`}}>{briefing.nationalContext}</div>
+            </div>
+          )}
 
           <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:24}}>
             <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
