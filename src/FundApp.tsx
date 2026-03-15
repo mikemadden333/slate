@@ -530,7 +530,7 @@ Write this as a professional briefing document. Specific, confident, actionable.
         });
         const j = await r.json();
         setDraft(j.content?.map((b: any) => b.type === 'text' ? b.text : '').join('') ?? 'Unable to generate.');
-      } catch { setDraft('Generation unavailable.'); }
+      } catch(err) { console.error('Meeting brief error:', err); setDraft('Error: ' + String(err)); }
       finally { setLoading(false); }
       return;
     }
