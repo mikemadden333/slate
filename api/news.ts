@@ -2,9 +2,9 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const FEEDS = [
   { name: "Block Club Chicago", url: "https://blockclubchicago.org/feed/", color: "#B79145" },
-  { name: "Chicago Tribune", url: "https://www.chicagotribune.com/feed/", color: "#6B8CAE" },
-  { name: "Chicago Sun-Times", url: "https://chicago.suntimes.com/rss.xml", color: "#7A9E7E" },
-  { name: "Chalkbeat Chicago", url: "https://www.chalkbeat.org/chicago/rss/", color: "#E07B4F" },
+  { name: "NBC Chicago", url: "https://www.nbcchicago.com/feed/", color: "#6B8CAE" },
+  { name: "WGN News", url: "https://wgntv.com/feed/", color: "#7A9E7E" },
+  { name: "Chalkbeat Chicago", url: "https://www.chalkbeat.org/arc/outboundfeeds/rss/", color: "#E07B4F" },
 ];
 
 const KEYWORDS = [
