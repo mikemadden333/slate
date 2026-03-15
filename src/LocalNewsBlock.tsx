@@ -143,7 +143,7 @@ export default function LocalNewsBlock() {
           >
             Local Intelligence
           </div>
-          <div style={{ fontSize: "18px", fontWeight: 700, color: "#F7F5F1" }}>
+          <div style={{ fontSize: "18px", fontWeight: 700, color: "#121315" }}>
             Chicago News
           </div>
         </div>
@@ -226,7 +226,7 @@ export default function LocalNewsBlock() {
                 gap: "14px",
                 padding: "14px 0",
                 borderBottom:
-                  i < items.length - 1 ? "1px solid #2A2C2F" : "none",
+                  i < items.length - 1 ? "1px solid #E5E7EB" : "none",
                 textDecoration: "none",
                 color: "inherit",
               }}
@@ -247,7 +247,7 @@ export default function LocalNewsBlock() {
                   style={{
                     fontSize: "14px",
                     fontWeight: 500,
-                    color: "#F7F5F1",
+                    color: "#121315",
                     lineHeight: "1.4",
                     marginBottom: "5px",
                     transition: "color 0.15s",
@@ -256,7 +256,7 @@ export default function LocalNewsBlock() {
                     ((e.target as HTMLElement).style.color = "#B79145")
                   }
                   onMouseLeave={(e) =>
-                    ((e.target as HTMLElement).style.color = "#F7F5F1")
+                    ((e.target as HTMLElement).style.color = "#121315")
                   }
                 >
                   {item.title}
@@ -288,7 +288,7 @@ export default function LocalNewsBlock() {
         style={{
           marginTop: "16px",
           paddingTop: "12px",
-          borderTop: "1px solid #2A2C2F",
+          borderTop: "1px solid #E5E7EB",
           fontSize: "10px",
           color: "#444",
           letterSpacing: "0.05em",
