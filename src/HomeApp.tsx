@@ -347,41 +347,43 @@ export default function HomeApp() {
             </div>
           </div>
 
-          {/* ── MEMO BODY — white, airy, narrative ── */}
-          <div style={{background:C.white,borderRadius:16,padding:"44px 52px",border:`1px solid ${C.border}`,maxWidth:900,margin:"0 auto",width:"100%"}}>
+          {/* ── MEMO BODY — one flowing story ── */}
+          <div style={{background:C.white,borderRadius:16,padding:"52px 60px",border:`1px solid ${C.border}`,maxWidth:900,margin:"0 auto",width:"100%"}}>
 
-            {/* Priorities */}
-            <div style={{marginBottom:44}}>
-              <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Today's Priorities</div>
+            {/* Priorities — no header, lead with action */}
+            <div style={{marginBottom:52}}>
+              <div style={{fontSize:13,color:C.midGray,marginBottom:24,lineHeight:1.6}}>
+                Here is where your attention belongs today.
+              </div>
               <div style={{display:"flex",flexDirection:"column",gap:0}}>
                 {briefing.topPriorities?.map((p,i)=>(
-                  <div key={p.priority} style={{display:"flex",gap:20,padding:"18px 0",borderBottom:i<(briefing.topPriorities.length-1)?`1px solid ${C.border}`:"none",alignItems:"flex-start"}}>
-                    <div style={{flexShrink:0,width:24,height:24,borderRadius:"50%",background:p.urgency==="HIGH"?"#FEF2F2":p.urgency==="MEDIUM"?"#FFFBEB":"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
-                      <span style={{fontSize:11,fontWeight:800,color:p.urgency==="HIGH"?C.red:p.urgency==="MEDIUM"?C.amber:C.midGray}}>{p.priority}</span>
-                    </div>
+                  <div key={p.priority} style={{display:"flex",gap:20,padding:"20px 0",borderBottom:i<(briefing.topPriorities.length-1)?`1px solid ${C.border}`:"none",alignItems:"flex-start"}}>
+                    <div style={{flexShrink:0,width:7,height:7,borderRadius:"50%",background:p.urgency==="HIGH"?C.red:p.urgency==="MEDIUM"?C.amber:C.green,marginTop:7}}/>
                     <div style={{flex:1}}>
-                      <div style={{fontSize:14,fontWeight:600,color:C.carbon,lineHeight:1.5,marginBottom:4}}>{p.action}</div>
-                      <div style={{fontSize:11,color:C.midGray,letterSpacing:"0.06em",textTransform:"uppercase",fontWeight:600}}>{p.module} · <span style={{color:p.urgency==="HIGH"?C.red:p.urgency==="MEDIUM"?C.amber:C.green}}>{p.urgency}</span></div>
+                      <div style={{fontSize:15,fontWeight:600,color:C.carbon,lineHeight:1.55,marginBottom:5}}>{p.action}</div>
+                      <div style={{fontSize:11,color:C.midGray,letterSpacing:"0.06em",textTransform:"uppercase",fontWeight:500}}>{p.module}</div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Cross-Module Signals */}
+            {/* Divider */}
+            <div style={{height:1,background:C.border,marginBottom:52}}/>
+
+            {/* Cross-Module Signals — narrative intro, no header */}
             {briefing.crossModuleSignals?.length>0&&(
-              <div style={{marginBottom:44}}>
-                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:6}}>Cross-Module Intelligence</div>
-                <div style={{fontSize:12,color:C.midGray,marginBottom:20,fontStyle:"italic"}}>Patterns Slate sees that no single department would catch</div>
+              <div style={{marginBottom:52}}>
+                <div style={{fontSize:13,color:C.midGray,marginBottom:28,lineHeight:1.6}}>
+                  Slate is watching three patterns across your organization that no single department would catch.
+                </div>
                 <div style={{display:"flex",flexDirection:"column",gap:0}}>
                   {briefing.crossModuleSignals.map((s,i)=>(
-                    <div key={i} style={{display:"flex",gap:20,padding:"18px 0",borderBottom:i<(briefing.crossModuleSignals.length-1)?`1px solid ${C.border}`:"none",alignItems:"flex-start"}}>
-                      <div style={{flexShrink:0,marginTop:6}}>
-                        <div style={{width:7,height:7,borderRadius:"50%",background:s.urgency==="HIGH"?C.red:s.urgency==="MEDIUM"?C.amber:C.green}}/>
-                      </div>
+                    <div key={i} style={{display:"flex",gap:20,padding:"20px 0",borderBottom:i<(briefing.crossModuleSignals.length-1)?`1px solid ${C.border}`:"none",alignItems:"flex-start"}}>
+                      <div style={{flexShrink:0,width:7,height:7,borderRadius:"50%",background:s.urgency==="HIGH"?C.red:s.urgency==="MEDIUM"?C.amber:C.green,marginTop:7}}/>
                       <div style={{flex:1}}>
-                        <div style={{fontSize:14,fontWeight:600,color:C.carbon,lineHeight:1.5,marginBottom:4}}>{s.signal}</div>
-                        <div style={{fontSize:13,color:"#555",lineHeight:1.6,marginBottom:8}}>{s.significance}</div>
+                        <div style={{fontSize:15,fontWeight:600,color:C.carbon,lineHeight:1.55,marginBottom:6}}>{s.signal}</div>
+                        <div style={{fontSize:13,color:"#666",lineHeight:1.7,marginBottom:10}}>{s.significance}</div>
                         <div style={{display:"flex",gap:6}}>
                           {s.modules?.map((m,j)=>(
                             <span key={j} style={{fontSize:9,fontWeight:700,padding:"2px 8px",borderRadius:3,background:C.warm,color:C.brass,letterSpacing:"0.08em",textTransform:"uppercase",border:`1px solid ${C.border}`}}>{m}</span>
@@ -394,56 +396,73 @@ export default function HomeApp() {
               </div>
             )}
 
-            {/* National Context */}
+            {/* National Context — flows directly, no header */}
             {briefing.nationalContext&&(
-              <div style={{marginBottom:44}}>
-                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>National & Illinois Context</div>
-                <div style={{fontSize:14,color:"#444",lineHeight:1.85}}>{briefing.nationalContext}</div>
-              </div>
-            )}
-
-            {/* Questions to Sit With */}
-            {briefing.questionsToSitWith?.length>0&&(
-              <div style={{marginBottom:44}}>
-                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:6}}>Questions to Sit With</div>
-                <div style={{fontSize:12,color:C.midGray,marginBottom:24,fontStyle:"italic"}}>Slate poses these for your consideration today</div>
-                <div style={{display:"flex",flexDirection:"column",gap:16}}>
-                  {briefing.questionsToSitWith.map((q,i)=>(
-                    <div key={i} style={{paddingLeft:20,borderLeft:`2px solid ${C.brass}`,paddingTop:2,paddingBottom:2}}>
-                      <div style={{fontSize:15,color:C.carbon,lineHeight:1.7,fontStyle:"italic",fontWeight:400}}>{q}</div>
-                    </div>
-                  ))}
+              <>
+                <div style={{height:1,background:C.border,marginBottom:52}}/>
+                <div style={{marginBottom:52}}>
+                  <div style={{fontSize:13,color:C.midGray,marginBottom:16,lineHeight:1.6}}>Beyond your walls, the landscape looks like this.</div>
+                  <div style={{fontSize:15,color:C.carbon,lineHeight:1.85,fontWeight:400}}>{briefing.nationalContext}</div>
                 </div>
-              </div>
+              </>
             )}
 
-            {/* Module Snapshot */}
-            <div style={{marginBottom:44}}>
-              <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Network Status</div>
-              <div style={{display:"flex",flexDirection:"column",gap:0}}>
-                {Object.entries(briefing.moduleInsights||{}).map(([mod,insight],i)=>(
-                  <div key={mod} style={{display:"flex",gap:14,padding:"12px 0",borderBottom:`1px solid ${C.border}`,alignItems:"flex-start"}}>
-                    <div style={{fontSize:9,fontWeight:700,color:C.brass,letterSpacing:"0.1em",textTransform:"uppercase",minWidth:60,paddingTop:2}}>{mod}</div>
-                    <div style={{fontSize:13,color:"#444",lineHeight:1.55}}>{insight as string}</div>
+            {/* Questions — set apart, no header, just the questions */}
+            {briefing.questionsToSitWith?.length>0&&(
+              <>
+                <div style={{height:1,background:C.border,marginBottom:52}}/>
+                <div style={{marginBottom:52}}>
+                  <div style={{fontSize:13,color:C.midGray,marginBottom:28,lineHeight:1.6}}>
+                    Before you walk into your first meeting, sit with these.
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",gap:20}}>
+                    {briefing.questionsToSitWith.map((q,i)=>(
+                      <div key={i} style={{paddingLeft:24,borderLeft:`2px solid ${C.brass}`}}>
+                        <div style={{fontSize:16,color:C.carbon,lineHeight:1.75,fontStyle:"italic",fontWeight:400}}>{q}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Watch Item — flows naturally after questions */}
+            {briefing.watchItem&&(
+              <>
+                <div style={{height:1,background:C.border,marginBottom:52}}/>
+                <div style={{marginBottom:52}}>
+                  <div style={{fontSize:13,color:C.midGray,marginBottom:16,lineHeight:1.6}}>One thing not yet urgent — but worth watching.</div>
+                  <div style={{fontSize:15,color:C.carbon,lineHeight:1.8,paddingLeft:24,borderLeft:`2px solid ${C.border}`}}>{briefing.watchItem}</div>
+                </div>
+              </>
+            )}
+
+            {/* Closing — italic, subdued, final word */}
+            {briefing.closing&&(
+              <div style={{fontSize:13,color:C.midGray,lineHeight:1.7,fontStyle:"italic",marginBottom:52}}>{briefing.closing}</div>
+            )}
+
+            {/* Network Status — dimmed, reference only, at the bottom */}
+            <div style={{height:1,background:C.border,marginBottom:36}}/>
+            <div style={{marginBottom:briefing.topPriorities?.length>0?36:0}}>
+              <div style={{fontSize:10,fontWeight:600,color:C.midGray,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:16,opacity:0.6}}>Network at a glance</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:0,opacity:0.75}}>
+                {Object.entries(briefing.moduleInsights||{}).map(([mod,insight])=>(
+                  <div key={mod} style={{display:"flex",gap:12,padding:"9px 0",borderBottom:`1px solid ${C.border}`,alignItems:"flex-start"}}>
+                    <div style={{fontSize:8,fontWeight:700,color:C.brass,letterSpacing:"0.1em",textTransform:"uppercase",minWidth:52,paddingTop:2}}>{mod}</div>
+                    <div style={{fontSize:12,color:"#666",lineHeight:1.5}}>{insight as string}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Watch Item + Closing */}
-            <div style={{marginBottom:44}}>
-              <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Keep an Eye On</div>
-              <div style={{fontSize:14,color:C.carbon,lineHeight:1.8,paddingLeft:20,borderLeft:`2px solid ${C.border}`}}>{briefing.watchItem}</div>
-              {briefing.closing&&<div style={{marginTop:28,fontSize:13,color:C.midGray,lineHeight:1.7,fontStyle:"italic"}}>{briefing.closing}</div>}
-            </div>
-
-            {/* Deadlines */}
+            {/* Deadlines — reference, bottom */}
             {(snap.guard.urgentDeadlines?.length>0||snap.raise.proposalsDueSoon>0)&&(
               <div>
-                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Upcoming Deadlines</div>
-                <div style={{display:"flex",flexDirection:"column",gap:0}}>
+                <div style={{fontSize:10,fontWeight:600,color:C.midGray,letterSpacing:"0.14em",textTransform:"uppercase",marginBottom:16,opacity:0.6}}>Upcoming deadlines</div>
+                <div style={{display:"flex",flexDirection:"column",gap:0,opacity:0.85}}>
                   {snap.guard.urgentDeadlines.map((d,i)=>(
-                    <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:`1px solid ${C.border}`}}>
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.border}`}}>
                       <div style={{fontSize:13,color:C.carbon,fontWeight:500}}>{d.item}</div>
                       <div style={{display:"flex",gap:12,alignItems:"center"}}>
                         <div style={{fontSize:11,color:C.midGray}}>{d.owner}</div>
@@ -452,7 +471,7 @@ export default function HomeApp() {
                     </div>
                   ))}
                   {snap.raise.dueSoonItems?.map((d,i)=>(
-                    <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:`1px solid ${C.border}`}}>
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.border}`}}>
                       <div style={{fontSize:13,color:C.carbon,fontWeight:500}}>{d.funder} <span style={{color:C.midGray,fontWeight:400}}>— proposal</span></div>
                       <div style={{display:"flex",gap:12,alignItems:"center"}}>
                         <div style={{fontSize:11,color:C.midGray}}>${(d.amount/1000).toFixed(0)}K</div>
