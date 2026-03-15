@@ -22,6 +22,7 @@ const MOD = { sentinel: "#D45B4F", ledger: "#C79D39", scholar: "#4F78D6", roster
 
 const MODULES = [
   { id: "home", label: "Briefing", category: "NETWORK INTELLIGENCE", icon: "🧠", color: MOD.home, desc: "AI-generated cross-module briefing synthesizing live data across all Slate systems.", status: "LIVE", metrics: "10 modules", tagline: "Everything you need to know, right now." },
+  { id: "signal", label: "Signal", category: "EARLY WARNING", icon: "◈", color: "#EF4444", status: "LIVE" },
   { id: "sentinel", label: "Watch", category: "SAFETY INTELLIGENCE", icon: "🛡", color: MOD.sentinel, desc: "Real-time violence intelligence. Campus risk scoring, retaliation window tracking, AI morning briefings.", status: "LIVE", metrics: "10 campuses monitored", tagline: "Know what happened before your students arrive." },
   { id: "ledger", label: "Ledger", category: "FINANCIAL INTELLIGENCE", icon: "📊", color: MOD.ledger, desc: "Budget visibility, cash flow forecasting, variance analysis. CFO-grade financial intelligence.", status: "LIVE", metrics: "$138M budget tracked", tagline: "See your money the way your board needs to." },
   { id: "scholar", label: "Scholar", category: "ENROLLMENT INTELLIGENCE", icon: "📋", color: MOD.scholar, desc: "Enrollment forecasting, recruitment funnel tracking, yield modeling, attrition early warning.", status: "LIVE", metrics: "6,823 students", tagline: "Stop managing enrollment in spreadsheets.", noHeader: true },
@@ -30,7 +31,6 @@ const MODULES = [
   { id: "shield", label: "Guard", category: "RISK MANAGEMENT INTELLIGENCE", icon: "⚖️", color: MOD.shield, desc: "Compliance monitoring, incident tracking, insurance analysis, regulatory deadline tracking.", status: "LIVE", metrics: "12 compliance areas", tagline: "Every deadline. Every policy. Every campus." },
   { id: "grounds", label: "Grounds", category: "OPERATIONS INTELLIGENCE", icon: "🏫", color: MOD.grounds, desc: "Facilities management, capital projects, food service, transportation across all campuses.", status: "LIVE", metrics: "Network-wide facilities", tagline: "The building is the first thing families see." },
   { id: "capitol", label: "Civic", category: "PUBLIC AFFAIRS INTELLIGENCE", icon: "⚖️", color: MOD.capitol, desc: "Legislative tracking, bill scoring, witness slip drafting, legislator emails — Veritas advocacy intelligence.", status: "LIVE", metrics: "Federal · Illinois · Chicago", tagline: "Know what's moving before it moves you." },
-  { id: "signal", label: "Signal", category: "EARLY WARNING", icon: "◈", color: "#EF4444", status: "LIVE" },
   { id: "raise", label: "Raise", category: "PHILANTHROPY INTELLIGENCE", icon: "🤝", color: MOD.raise, desc: "Pipeline management, grant sourcing, stewardship tracking. Veritas development intelligence.", status: "LIVE", metrics: "$10M goal", tagline: "Every dollar starts with a relationship." },
     { id: "admin", label: "Admin", category: "DATA MANAGEMENT", icon: "⚙️", color: "#6B7280", desc: "Update enrollment, financials, staff, and risk data across all Slate modules.", status: "LIVE", metrics: "Browser storage", tagline: "Your data. Your numbers. Your demo." },
 ];

@@ -181,6 +181,7 @@ export default function SignalApp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selected, setSelected] = useState(null);
+  const detailRef = useRef(null);
 
   const runSignal = useCallback(async () => {
     setLoading(true); setError(""); setData(null); setSelected(null);
@@ -243,7 +244,7 @@ export default function SignalApp() {
       {data && !loading && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", height: "calc(100vh - 72px)" }}>
           <div style={{ padding: "24px 16px 24px 32px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRight: "1px solid rgba(16,185,129,0.1)" }}>
-            <RadarScope warnings={data.warnings} selected={selected} onSelect={setSelected} />
+            <RadarScope warnings={data.warnings} selected={selected} onSelect={(w) => { setSelected(w); setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); }} />
             <div style={{ marginTop: 16, display: "flex", gap: 20, justifyContent: "center" }}>
               {[["CRITICAL", C.red], ["HIGH", C.amber], ["WATCH", C.green]].map(([label, color]) => (
                 <div key={label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -261,54 +262,52 @@ export default function SignalApp() {
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", lineHeight: 1.8 }}>{data.networkSummary}</div>
             </div>
 
-            {selected ? (
-              <div>
-                <div style={{ marginBottom: 14 }}>
-                  <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                    <span style={{ fontSize: 9, color: sevColor(selected.severity), border: "1px solid " + sevColor(selected.severity), padding: "2px 8px", borderRadius: 2, letterSpacing: "0.12em" }}>{selected.severity}</span>
-                    <span style={{ fontSize: 9, color: C.brass, border: "1px solid " + C.brass + "40", padding: "2px 8px", borderRadius: 2 }}>{selected.campus}</span>
-                  </div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: C.white, lineHeight: 1.4 }}>{selected.headline}</div>
-                  <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>{selected.patternName}</div>
-                </div>
-
-                <div style={{ marginBottom: 14 }}>
-                  <div style={{ fontSize: 9, color: "#10B981", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 6 }}>ACTIVE SIGNALS</div>
-                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                    {selected.signals?.map((s, i) => <span key={i} style={{ fontSize: 9, padding: "3px 8px", border: "1px solid " + sevColor(selected.severity) + "40", color: sevColor(selected.severity), borderRadius: 2 }}>{s}</span>)}
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: 14, padding: "12px 14px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 4 }}>
-                  <div style={{ fontSize: 9, color: "#10B981", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 6 }}>WHAT SIGNAL SEES</div>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", lineHeight: 1.8 }}>{selected.whatSlateSees}</div>
-                </div>
-
-                <div style={{ marginBottom: 14, padding: "12px 14px", border: "1px solid " + C.amber + "30", borderRadius: 4, background: C.amber + "08" }}>
-                  <div style={{ fontSize: 9, color: C.amber, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 6 }}>HISTORICAL CONTEXT</div>
-                  <div style={{ fontSize: 12, color: C.amber + "CC", lineHeight: 1.8 }}>{selected.historicalContext}</div>
-                </div>
-
-                <div style={{ padding: "12px 14px", border: "1px solid " + C.green + "30", borderRadius: 4, background: C.green + "08" }}>
-                  <div style={{ fontSize: 9, color: C.green, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 6 }}>30-DAY INTERVENTION · ACT WITHIN {selected.daysToAct} DAYS</div>
-                  <div style={{ fontSize: 12, color: C.green + "CC", lineHeight: 1.8 }}>{selected.intervention}</div>
-                </div>
-
-                <div style={{ marginTop: 20, borderTop: "1px solid rgba(16,185,129,0.1)", paddingTop: 14 }}>
-                  <div style={{ fontSize: 9, color: "rgba(16,185,129,0.4)", letterSpacing: "0.2em", marginBottom: 10 }}>ALL SIGNALS</div>
-                  {data.warnings.map((w, i) => (
-                    <div key={i} onClick={() => setSelected(w)} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", cursor: "pointer", opacity: selected === w ? 1 : 0.5 }}>
-                      <div style={{ width: 6, height: 6, borderRadius: "50%", background: sevColor(w.severity), marginTop: 4, flexShrink: 0 }} />
-                      <div>
-                        <div style={{ fontSize: 11, color: C.white, lineHeight: 1.4 }}>{w.headline}</div>
-                        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", marginTop: 2 }}>{w.campus} · {w.patternName}</div>
-                      </div>
+            {/* Signal list — always visible */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 9, color: "rgba(16,185,129,0.4)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 10 }}>ALL SIGNALS · CLICK TO INSPECT</div>
+              {data.warnings.map((w, i) => (
+                <div key={i} onClick={() => { setSelected(w); setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); }}
+                  style={{ display: "flex", gap: 12, padding: "10px 12px", marginBottom: 4, borderRadius: 4, cursor: "pointer", border: "1px solid " + (selected === w ? sevColor(w.severity) : "rgba(255,255,255,0.06)"), background: selected === w ? "rgba(255,255,255,0.04)" : "transparent", transition: "all 0.15s" }}>
+                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: sevColor(w.severity), marginTop: 3, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                      <div style={{ fontSize: 12, color: C.white, lineHeight: 1.4, fontWeight: selected === w ? 700 : 400 }}>{w.headline}</div>
+                      <span style={{ fontSize: 8, color: sevColor(w.severity), border: "1px solid " + sevColor(w.severity) + "50", padding: "1px 6px", borderRadius: 2, flexShrink: 0, letterSpacing: "0.08em" }}>{w.severity}</span>
                     </div>
-                  ))}
+                    <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{w.campus} · {w.patternName}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Detail panel — appears on selection */}
+            {selected && (
+              <div ref={detailRef} style={{ borderTop: "1px solid rgba(16,185,129,0.15)", paddingTop: 20 }}>
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 9, color: "rgba(16,185,129,0.5)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 10 }}>SIGNAL DETAIL</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.white, lineHeight: 1.5, marginBottom: 8 }}>{selected.headline}</div>
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+                    {selected.signals?.map((s, i) => (
+                      <span key={i} style={{ fontSize: 9, padding: "3px 8px", border: "1px solid " + sevColor(selected.severity) + "50", color: sevColor(selected.severity), borderRadius: 2 }}>{s}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 12, padding: "12px 14px", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 4 }}>
+                  <div style={{ fontSize: 9, color: "#10B981", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>What Signal sees</div>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", lineHeight: 1.85 }}>{selected.whatSlateSees}</div>
+                </div>
+
+                <div style={{ marginBottom: 12, padding: "12px 14px", border: "1px solid " + C.amber + "30", borderRadius: 4, background: C.amber + "06" }}>
+                  <div style={{ fontSize: 9, color: C.amber, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>Why it matters — historical context</div>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.85 }}>{selected.historicalContext}</div>
+                </div>
+
+                <div style={{ padding: "12px 14px", border: "1px solid " + C.green + "30", borderRadius: 4, background: C.green + "06" }}>
+                  <div style={{ fontSize: 9, color: C.green, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 8 }}>What to do — act within {selected.daysToAct} days</div>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.85 }}>{selected.intervention}</div>
                 </div>
               </div>
-            ) : (
-              <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(16,185,129,0.3)", fontSize: 11, letterSpacing: "0.15em" }}>SELECT A SIGNAL ON THE RADAR</div>
             )}
           </div>
         </div>
