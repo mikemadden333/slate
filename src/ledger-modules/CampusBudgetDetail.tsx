@@ -218,7 +218,7 @@ export default function CampusBudgetDetail({ campusName }: CampusBudgetDetailPro
         Actual campus P&L may differ based on site-specific grants, staffing, and occupancy costs.
       </div>
 
-      <AIFinancialAdvisor mode="freeform" question={`Analyze the budget position of ${campus.name} in the Noble Schools network. This campus has ${campus.enroll} students (${(derived.enrollShare * 100).toFixed(1)}% of network enrollment), allocated revenue of ${fmt(derived.totalRevenue)}, expenses of ${fmt(derived.totalExpenses)}, and EBITDA of ${fmt(derived.ebitda)}. Per-pupil revenue is ${fmtK(derived.perPupilRevenue)} vs network average of ${fmtK(derived.networkAvgPerPupilRevenue)}. What should the campus principal and CFO focus on?`} />
+      <AIFinancialAdvisor mode="freeform" question={`Analyze the budget position of ${campus.name} in the Veritas Charter Schools network. This campus has ${campus.enroll} students (${(derived.enrollShare * 100).toFixed(1)}% of network enrollment), allocated revenue of ${fmt(derived.totalRevenue)}, expenses of ${fmt(derived.totalExpenses)}, and EBITDA of ${fmt(derived.ebitda)}. Per-pupil revenue is ${fmtK(derived.perPupilRevenue)} vs network average of ${fmtK(derived.networkAvgPerPupilRevenue)}. What should the campus principal and CFO focus on?`} />
     </div>
   );
 }

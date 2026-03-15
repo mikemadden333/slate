@@ -281,7 +281,7 @@ const SEED_GRANTS: GrantOpportunity[] = [
     type: 'state', amountMin: 50_000, amountMax: 200_000, deadline: '2026-03-31',
     eligibility: 'Illinois public schools and charter schools serving K-12 students',
     fitScore: 8,
-    summary: 'ISBE mental health initiative for trauma-informed care and counselor capacity. Noble\'s 17 campuses are all eligible. Per-campus or network-wide application accepted.',
+    summary: 'ISBE mental health initiative for trauma-informed care and counselor capacity. Noble\'s 10 campuses are all eligible. Per-campus or network-wide application accepted.',
     url: 'https://isbe.net/grants', tags: ['state', 'ISBE', 'mental health', 'wellness'], status: 'applying', discoveredDate: '2026-02-01',
   },
   {
@@ -457,12 +457,12 @@ Stage: ${si.label}
 Assigned To: ${opp.assignedTo}
 Connection: ${opp.connection ?? 'None noted'}
 Notes: ${opp.notes}
-Noble Schools: Chicago's largest public charter network — 17 campuses, 12,000 students, predominantly low-income and first-generation college students. 98%+ college acceptance rate. $240M organization.`;
+Veritas Charter Schools: Chicago's premier public charter network — 10 campuses, 6,823 students, predominantly low-income and first-generation college students. 98%+ college acceptance rate. $138M organization.`;
 
     const prompts = {
-      cultivation: `${ctx}\n\nYou are a senior development director for Noble Schools. Write a specific, strategic cultivation plan for this prospect. Include: (1) a 90-day engagement sequence with specific touchpoints, (2) what materials and data to share and when, (3) who from Noble leadership should be involved and in what order, (4) the specific case for support tailored to this funder's known priorities, (5) one concrete creative engagement idea beyond standard meetings. Be specific to Noble Schools and this funder. No generic advice. Under 400 words.`,
-      solicitation: `${ctx}\n\nWrite a solicitation letter from Noble Schools to this prospect asking for ${fmtFull(opp.askAmount)}. Format: Date, salutation, 4 paragraphs (personal connection/gratitude, the need grounded in Noble student data, the specific ask with naming/recognition opportunity if major gift, stewardship commitment), professional close. Tone: warm, serious, specific — not generic nonprofit boilerplate. Under 350 words.`,
-      stewardship: `${ctx}\n\nWrite a stewardship impact report or thank-you communication for this ${TYPE_LABELS[opp.type]} from Noble Schools. Include: specific student outcomes, how the gift/grant was deployed, one illustrative student story (you may create a representative composite), what's next for the relationship, and a forward-looking ask signal. Warm, specific, data-grounded. Under 300 words.`,
+      cultivation: `${ctx}\n\nYou are a senior development director for Veritas Charter Schools. Write a specific, strategic cultivation plan for this prospect. Include: (1) a 90-day engagement sequence with specific touchpoints, (2) what materials and data to share and when, (3) who from Veritas leadership should be involved and in what order, (4) the specific case for support tailored to this funder's known priorities, (5) one concrete creative engagement idea beyond standard meetings. Be specific to Veritas Charter Schools and this funder. No generic advice. Under 400 words.`,
+      solicitation: `${ctx}\n\nWrite a solicitation letter from Veritas Charter Schools to this prospect asking for ${fmtFull(opp.askAmount)}. Format: Date, salutation, 4 paragraphs (personal connection/gratitude, the need grounded in Veritas student data, the specific ask with naming/recognition opportunity if major gift, stewardship commitment), professional close. Tone: warm, serious, specific — not generic nonprofit boilerplate. Under 350 words.`,
+      stewardship: `${ctx}\n\nWrite a stewardship impact report or thank-you communication for this ${TYPE_LABELS[opp.type]} from Veritas Charter Schools. Include: specific student outcomes, how the gift/grant was deployed, one illustrative student story (you may create a representative composite), what's next for the relationship, and a forward-looking ask signal. Warm, specific, data-grounded. Under 300 words.`,
     };
 
     try {
@@ -803,7 +803,7 @@ function GrantSourcerTab({ grants, onUpdate }: { grants: GrantOpportunity[]; onU
   const scan = async () => {
     setScanning(true);
     try {
-      const prompt = `You are a grants intelligence analyst for Noble Schools, Chicago's largest public charter school network (17 campuses, 12,000 students, predominantly low-income and first-generation college students, $240M organization).
+      const prompt = `You are a grants intelligence analyst for Veritas Charter Schools, Chicago's premier public charter school network (10 campuses, 6,823 students, predominantly low-income and first-generation college students, $138M organization).
 
 Search for currently open grant opportunities in 2026 for:
 1. FEDERAL: Any open NOFOs on grants.gov for charter schools, K-12 education, college readiness, or workforce development
@@ -812,7 +812,7 @@ Search for currently open grant opportunities in 2026 for:
 4. NATIONAL FOUNDATIONS: Any major foundations with open cycles for urban education, college access, or first-generation students
 5. CORPORATE: Any major corporate foundations with open Chicago or national education grant cycles
 
-For each, return a JSON array with: funder, program, type (federal/state/local/foundation/corporate), amountMin, amountMax, deadline (YYYY-MM-DD), eligibility (1 sentence), fitScore (1-10 for Noble Schools specifically), summary (2-3 sentences on Noble fit), tags (array), url.
+For each, return a JSON array with: funder, program, type (federal/state/local/foundation/corporate), amountMin, amountMax, deadline (YYYY-MM-DD), eligibility (1 sentence), fitScore (1-10 for Veritas Charter Schools specifically), summary (2-3 sentences on Veritas fit), tags (array), url.
 
 Return ONLY valid JSON array. No markdown. Find 4-6 real current opportunities.`;
 
@@ -860,7 +860,7 @@ Type: ${grant.type} | Amount: $${grant.amountMin.toLocaleString()}–$${grant.am
 Eligibility: ${grant.eligibility}
 Summary: ${grant.summary}
 
-Noble Schools: Chicago's largest public charter network. 17 campuses, 12,000 students, 98% college acceptance, predominantly low-income and first-generation. Strong college readiness outcomes data, $240M organization, BBB-rated bonds.
+Veritas Charter Schools: Chicago's premier public charter network. 10 campuses, 6,823 students, 98% college acceptance, predominantly low-income and first-generation. Strong college readiness outcomes data, $138M organization, BBB-rated bonds.
 
 Provide: (1) Application fit analysis — what's strong, what's a risk, (2) the single strongest argument Noble can make for this grant in 2–3 sentences, (3) application timeline — what needs to happen and when given the deadline, (4) who should be the application lead and who should review, (5) likelihood score 1–10 with rationale. Be specific and direct. No generic advice. Under 300 words.`;
 
@@ -1122,7 +1122,7 @@ export default function FundApp() {
           }}>{t.l}</button>
         ))}
         <div style={{ marginLeft: 'auto', padding: '12px 20px', fontSize: 11, color: T.muted, alignSelf: 'center' }}>
-          Noble Schools · Slate Fund · {new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+          Veritas Charter Schools · Slate Fund · {new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
         </div>
       </div>
 

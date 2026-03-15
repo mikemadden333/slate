@@ -124,7 +124,7 @@ export default function CommandCenter() {
     <div>
       <SectionHeader
         title="Command Center"
-        subtitle="Executive overview of Noble Schools financial health"
+        subtitle="Executive overview of Veritas Charter Schools financial health"
       />
 
       {/* SECTION 1: KPI Strip */}

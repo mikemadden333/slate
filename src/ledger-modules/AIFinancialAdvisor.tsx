@@ -21,7 +21,7 @@ interface Props {
 }
 
 const MODE_PROMPTS: Record<AnalysisMode, (data: any) => string> = {
-  variance: (d) => `You are a nonprofit CFO-level financial analyst. Analyze this variance report for Noble Schools, a $240M Chicago charter school network with 12,000 students and an S&P BBB-Stable bond rating.
+  variance: (d) => `You are a nonprofit CFO-level financial analyst. Analyze this variance report for Veritas Charter Schools, a $138M Chicago charter school network with 6,823 students and an S&P BBB-Stable bond rating.
 
 BUDGET vs ACTUALS — ${d.ytd?.asOf ?? 'YTD'} (${d.ytd?.monthsElapsed ?? 0} months elapsed, ${Math.round((d.ytd?.proratedBudgetFactor ?? 0) * 100)}% of year):
 
@@ -39,7 +39,7 @@ EBITDA: $${d.ytd?.ebitda.toFixed(1)}M YTD | Days Cash: ${d.ytd?.daysCash ?? 'N/A
 
 Provide a sharp, executive-level variance analysis. Lead with the most important insight. Flag any items that need immediate attention. Project full-year outcome based on YTD run rate. Keep it under 200 words. No bullet-point lists — write in crisp prose like a CFO presenting to a board audit committee.`,
 
-  covenant: (d) => `You are a bond covenant compliance specialist. Analyze Noble Schools' covenant position.
+  covenant: (d) => `You are a bond covenant compliance specialist. Analyze Veritas Charter Schools' covenant position.
 
 CURRENT METRICS:
 - DSCR: ${d.ytd?.dscr ?? d.budget.dscr}x (minimum: ${d.covenants.dscrMinimum}x, bond doc: ${d.covenants.dscrBondDoc}x, MADS post-refunding: ${d.covenants.madsPostRefunding}x)
@@ -50,7 +50,7 @@ BUDGET CONTEXT: $${d.budget.revenue.total}M revenue, $${d.budget.expenses.total}
 
 Identify: (1) current cushion to each covenant trigger, (2) what scenario would breach each covenant, (3) which covenant is most vulnerable right now. Be specific about dollar and ratio thresholds. Under 150 words. Write like a bond counsel presenting to a finance committee.`,
 
-  trajectory: (d) => `You are a strategic financial planner for Noble Schools. Analyze the 5-year financial trajectory.
+  trajectory: (d) => `You are a strategic financial planner for Veritas Charter Schools. Analyze the 5-year financial trajectory.
 
 HISTORICAL TREND (Revenue / Expenses / EBITDA / DSCR):
 ${d.historical.map((h: any) => `${h.year}: $${h.totalRevenue}M / $${h.totalExpenses}M / $${h.ebitda}M / ${h.dscr}x`).join('\n')}
@@ -63,7 +63,7 @@ What does the trajectory tell us? What structural risks are embedded in these nu
 
   enrollment: (d) => `You are an enrollment revenue analyst for a charter school network.
 
-Noble Schools enrollment: FY20: ${d.historical[0]?.enrollment ?? 'N/A'}, FY21: ${d.historical[1]?.enrollment ?? 'N/A'}, FY22: ${d.historical[2]?.enrollment ?? 'N/A'}, FY23: ${d.historical[3]?.enrollment ?? 'N/A'}, FY24: ${d.historical[4]?.enrollment ?? 'N/A'}, FY25: ${d.historical[5]?.enrollment ?? 'N/A'}
+Veritas Charter Schools enrollment: FY20: ${d.historical[0]?.enrollment ?? 'N/A'}, FY21: ${d.historical[1]?.enrollment ?? 'N/A'}, FY22: ${d.historical[2]?.enrollment ?? 'N/A'}, FY23: ${d.historical[3]?.enrollment ?? 'N/A'}, FY24: ${d.historical[4]?.enrollment ?? 'N/A'}, FY25: ${d.historical[5]?.enrollment ?? 'N/A'}
 FY26 Budget target: ${d.budget.enrollment} (C1 count: ${d.budget.enrollmentC1})
 
 CPS per-pupil revenue trend: CPS revenue / enrollment
@@ -73,7 +73,7 @@ What is the enrollment trend telling us? What is the revenue-per-pupil sensitivi
 
   compensation: (d) => `You are a compensation and workforce cost analyst.
 
-Noble Schools workforce cost data:
+Veritas Charter Schools workforce cost data:
 ${d.historical.map((h: any) => `${h.year}: $${h.personnel}M personnel (${((h.personnel / h.totalRevenue) * 100).toFixed(1)}% of revenue)`).join('\n')}
 FY26 Budget: $${d.budget.expenses.personnel}M personnel (${((d.budget.expenses.personnel / d.budget.revenue.total) * 100).toFixed(1)}% of revenue)
   - Base salaries: $${d.budget.expenses.baseSalaries}M
@@ -109,7 +109,7 @@ export default function AIFinancialAdvisor({ mode, autoRun = false, question, co
     if (mode === 'freeform') {
       const q = overrideQ ?? freeformQ;
       if (!q.trim()) { setLoading(false); return; }
-      prompt = `You are a CFO-level financial advisor for Noble Schools, a $240M Chicago public charter school network (12,000 students, 17 campuses, S&P BBB-Stable bond rating).
+      prompt = `You are a CFO-level financial advisor for Veritas Charter Schools, a $138M Chicago public charter school network (6,823 students, 10 campuses, S&P BBB-Stable bond rating).
 
 Current financial position:
 - FY26 Budget: $${ctx.budget.revenue.total}M revenue / $${ctx.budget.expenses.total}M expenses / $${ctx.budget.ebitda}M EBITDA target
