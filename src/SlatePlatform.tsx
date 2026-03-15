@@ -177,6 +177,7 @@ const SplashScreen = ({ onComplete }) => {
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.50)", letterSpacing: "3px", textTransform: "uppercase", fontWeight: 700 }}>Madden Education Advisory</div>
           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", letterSpacing: "2px", textTransform: "uppercase", fontWeight: 500 }}>Intelligence for School Systems</div>
           <div style={{ fontSize: 9, color: "rgba(255,255,255,0.25)", letterSpacing: "1px", textTransform: "uppercase" }}>Proprietary &amp; Confidential · All Rights Reserved · 2026</div>
+          <div style={{ marginTop: 16, fontSize: 16, opacity: 0.35, letterSpacing: "8px" }} title="For the ones who matter most">🐇 🦋 🐩</div>
         </div>
       </div>
     </div>
