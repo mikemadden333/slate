@@ -292,18 +292,11 @@ export default function HomeApp() {
   const snap=snapshot;
 
   return (
-    <div style={{fontFamily:"'Inter',system-ui,sans-serif",background:C.warm,minHeight:"100vh",padding:"32px 40px"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:32}}>
-        <div>
-          <div style={{fontSize:24,fontWeight:800,color:C.carbon,letterSpacing:"-0.02em"}}>{greeting}, {userName}.</div>
-          <div style={{fontSize:13,color:C.midGray,marginTop:4}}>{dateStr}</div>
-        </div>
-        <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:8}}>
-          {lastGenerated&&<div style={{fontSize:11,color:C.midGray}}>Briefing generated {lastGenerated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</div>}
-          <button onClick={runBriefing} disabled={loading} style={{padding:"8px 20px",borderRadius:8,background:loading?C.warm:C.carbon,color:loading?C.midGray:C.white,border:`1px solid ${loading?C.border:C.carbon}`,fontSize:12,fontWeight:700,cursor:loading?"not-allowed":"pointer",letterSpacing:"0.04em"}}>
-            {loading?"Generating...":"↻  Refresh Briefing"}
-          </button>
-        </div>
+    <div style={{fontFamily:"'Inter',system-ui,sans-serif",background:C.warm,minHeight:"100vh",padding:"32px 24px"}}>
+      <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
+        <button onClick={runBriefing} disabled={loading} style={{padding:"8px 20px",borderRadius:8,background:loading?C.warm:C.carbon,color:loading?C.midGray:C.white,border:`1px solid ${loading?C.border:C.carbon}`,fontSize:12,fontWeight:700,cursor:loading?"not-allowed":"pointer",letterSpacing:"0.04em"}}>
+          {loading?"Generating...":"↻  Refresh Briefing"}
+        </button>
       </div>
 
       {loading&&<Spinner/>}
@@ -315,7 +308,8 @@ export default function HomeApp() {
           {/* ── HERO — dark, commanding ── */}
           <div style={{background:C.carbon,borderRadius:16,padding:"36px 44px",position:"relative",overflow:"hidden",marginBottom:40,maxWidth:900,margin:"0 auto 40px"}}>
             <div style={{position:"absolute",top:0,right:0,width:300,height:300,background:`radial-gradient(circle at 100% 0%, ${C.brassGlow} 0%, transparent 65%)`,pointerEvents:"none"}}/>
-            <div style={{fontSize:10,fontWeight:700,color:C.brass,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:16}}>Intelligence Brief · {dateStr}</div>
+            <div style={{fontSize:10,fontWeight:700,color:C.brass,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:12}}>Intelligence Brief · {dateStr}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.45)",marginBottom:16}}>{greeting}, {userName}.</div>
             <div style={{fontSize:26,fontWeight:800,color:C.white,lineHeight:1.3,marginBottom:20,letterSpacing:"-0.02em",maxWidth:720}}>{briefing.headline}</div>
             <div style={{fontSize:15,color:"#C9D1D9",lineHeight:1.8,maxWidth:680,marginBottom:28}}>{briefing.executiveSummary}</div>
             {/* Pulse strip */}
