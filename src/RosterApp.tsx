@@ -218,9 +218,9 @@ export default function RosterModule() {
       `}</style>
 
       {/* ── Header ── */}
-      <div style={{background:"#0d1f35",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"3px solid #1e5799",position:"sticky",top:0,zIndex:100}}>
+      <div style={{background:"#121315",padding:"16px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"3px solid #1e5799",position:"sticky",top:0,zIndex:100}}>
         <div style={{display:"flex",alignItems:"center",gap:14}}>
-          <div style={{background:"#B79145",borderRadius:5,padding:"4px 9px",fontWeight:800,fontSize:14,color:"#0d1f35",letterSpacing:1}}>V</div>
+          <div style={{background:"#B79145",borderRadius:5,padding:"4px 9px",fontWeight:800,fontSize:14,color:"#121315",letterSpacing:1}}>V</div>
           <div>
             <div style={{fontSize:17,fontWeight:700,color:"#fff",letterSpacing:"0.01em"}}>Veritas Charter Schools</div>
             <div style={{fontSize:10,color:"#6699bb",letterSpacing:"0.1em",textTransform:"uppercase",marginTop:1}}>Roster &nbsp;·&nbsp; People Intelligence</div>
@@ -230,7 +230,7 @@ export default function RosterModule() {
           {[["directory","Directory"],["dashboard","Dashboard"],["assistant","HR Assistant"]].map(([id,label]) => (
             <button key={id} onClick={() => setActiveTab(id)} className="tab-btn" style={{
               padding:"7px 16px",borderRadius:6,fontSize:13,fontWeight:600,border:"none",cursor:"pointer",
-              background: activeTab===id ? "#1e5799" : "rgba(255,255,255,0.07)",
+              background: activeTab===id ? "#B79145" : "rgba(255,255,255,0.07)",
               color: activeTab===id ? "#fff" : "#99bbd9",
               transition:"all 0.15s",letterSpacing:"0.02em"
             }}>{label}</button>
@@ -305,7 +305,7 @@ export default function RosterModule() {
           <div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:22}}>
               {[
-                {label:"Active Staff",    value:activeStaff, sub:"across 10 campuses",       accent:"#0d1f35"},
+                {label:"Active Staff",    value:activeStaff, sub:"across 10 campuses",       accent:"#121315"},
                 {label:"Open Positions",  value:vacantCount, sub:"network-wide vacancies",    accent:"#b91c1c"},
                 {label:"On Leave",        value:onLeaveCount,sub:"on approved leave",         accent:"#b45309"},
                 {label:"Licensed Staff",  value:`${licRate}%`,sub:"hold valid IL licensure",  accent:"#15803d"},
@@ -328,7 +328,7 @@ export default function RosterModule() {
                     <XAxis dataKey="campus" tick={{fontSize:10,fill:"#8a9bb0"}} axisLine={false} tickLine={false}/>
                     <YAxis tick={{fontSize:10,fill:"#8a9bb0"}} axisLine={false} tickLine={false}/>
                     <Tooltip contentStyle={{fontSize:12,borderRadius:7,border:"1px solid #dce6f0",boxShadow:"0 2px 8px rgba(0,0,0,0.08)"}}/>
-                    <Bar dataKey="total"    fill="#1e5799" name="Total"    radius={[3,3,0,0]}/>
+                    <Bar dataKey="total"    fill="#B79145" name="Total"    radius={[3,3,0,0]}/>
                     <Bar dataKey="licensed" fill="#7dbfe8" name="Licensed" radius={[3,3,0,0]}/>
                   </BarChart>
                 </ResponsiveContainer>
@@ -358,7 +358,7 @@ export default function RosterModule() {
                   <XAxis dataKey="month" tick={{fontSize:11,fill:"#8a9bb0"}} axisLine={false} tickLine={false}/>
                   <YAxis tick={{fontSize:11,fill:"#8a9bb0"}} axisLine={false} tickLine={false} domain={[0,4]}/>
                   <Tooltip contentStyle={{fontSize:12,borderRadius:7}} formatter={v=>[`${v}%`,"Rate"]}/>
-                  <Line type="monotone" dataKey="rate" stroke="#1e5799" strokeWidth={2.5} dot={{r:4,fill:"#1e5799"}} activeDot={{r:6}}/>
+                  <Line type="monotone" dataKey="rate" stroke="#B79145" strokeWidth={2.5} dot={{r:4,fill:"#B79145"}} activeDot={{r:6}}/>
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -369,7 +369,7 @@ export default function RosterModule() {
         {activeTab==="assistant" && (
           <div style={{display:"grid",gridTemplateColumns:"1fr 270px",gap:18,alignItems:"start"}}>
             <div style={{background:"#fff",borderRadius:10,boxShadow:"0 1px 4px rgba(0,0,0,0.07)",display:"flex",flexDirection:"column",height:580,overflow:"hidden"}}>
-              <div style={{background:"#0d1f35",padding:"14px 20px",borderRadius:"10px 10px 0 0",flexShrink:0}}>
+              <div style={{background:"#121315",padding:"14px 20px",borderRadius:"10px 10px 0 0",flexShrink:0}}>
                 <div style={{color:"#fff",fontWeight:700,fontSize:14}}>Veritas HR Assistant</div>
                 <div style={{color:"#6699bb",fontSize:11,marginTop:2}}>Benefits &nbsp;·&nbsp; Policies &nbsp;·&nbsp; Career Support</div>
               </div>
@@ -380,7 +380,7 @@ export default function RosterModule() {
                     <div style={{
                       maxWidth:"82%",padding:"10px 14px",lineHeight:1.6,fontSize:13.5,whiteSpace:"pre-wrap",
                       borderRadius:m.role==="user"?"14px 14px 4px 14px":"14px 14px 14px 4px",
-                      background:m.role==="user"?"#0d1f35":"#f0f5fb",
+                      background:m.role==="user"?"#121315":"#f0f5fb",
                       color:m.role==="user"?"#fff":"#1a2332",
                     }}>{m.text}</div>
                   </div>
@@ -388,7 +388,7 @@ export default function RosterModule() {
                 {loading&&(
                   <div style={{display:"flex",gap:5,padding:"10px 14px",background:"#f0f5fb",borderRadius:"14px 14px 14px 4px",width:"fit-content"}}>
                     {[0,1,2].map(d=>(
-                      <div key={d} style={{width:7,height:7,borderRadius:"50%",background:"#1e5799",animation:"bounce 1s infinite",animationDelay:`${d*0.18}s`}}/>
+                      <div key={d} style={{width:7,height:7,borderRadius:"50%",background:"#B79145",animation:"bounce 1s infinite",animationDelay:`${d*0.18}s`}}/>
                     ))}
                   </div>
                 )}
@@ -402,7 +402,7 @@ export default function RosterModule() {
                   style={{flex:1,padding:"9px 14px",border:"1px solid #cdd8e6",borderRadius:7,fontSize:14,outline:"none",background:"#fff"}}
                   disabled={loading}/>
                 <button onClick={sendMessage} disabled={loading||!input.trim()} style={{
-                  padding:"9px 18px",background:loading||!input.trim()?"#c0cfde":"#0d1f35",
+                  padding:"9px 18px",background:loading||!input.trim()?"#c0cfde":"#121315",
                   color:"#fff",border:"none",borderRadius:7,fontWeight:700,fontSize:13,
                   cursor:loading||!input.trim()?"not-allowed":"pointer",transition:"background 0.15s"
                 }}>Send</button>
@@ -412,19 +412,19 @@ export default function RosterModule() {
             {/* Sidebar */}
             <div style={{display:"flex",flexDirection:"column",gap:14}}>
               <div style={{background:"#fff",borderRadius:10,padding:"16px",boxShadow:"0 1px 4px rgba(0,0,0,0.07)"}}>
-                <div style={{fontSize:11,fontWeight:700,color:"#0d1f35",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Ask About</div>
+                <div style={{fontSize:11,fontWeight:700,color:"#121315",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:10}}>Ask About</div>
                 <div style={{display:"flex",flexDirection:"column",gap:7}}>
                   {SUGGESTED.map(q=>(
                     <button key={q} className="sq-btn" onClick={()=>{setInput(q);}}
                       style={{textAlign:"left",padding:"8px 11px",border:"1px solid #dce6f0",borderRadius:7,background:"#f7fafc",
-                        fontSize:12,color:"#1e5799",cursor:"pointer",lineHeight:1.4,transition:"all 0.12s"}}
+                        fontSize:12,color:"#B79145",cursor:"pointer",lineHeight:1.4,transition:"all 0.12s"}}
                     >{q}</button>
                   ))}
                 </div>
               </div>
 
               <div style={{background:"#eef4fb",borderRadius:10,padding:"14px 16px",border:"1px solid #cdd8e6"}}>
-                <div style={{fontSize:11,fontWeight:700,color:"#0d1f35",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:8}}>Direct HR Contact</div>
+                <div style={{fontSize:11,fontWeight:700,color:"#121315",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:8}}>Direct HR Contact</div>
                 <div style={{fontSize:12,color:"#374f65",lineHeight:1.7}}>
                   <div>✉ humanresources@veritascharters.org</div>
                   <div>✆ 312-555-0100</div>
