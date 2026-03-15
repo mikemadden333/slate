@@ -2,8 +2,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const FEEDS = [
   { name: "Block Club Chicago", url: "https://blockclubchicago.org/feed/", color: "#B79145" },
-  { name: "Chicago Tribune", url: "https://www.chicagotribune.com/arcio/rss/", color: "#6B8CAE" },
-  { name: "Chicago Sun-Times", url: "https://chicago.suntimes.com/rss/index.xml", color: "#7A9E7E" },
+  { name: "Chicago Tribune", url: "https://www.chicagotribune.com/feed/", color: "#6B8CAE" },
+  { name: "Chicago Sun-Times", url: "https://chicago.suntimes.com/rss.xml", color: "#7A9E7E" },
   { name: "Chalkbeat Chicago", url: "https://www.chalkbeat.org/chicago/rss/", color: "#E07B4F" },
 ];
 
@@ -58,10 +58,12 @@ function parseItems(xml: string, name: string, color: string) {
   }[] = [];
 
   // Split on <item> boundaries
-  const parts = xml.split(/<item[\s>]/i);
+  // Handle both RSS (<item>) and Atom (<entry>) formats
+  const isAtom = xml.includes("<entry");
+  const parts = isAtom ? xml.split(/<entry[\s>]/i) : xml.split(/<item[\s>]/i);
   // Skip first part (it's the channel header)
   for (let i = 1; i < parts.length; i++) {
-    const block = parts[i].split(/<\/item>/i)[0];
+    const block = isAtom ? parts[i].split(/<\/entry>/i)[0] : parts[i].split(/<\/item>/i)[0];
     const title = extractTag(block, "title");
     const link = extractLink(block);
     const pubDate = extractTag(block, "pubDate") || extractTag(block, "dc:date") || extractTag(block, "published");
@@ -105,7 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Fall back to all items if filter returns nothing
     const final = (filtered.length > 0 ? filtered : all)
       .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
-      .slice(0, 6);
+      .slice(0, 10);
 
     res.json({ items: final, debug: { total: all.length, filtered: filtered.length } });
   } catch (e) {

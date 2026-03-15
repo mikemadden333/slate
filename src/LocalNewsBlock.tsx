@@ -39,7 +39,7 @@ const RSS_FEEDS = [
 
 const CORS_PROXY = "https://api.allorigins.win/get?url=";
 const REFRESH_INTERVAL = 3 * 60 * 1000; // 3 minutes
-const MAX_ITEMS = 6;
+const MAX_ITEMS = 10;
 
 interface NewsItem {
   title: string;
