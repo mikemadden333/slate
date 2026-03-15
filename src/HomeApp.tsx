@@ -310,87 +310,163 @@ export default function HomeApp() {
       {error&&<div style={{padding:"16px 20px",background:"#FEF2F2",border:"1px solid #FECACA",borderRadius:10,color:C.red,fontSize:13,marginBottom:24}}>{error}</div>}
 
       {briefing&&snap&&!loading&&(
-        <div style={{display:"flex",flexDirection:"column",gap:24}}>
-          <div style={{background:C.carbon,borderRadius:16,padding:"28px 36px",position:"relative",overflow:"hidden"}}>
-            <div style={{position:"absolute",top:0,right:0,width:200,height:200,background:`radial-gradient(circle at 100% 0%, ${C.brassGlow} 0%, transparent 70%)`,pointerEvents:"none"}}/>
-            <div style={{fontSize:10,fontWeight:800,color:C.brass,letterSpacing:"0.16em",textTransform:"uppercase",marginBottom:12}}>Network Intelligence Briefing</div>
-            <div style={{fontSize:22,fontWeight:800,color:C.white,lineHeight:1.35,marginBottom:16,letterSpacing:"-0.02em"}}>{briefing.headline}</div>
-            <div style={{fontSize:14,color:"#C9D1D9",lineHeight:1.75,maxWidth:680}}>{briefing.executiveSummary}</div>
-          </div>
+        <div style={{display:"flex",flexDirection:"column",gap:0}}>
 
-          <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12}}>
-            <MetricPill label="Safety Status" value={snap.watch.overallStatus} color={snap.watch.networksAtRisk>0?C.amber:C.green}/>
-            <MetricPill label="Budget Variance" value={`${snap.ledger.budgetVarianceDirection==="under"?"-":"+"}${snap.ledger.budgetVariance}%`} color={snap.ledger.budgetVarianceDirection==="under"?C.green:C.amber}/>
-            <MetricPill label="Enrollment Gap" value={`${snap.roster.enrollmentVsProjection}`} color={snap.roster.enrollmentVsProjection<0?C.amber:C.green}/>
-            <MetricPill label="Compliance Deadlines" value={snap.guard.deadlinesNext30Days} color={snap.guard.deadlinesNext30Days>2?C.amber:C.green}/>
-            <MetricPill label="Pipeline Weighted" value={`$${(snap.raise.pipelineWeighted/1000000).toFixed(1)}M`} color={C.brass}/>
-          </div>
-
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:24}}>
-            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
-              <SectionHeader title="Your Top Priorities" sub="Items that need your attention today"/>
-              <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                {briefing.topPriorities?.map(p=><PriorityCard key={p.priority} item={p}/>)}
+          {/* ── HERO — dark, commanding ── */}
+          <div style={{background:C.carbon,borderRadius:16,padding:"36px 44px",position:"relative",overflow:"hidden",marginBottom:40}}>
+            <div style={{position:"absolute",top:0,right:0,width:300,height:300,background:`radial-gradient(circle at 100% 0%, ${C.brassGlow} 0%, transparent 65%)`,pointerEvents:"none"}}/>
+            <div style={{fontSize:10,fontWeight:700,color:C.brass,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:16}}>Intelligence Brief · {dateStr}</div>
+            <div style={{fontSize:26,fontWeight:800,color:C.white,lineHeight:1.3,marginBottom:20,letterSpacing:"-0.02em",maxWidth:720}}>{briefing.headline}</div>
+            <div style={{fontSize:15,color:"#C9D1D9",lineHeight:1.8,maxWidth:680,marginBottom:28}}>{briefing.executiveSummary}</div>
+            {/* Pulse strip */}
+            <div style={{display:"flex",gap:24,paddingTop:24,borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+              <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                <div style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,0.35)",letterSpacing:"0.14em",textTransform:"uppercase"}}>Safety</div>
+                <div style={{fontSize:14,fontWeight:700,color:snap.watch.networksAtRisk>0?C.amber:C.green}}>{snap.watch.overallStatus}</div>
+              </div>
+              <div style={{width:1,background:"rgba(255,255,255,0.08)"}}/>
+              <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                <div style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,0.35)",letterSpacing:"0.14em",textTransform:"uppercase"}}>Budget</div>
+                <div style={{fontSize:14,fontWeight:700,color:snap.ledger.budgetVarianceDirection==="under"?C.green:C.amber}}>{snap.ledger.budgetVarianceDirection==="under"?"-":"+"}${snap.ledger.budgetVariance}%</div>
+              </div>
+              <div style={{width:1,background:"rgba(255,255,255,0.08)"}}/>
+              <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                <div style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,0.35)",letterSpacing:"0.14em",textTransform:"uppercase"}}>Enrollment Gap</div>
+                <div style={{fontSize:14,fontWeight:700,color:snap.roster.enrollmentVsProjection<0?C.amber:C.green}}>{snap.roster.enrollmentVsProjection}</div>
+              </div>
+              <div style={{width:1,background:"rgba(255,255,255,0.08)"}}/>
+              <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                <div style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,0.35)",letterSpacing:"0.14em",textTransform:"uppercase"}}>Deadlines</div>
+                <div style={{fontSize:14,fontWeight:700,color:snap.guard.deadlinesNext30Days>2?C.amber:C.green}}>{snap.guard.deadlinesNext30Days} next 30d</div>
+              </div>
+              <div style={{width:1,background:"rgba(255,255,255,0.08)"}}/>
+              <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                <div style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,0.35)",letterSpacing:"0.14em",textTransform:"uppercase"}}>Pipeline</div>
+                <div style={{fontSize:14,fontWeight:700,color:C.brass}}>${(snap.raise.pipelineWeighted/1000000).toFixed(1)}M</div>
               </div>
             </div>
-            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
-              <SectionHeader title="Module Snapshot" sub="One-line status across all systems"/>
-              <div>{Object.entries(briefing.moduleInsights||{}).map(([mod,insight])=><ModuleInsightRow key={mod} mod={mod} insight={insight}/>)}</div>
-            </div>
           </div>
 
-          {/* Cross-Module Signals */}
-          {briefing.crossModuleSignals?.length>0&&(
-            <div style={{background:C.carbon,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.brass}40`}}>
-              <div style={{fontSize:10,fontWeight:800,color:C.brass,letterSpacing:"0.16em",textTransform:"uppercase",marginBottom:16}}>Cross-Module Intelligence — Patterns Slate Sees</div>
-              <div style={{display:"flex",flexDirection:"column",gap:12}}>
-                {briefing.crossModuleSignals.map((s,i)=>(
-                  <div key={i} style={{display:"flex",gap:16,padding:"16px 20px",borderRadius:12,background:"rgba(255,255,255,0.04)",border:`1px solid rgba(255,255,255,0.08)`}}>
-                    <div style={{flexShrink:0,marginTop:2}}>
-                      <div style={{width:8,height:8,borderRadius:"50%",background:s.urgency==="HIGH"?"#EF4444":s.urgency==="MEDIUM"?"#F59E0B":"#10B981",marginTop:4}}/>
+          {/* ── MEMO BODY — white, airy, narrative ── */}
+          <div style={{background:C.white,borderRadius:16,padding:"44px 52px",border:`1px solid ${C.border}`}}>
+
+            {/* Priorities */}
+            <div style={{marginBottom:44}}>
+              <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Today's Priorities</div>
+              <div style={{display:"flex",flexDirection:"column",gap:0}}>
+                {briefing.topPriorities?.map((p,i)=>(
+                  <div key={p.priority} style={{display:"flex",gap:20,padding:"18px 0",borderBottom:i<(briefing.topPriorities.length-1)?`1px solid ${C.border}`:"none",alignItems:"flex-start"}}>
+                    <div style={{flexShrink:0,width:24,height:24,borderRadius:"50%",background:p.urgency==="HIGH"?"#FEF2F2":p.urgency==="MEDIUM"?"#FFFBEB":"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
+                      <span style={{fontSize:11,fontWeight:800,color:p.urgency==="HIGH"?C.red:p.urgency==="MEDIUM"?C.amber:C.midGray}}>{p.priority}</span>
                     </div>
                     <div style={{flex:1}}>
-                      <div style={{fontSize:14,fontWeight:700,color:C.white,marginBottom:4,lineHeight:1.4}}>{s.signal}</div>
-                      <div style={{fontSize:12,color:"#9CA3AF",marginBottom:6}}>{s.significance}</div>
-                      <div style={{display:"flex",gap:6}}>
-                        {s.modules?.map((m,j)=>(
-                          <span key={j} style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:4,background:"rgba(183,145,69,0.15)",color:C.brass,letterSpacing:"0.06em",textTransform:"uppercase"}}>{m}</span>
-                        ))}
+                      <div style={{fontSize:14,fontWeight:600,color:C.carbon,lineHeight:1.5,marginBottom:4}}>{p.action}</div>
+                      <div style={{fontSize:11,color:C.midGray,letterSpacing:"0.06em",textTransform:"uppercase",fontWeight:600}}>{p.module} · <span style={{color:p.urgency==="HIGH"?C.red:p.urgency==="MEDIUM"?C.amber:C.green}}>{p.urgency}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Cross-Module Signals */}
+            {briefing.crossModuleSignals?.length>0&&(
+              <div style={{marginBottom:44}}>
+                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:6}}>Cross-Module Intelligence</div>
+                <div style={{fontSize:12,color:C.midGray,marginBottom:20,fontStyle:"italic"}}>Patterns Slate sees that no single department would catch</div>
+                <div style={{display:"flex",flexDirection:"column",gap:0}}>
+                  {briefing.crossModuleSignals.map((s,i)=>(
+                    <div key={i} style={{display:"flex",gap:20,padding:"18px 0",borderBottom:i<(briefing.crossModuleSignals.length-1)?`1px solid ${C.border}`:"none",alignItems:"flex-start"}}>
+                      <div style={{flexShrink:0,marginTop:6}}>
+                        <div style={{width:7,height:7,borderRadius:"50%",background:s.urgency==="HIGH"?C.red:s.urgency==="MEDIUM"?C.amber:C.green}}/>
+                      </div>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:14,fontWeight:600,color:C.carbon,lineHeight:1.5,marginBottom:4}}>{s.signal}</div>
+                        <div style={{fontSize:13,color:"#555",lineHeight:1.6,marginBottom:8}}>{s.significance}</div>
+                        <div style={{display:"flex",gap:6}}>
+                          {s.modules?.map((m,j)=>(
+                            <span key={j} style={{fontSize:9,fontWeight:700,padding:"2px 8px",borderRadius:3,background:C.warm,color:C.brass,letterSpacing:"0.08em",textTransform:"uppercase",border:`1px solid ${C.border}`}}>{m}</span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div style={{flexShrink:0}}>
-                      <span style={{fontSize:10,fontWeight:800,padding:"4px 10px",borderRadius:6,background:s.urgency==="HIGH"?"#FEF2F2":s.urgency==="MEDIUM"?"#FFFBEB":"#ECFDF5",color:s.urgency==="HIGH"?"#B91C1C":s.urgency==="MEDIUM"?"#B45309":"#0B7A5E",letterSpacing:"0.06em"}}>{s.urgency}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Questions to Sit With */}
+            {briefing.questionsToSitWith?.length>0&&(
+              <div style={{marginBottom:44}}>
+                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:6}}>Questions to Sit With</div>
+                <div style={{fontSize:12,color:C.midGray,marginBottom:24,fontStyle:"italic"}}>Slate poses these for your consideration today</div>
+                <div style={{display:"flex",flexDirection:"column",gap:16}}>
+                  {briefing.questionsToSitWith.map((q,i)=>(
+                    <div key={i} style={{paddingLeft:20,borderLeft:`2px solid ${C.brass}`,paddingTop:2,paddingBottom:2}}>
+                      <div style={{fontSize:15,color:C.carbon,lineHeight:1.7,fontStyle:"italic",fontWeight:400}}>{q}</div>
                     </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* National Context */}
+            {briefing.nationalContext&&(
+              <div style={{marginBottom:44}}>
+                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>National & Illinois Context</div>
+                <div style={{fontSize:14,color:"#444",lineHeight:1.85}}>{briefing.nationalContext}</div>
+              </div>
+            )}
+
+            {/* Module Snapshot */}
+            <div style={{marginBottom:44}}>
+              <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Network Status</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:0}}>
+                {Object.entries(briefing.moduleInsights||{}).map(([mod,insight],i)=>(
+                  <div key={mod} style={{display:"flex",gap:14,padding:"12px 0",borderBottom:`1px solid ${C.border}`,alignItems:"flex-start"}}>
+                    <div style={{fontSize:9,fontWeight:700,color:C.brass,letterSpacing:"0.1em",textTransform:"uppercase",minWidth:60,paddingTop:2}}>{mod}</div>
+                    <div style={{fontSize:13,color:"#444",lineHeight:1.55}}>{insight as string}</div>
                   </div>
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Questions to Sit With */}
-          {briefing.questionsToSitWith?.length>0&&(
-            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
-              <SectionHeader title="Questions to Sit With" sub="Slate poses these for your consideration today"/>
-              <div style={{display:"flex",flexDirection:"column",gap:12,marginTop:8}}>
-                {briefing.questionsToSitWith.map((q,i)=>(
-                  <div key={i} style={{display:"flex",gap:16,padding:"16px 20px",borderRadius:12,background:C.warm,border:`1px solid ${C.border}`}}>
-                    <div style={{flexShrink:0,width:28,height:28,borderRadius:"50%",background:C.carbon,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                      <span style={{fontSize:12,fontWeight:800,color:C.brass}}>{i+1}</span>
+            {/* Watch Item + Closing */}
+            <div style={{marginBottom:44}}>
+              <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Keep an Eye On</div>
+              <div style={{fontSize:14,color:C.carbon,lineHeight:1.8,paddingLeft:20,borderLeft:`2px solid ${C.border}`}}>{briefing.watchItem}</div>
+              {briefing.closing&&<div style={{marginTop:28,fontSize:13,color:C.midGray,lineHeight:1.7,fontStyle:"italic"}}>{briefing.closing}</div>}
+            </div>
+
+            {/* Deadlines */}
+            {(snap.guard.urgentDeadlines?.length>0||snap.raise.proposalsDueSoon>0)&&(
+              <div>
+                <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Upcoming Deadlines</div>
+                <div style={{display:"flex",flexDirection:"column",gap:0}}>
+                  {snap.guard.urgentDeadlines.map((d,i)=>(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:`1px solid ${C.border}`}}>
+                      <div style={{fontSize:13,color:C.carbon,fontWeight:500}}>{d.item}</div>
+                      <div style={{display:"flex",gap:12,alignItems:"center"}}>
+                        <div style={{fontSize:11,color:C.midGray}}>{d.owner}</div>
+                        <div style={{fontSize:11,fontWeight:700,color:d.daysOut<=7?C.red:C.amber,background:d.daysOut<=7?"#FEF2F2":"#FFFBEB",padding:"2px 10px",borderRadius:4}}>{d.daysOut}d</div>
+                      </div>
                     </div>
-                    <div style={{fontSize:14,color:C.carbon,lineHeight:1.65,fontStyle:"italic"}}>{q}</div>
-                  </div>
-                ))}
+                  ))}
+                  {snap.raise.dueSoonItems?.map((d,i)=>(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"12px 0",borderBottom:`1px solid ${C.border}`}}>
+                      <div style={{fontSize:13,color:C.carbon,fontWeight:500}}>{d.funder} <span style={{color:C.midGray,fontWeight:400}}>— proposal</span></div>
+                      <div style={{display:"flex",gap:12,alignItems:"center"}}>
+                        <div style={{fontSize:11,color:C.midGray}}>${(d.amount/1000).toFixed(0)}K</div>
+                        <div style={{fontSize:11,fontWeight:700,color:d.daysOut<=7?C.red:C.amber,background:d.daysOut<=7?"#FEF2F2":"#FFFBEB",padding:"2px 10px",borderRadius:4}}>{d.daysOut}d</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* National Context */}
-          {briefing.nationalContext&&(
-            <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
-              <SectionHeader title="National & Illinois Context" sub="What Slate is watching beyond your walls"/>
-              <div style={{fontSize:14,color:C.carbon,lineHeight:1.75,padding:"16px 20px",borderRadius:10,background:C.warm,border:`1px solid ${C.border}`}}>{briefing.nationalContext}</div>
-            </div>
-          )}
+          </div>
+        </div>
+      )}
 
           <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:24}}>
             <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.border}`}}>
