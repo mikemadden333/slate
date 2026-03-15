@@ -30,7 +30,7 @@ function RosterInner() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 4 }}>
-              SLATE ROSTER
+              SLATE SCHOLAR
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
               <span style={{ fontSize: 28, fontWeight: 900, color: '#FFFFFF', fontFamily: "'DM Sans', sans-serif" }}>Roster</span>
@@ -85,7 +85,7 @@ function RosterInner() {
       </div>
 
       <footer style={{ textAlign: 'center', padding: '20px 16px', fontSize: 11, color: C.muted, borderTop: `1px solid ${C.border}` }}>
-        Slate Roster — Noble Schools — Enrollment Intelligence — {data.sy} · Slate Systems, LLC · Madden Advisory Group · 2026
+        Slate Scholar — Veritas Charter Schools — Enrollment Intelligence — {data.sy} · Slate Systems, LLC · Madden Advisory Group · 2026
       </footer>
     </div>
   );
