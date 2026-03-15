@@ -108,6 +108,7 @@ export default function ReportsApp() {
     try {
       const res = await fetch("/api/generate-board-deck", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ data }) });
       const json = await res.json();
+      if (!json.success) { alert("Deck error: " + json.error + "\n" + (json.stack||"")); }
       if (json.success && json.base64) {
         const bytes = Uint8Array.from(atob(json.base64), c => c.charCodeAt(0));
         const blob = new Blob([bytes], { type:"application/vnd.openxmlformats-officedocument.presentationml.presentation" });
