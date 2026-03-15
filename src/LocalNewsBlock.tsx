@@ -114,7 +114,7 @@ export default function LocalNewsBlock() {
   return (
     <div
       style={{
-        background: "#1A1C1F",
+        background: "#FFFFFF",
         borderRadius: "12px",
         padding: "24px",
         marginTop: "24px",

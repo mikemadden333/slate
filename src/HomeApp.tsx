@@ -292,7 +292,7 @@ export default function HomeApp() {
   const snap=snapshot;
 
   return (
-    <div style={{fontFamily:"'Inter',system-ui,sans-serif",background:C.warm,minHeight:"100vh",padding:"32px 40px",maxWidth:1100,margin:"0 auto"}}>
+    <div style={{fontFamily:"'Inter',system-ui,sans-serif",background:C.warm,minHeight:"100vh",padding:"32px 40px"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:32}}>
         <div>
           <div style={{fontSize:24,fontWeight:800,color:C.carbon,letterSpacing:"-0.02em"}}>{greeting}, {userName}.</div>
@@ -420,7 +420,7 @@ export default function HomeApp() {
             {/* Module Snapshot */}
             <div style={{marginBottom:44}}>
               <div style={{fontSize:9,fontWeight:700,color:C.midGray,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Network Status</div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:0}}>
+              <div style={{display:"flex",flexDirection:"column",gap:0}}>
                 {Object.entries(briefing.moduleInsights||{}).map(([mod,insight],i)=>(
                   <div key={mod} style={{display:"flex",gap:14,padding:"12px 0",borderBottom:`1px solid ${C.border}`,alignItems:"flex-start"}}>
                     <div style={{fontSize:9,fontWeight:700,color:C.brass,letterSpacing:"0.1em",textTransform:"uppercase",minWidth:60,paddingTop:2}}>{mod}</div>
