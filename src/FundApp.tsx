@@ -448,7 +448,7 @@ function OppDetail({ opp, onLog, onStageChange }: {
 
   const si = stageInfo(opp.stage);
 
-  const generate = async (mode: 'cultivation'|'solicitation'|'stewardship') => {
+  const generate = async (mode: 'cultivation'|'solicitation'|'stewardship'|'meeting_brief') => {
     setAiMode(mode); setLoading(true); setDraft('');
     const ctx = `Donor/Funder: ${opp.name}
 Type: ${TYPE_LABELS[opp.type]}
