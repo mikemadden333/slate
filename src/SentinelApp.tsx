@@ -61,6 +61,7 @@ import { useRetaliationWindow } from './sentinel-hooks/useRetaliationWindow';
 import ContextualEducation from './sentinel-components/shared/ContextualEducation';
 import { useCampusMemory } from './sentinel-hooks/useCampusMemory';
 import SinceLastVisitCard from './sentinel-components/campus/SinceLastVisitCard';
+import CampusDashboard from './sentinel-components/campus/CampusDashboard';
 
 // Network components
 import NetworkDashboard from './sentinel-components/network/NetworkDashboard';
@@ -221,8 +222,8 @@ export default function App() {
     let count = 0;
     for (const inc of acuteIncidents) {
       if (ageInHours(inc.date) > 6) continue;
-      if (haversine(selectedCampus.lat, selectedCampus.lng, inc.lat, inc.lng) > 0.5) continue;
-      count++;
+      const d = haversine(selectedCampus.lat, selectedCampus.lng, inc.lat, inc.lng);
+      if (d <= 0.5) count++;
     }
     return count;
   }, [acuteIncidents, selectedCampus]);
@@ -542,82 +543,29 @@ export default function App() {
             campus={selectedCampus}
           />
         ) : (
-        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {initialLoading && <CampusSkeleton />}
-
-          {/* ── CHAPTER 1: THE HEADLINE ── */}
-          <SituationCard risk={selectedRisk} campusName={selectedCampus.name} onBeginProtocol={handleBeginProtocol} />
-
-          {/* ── CHAPTER 2: THE BRIEF — AI summary, first thing they read ── */}
-          <div ref={briefingRef}>
-            <MorningBriefing campus={selectedCampus} risk={selectedRisk} iceAlerts={iceAlerts}
-              incidents={allIncidents} newsItems={newsItems} tempF={tempF}
-              onAskPulse={scrollToIntelQuery} />
-          </div>
-
-          {/* ── CHAPTER 3: RIGHT NOW — only renders if something active ── */}
-          <RightNowBar schoolPeriod={schoolPeriod} minutesToArrival={minutesToArrival(now, selectedCampus)}
-            minutesToDismissal={minutesToDismissal(now, selectedCampus)}
-            riskLabel={selectedRisk.label as 'LOW' | 'ELEVATED' | 'HIGH' | 'CRITICAL'}
-            incidents6h={incidents6h}
-            scannerCalls={scannerData?.totalCalls}
-            scannerSpikeZones={scannerData?.spikeZones.length}
-            activeSpikeZones={scannerData?.spikeZones ?? []}
-            campusShort={selectedCampus.short} />
-          {iceAlerts.length > 0 && (
-            <IceIntelligence iceAlerts={iceAlerts} onInitiateCodeWhite={handleInitiateCodeWhite} />
-          )}
-
-          {/* ── CHAPTER 4: WHAT HAPPENED — violent crime feed, overnight + today ── */}
-          <LastNight campus={selectedCampus} incidents={acuteIncidents}
-            citizenIncidents={citizenIncidents} schoolPeriod={schoolPeriod} />
-          <IncidentList campus={selectedCampus} incidents={allIncidents}
-            contagionZones={selectedRisk.contagionZones} />
-
-          {/* ── CHAPTER 5: THE MAP ── */}
-          <CampusMap campus={selectedCampus} risk={selectedRisk} incidents={allIncidents}
+          /* ══════════════════════════════════════════════════════════════
+           *  NEW: CampusDashboard replaces the old chapter-stack layout
+           *  All the same data, completely new visual — D2 "Nerve Center"
+           * ══════════════════════════════════════════════════════════════ */
+          <CampusDashboard
+            campus={selectedCampus}
+            risk={selectedRisk}
+            allRisks={allRisks}
+            incidents={allIncidents}
+            acuteIncidents={acuteIncidents}
             shotSpotterEvents={shotSpotterEvents}
-            contagionZones={selectedRisk.contagionZones} corridors={corridors}
-            scannerData={scannerData} />
-
-          {/* ── CHAPTER 6: TOOLS — collapsed by default ── */}
-          <CampusToolsDrawer>
-            <ContextualEducation risk={selectedRisk} iceAlerts={iceAlerts} dataLoaded={!initialLoading} />
-            <ContagionPanel zones={selectedRisk.contagionZones}
-              inRetaliationWindow={selectedRisk.inRetaliationWindow}
-              campusName={selectedCampus.name} campusId={selectedCampusId}
-              allRisks={allRisks} forecast={forecast}
-              onOpenForecast={scrollToForecast} onBeginProtocol={handleBeginProtocol} />
-            <div ref={forecastRef}>
-              <WeekForecast forecast={forecast} onScrollToBriefing={scrollToBriefing} />
-            </div>
-            <SafeCorridorMap campus={selectedCampus} corridors={corridors} schoolPeriod={schoolPeriod} />
-            <EmergencyResponse onSelectCode={setActiveProtocol} recommendedCode={recommendedCode} />
-            <div ref={intelQueryRef}>
-              <IntelQuery campus={selectedCampus} risk={selectedRisk} />
-            </div>
-          </CampusToolsDrawer>
-
-          {campusMemory.sinceLastVisit && (
-            <SinceLastVisitCard data={campusMemory.sinceLastVisit} onDismiss={campusMemory.dismissCard} />
-          )}
-          <DataFreshness
-            cpdLastUpdate={dataFreshness.cpdLastUpdate} cpdCount={dataFreshness.cpdCount}
-            citizenLastUpdate={dataFreshness.citizenLastUpdate} citizenCount={dataFreshness.citizenCount}
-            shotSpotterStatus={dataFreshness.shotSpotterStatus}
-            newsLastUpdate={dataFreshness.newsLastUpdate} newsSourceCount={dataFreshness.newsSourceCount}
-            iceAlertCount={iceAlerts.length}
-            realtimeCount={dataFreshness.realtimeCount} realtimeLastUpdate={dataFreshness.realtimeLastUpdate}
-            newsIncidentCount={dataFreshness.newsIncidentCount}
-            scannerCalls={scannerData?.totalCalls}
-            scannerSpikeZones={scannerData?.spikeZones.length}
-            redditIncidentCount={redditIncidents.length} />
-          <div style={{ fontSize: 11, color: '#6B7280', lineHeight: 1.6, padding: '16px 0', borderTop: '1px solid #E7E2D8', textAlign: 'center' }}>
-            Data: Chicago Police Department, CPD Radio (OpenMHz), ShotSpotter acoustic sensors,
-            RSS news (Block Club, WGN, ABC7, NBC5, CBS, Sun-Times, WBEZ, Fox 32), Open-Meteo weather.
-            <br />Contagion model: Papachristos et al., Yale/UChicago. Risk engine updates every 90 seconds.
-          </div>
-        </div>
+            citizenIncidents={citizenIncidents}
+            newsIncidents={newsIncidents}
+            dispatchIncidents={dispatchIncidents}
+            iceAlerts={iceAlerts}
+            scannerData={scannerData}
+            corridors={corridors}
+            forecast={forecast}
+            tempF={tempF}
+            schoolPeriod={schoolPeriod}
+            onBeginProtocol={handleBeginProtocol}
+            onAskPulse={scrollToIntelQuery}
+          />
         )
       ) : (
         <div>
