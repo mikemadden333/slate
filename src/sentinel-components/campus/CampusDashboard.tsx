@@ -125,22 +125,56 @@ function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert
   const generate = useCallback(async () => {
     setLoading(true);
     try {
-      const nearbyIncidents = incidents.filter(inc => {
+      // Use the EXACT same filters as the KPI strip in CampusHeader
+      const now = Date.now();
+
+      // 7-day incidents within 1mi (matches "INCIDENTS 7D" KPI)
+      const nearby7d = incidents.filter(inc => {
         const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-        return d <= 1.0 && ageInHours(inc.date) <= 24;
+        const age = (now - new Date(inc.date).getTime()) / (1000 * 3600 * 24);
+        return d <= 1.0 && age <= 7;
       });
-      const violent = nearbyIncidents.filter(inc =>
-        /HOMICIDE|SHOOTING|MURDER/i.test(inc.type)
-      );
+
+      // 24h serious violent crime within 1mi (matches "VIOLENT 24H" KPI)
+      // Only: homicide, murder, shooting, sexual assault, kidnapping, gun violence
+      // Excludes: battery, robbery, theft, property crime
+      const SERIOUS_VIOLENT = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
+      const violent24h = incidents.filter(inc => {
+        const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+        const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
+        return d <= 1.0 && age <= 24 && SERIOUS_VIOLENT.test(inc.type);
+      });
+
+      // 24h all-type incidents within 1mi
+      const nearby24h = incidents.filter(inc => {
+        const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+        const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
+        return d <= 1.0 && age <= 24;
+      });
+
+      // Top incident types for context
+      const typeCounts: Record<string, number> = {};
+      for (const inc of nearby7d) {
+        typeCounts[inc.type] = (typeCounts[inc.type] ?? 0) + 1;
+      }
+      const topTypes = Object.entries(typeCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([type, count]) => `${type}: ${count}`)
+        .join(', ');
+
+      const zoneCount = risk.contagionZones?.length ?? 0;
 
       const ctx = {
         campus: campus.short,
         communityArea: campus.communityArea,
         riskLabel: risk.label,
         riskScore: risk.score,
-        violentCount24h: violent.length,
-        totalNearby24h: nearbyIncidents.length,
-        contagionZones: risk.contagionZones?.length ?? 0,
+        incidents7d: nearby7d.length,
+        violent24h: violent24h.length,
+        allIncidents24h: nearby24h.length,
+        topIncidentTypes7d: topTypes || 'none',
+        contagionZones: zoneCount,
         inRetaliationWindow: risk.inRetaliationWindow,
         iceNearby: iceAlerts.length,
         tempF: Math.round(tempF),
@@ -152,17 +186,29 @@ function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 350,
+          max_tokens: 400,
           system: `You are Slate Watch writing a campus intelligence briefing for a school principal.
 
-Rules:
+CRITICAL DATA CONSISTENCY RULE:
+The dashboard KPI strip shows these exact numbers to the principal:
+- "${nearby7d.length} INCIDENTS 7D" (incidents within 1 mile in the past 7 days)
+- "${violent24h.length} VIOLENT 24H" (violent incidents within 1 mile in the past 24 hours)
+- "${zoneCount} CONTAGION ZONE${zoneCount !== 1 ? 'S' : ''}" (active contagion zones)
+
+Your briefing text appears directly below these numbers. You MUST reference these exact counts accurately.
+- If violent24h > 0, you MUST acknowledge the violent incidents. NEVER say "no violent incidents" when the count is above zero.
+- "Violent" means ONLY: homicides, murders, shootings, sexual assaults, kidnappings, and gun violence. NOT battery, robbery, or theft.
+- If incidents7d > 0, you MUST acknowledge recent activity. NEVER say the area has been quiet when incidents exist.
+- Reference specific incident types from topIncidentTypes7d when available.
+- Focus your narrative on serious threats to student safety — gun violence, homicides, sexual predators, kidnapping.
+
+Format rules:
 - Address the principal directly: "Your campus..."
 - 2-3 paragraphs max. Plain declarative sentences.
-- First paragraph: current status — what happened (or didn't) near their campus.
+- First paragraph: current status — reference the actual incident numbers and types.
 - Second paragraph: actionable guidance — what to do about it.
 - If ICE activity: mention it and recommend contacting Network Legal.
-- If cold weather: mention extended arrival/dismissal protocols.
-- If quiet: say so confidently, then mention what the system is monitoring.
+- If cold weather (below 32°F): mention extended arrival/dismissal protocols.
 - No markdown, no bullets, no headers.`,
           messages: [{ role: 'user', content: `Campus briefing context: ${JSON.stringify(ctx)}` }],
         }),
@@ -171,7 +217,7 @@ Rules:
       setText(data?.content?.[0]?.text ?? '');
     } catch { setText(''); }
     finally { setLoading(false); }
-  }, [campus.id, risk.label, iceAlerts.length]);
+  }, [campus.id, risk.label, iceAlerts.length, incidents.length]);
 
   useEffect(() => { generate(); }, [generate]);
 
@@ -240,10 +286,13 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
     return d <= 1.0 && age <= 7;
   }).length;
 
+  // Serious violent crime only: homicide, murder, shooting, sexual assault, kidnapping
+  // Excludes: battery, robbery, theft, property crime
+  const SERIOUS_VIOLENT_KPI = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
   const violent24h = incidents.filter(inc => {
     const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
     const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
-    return d <= 1.0 && age <= 24 && /HOMICIDE|SHOOTING|MURDER/i.test(inc.type);
+    return d <= 1.0 && age <= 24 && SERIOUS_VIOLENT_KPI.test(inc.type);
   }).length;
 
   const zoneCount = risk.contagionZones?.length ?? 0;
