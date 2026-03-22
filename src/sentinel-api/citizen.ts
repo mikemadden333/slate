@@ -93,8 +93,8 @@ export async function fetchCitizenIncidents(
       const geo = i.geometry as Record<string, number[]> | undefined;
       const loc = i.location as Record<string, number> | undefined;
 
-      let cLat = coords?.latitude ?? coords?.lat ?? loc?.latitude ?? loc?.lat ?? (i.lat as number) ?? 0;
-      let cLng = coords?.longitude ?? coords?.lng ?? loc?.longitude ?? loc?.lng ?? (i.lng as number) ?? 0;
+      let cLat = coords?.latitude ?? coords?.lat ?? loc?.latitude ?? loc?.lat ?? (i.latitude as number) ?? (i.lat as number) ?? 0;
+let cLng = coords?.longitude ?? coords?.lng ?? loc?.longitude ?? loc?.lng ?? (i.longitude as number) ?? (i.lng as number) ?? 0;
 
       // geometry: { coordinates: [lng, lat] } (GeoJSON format)
       if (cLat === 0 && geo?.coordinates && Array.isArray(geo.coordinates)) {
