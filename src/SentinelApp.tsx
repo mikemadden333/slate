@@ -621,10 +621,20 @@ export default function App() {
         )
       ) : (
         <div>
-          {networkTab === 'dashboard' && (
+         {networkTab === 'dashboard' && (
             <NetworkDashboard risks={allRisks} summary={networkSummary} forecast={networkForecast}
               iceAlerts={iceAlerts} shotSpotterEvents={shotSpotterEvents}
-              acuteIncidents={acuteIncidents} onSelectCampus={handleSelectCampusFromNetwork} />
+              acuteIncidents={acuteIncidents}
+              citizenIncidents={citizenIncidents}
+              newsIncidents={newsIncidents}
+              dispatchIncidents={dispatchIncidents}
+              scannerCalls={scannerData?.totalCalls ?? 0}
+              scannerSpikeZones={scannerData?.spikeZones.length ?? 0}
+              newsSourceCount={dataFreshness.newsSourceCount}
+              newsIncidentCount={dataFreshness.newsIncidentCount}
+              redditIncidentCount={redditIncidents.length}
+              cpdCount={dataFreshness.cpdCount}
+              onSelectCampus={handleSelectCampusFromNetwork} />
           )}
           {networkTab === 'map' && (
             <div style={{ borderRadius: 12, overflow: 'hidden' }}>
