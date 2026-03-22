@@ -25,6 +25,9 @@ interface Props {
   iceAlerts: IceAlert[];
   shotSpotterEvents: ShotSpotterEvent[];
   acuteIncidents: Incident[];
+  citizenIncidents?: CitizenIncident[];
+  newsIncidents?: Incident[];
+  dispatchIncidents?: DispatchIncident[];
   onSelectCampus: (id: number) => void;
 }
 
