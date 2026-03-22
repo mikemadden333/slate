@@ -111,7 +111,9 @@ let cLng = coords?.longitude ?? coords?.lng ?? loc?.longitude ?? loc?.lng ?? (i.
         description: String(i.raw ?? i.text ?? i.title ?? ''),
         lat: cLat,
         lng: cLng,
-        timestamp: i.ts
+                timestamp: i.cs
+          ? new Date(i.cs as number).toISOString()
+          : i.ts
           ? new Date((i.ts as number) * 1000).toISOString()
           : i.createdAt
           ? String(i.createdAt)
