@@ -10,7 +10,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
  *   /api/watch-proxy?feed=dispatch&hours=6
  *   /api/watch-proxy?feed=nws
  *   /api/watch-proxy?feed=cwb
- *   /api/watch-proxy?feed=bluesky&handle=cwbchicago.com&limit=50
+ *   /api/watch-proxy?feed=bluesky&actor=cwbchicago.bsky.social&limit=50
  *   /api/watch-proxy?feed=weather
  *   /api/watch-proxy?feed=news
  *   /api/watch-proxy?feed=scanner&since=<timestamp>
@@ -109,34 +109,37 @@ async function vr(req: VercelRequest) {
   } catch { return { incidents: [], count: 0, error: 'vr_failed' }; }
 }
 
-// ── CPD 911 DISPATCH ─────────────────────────────────────────
-const PRIORITY_TYPES = ['SHOOTING','PERSON SHOT','PERSON WITH A GUN','SHOTS FIRED',
-  'BATTERY IN PROGRESS','ASSAULT','ROBBERY','STABBING','DOMESTIC BATTERY',
-  'PERSON WITH A KNIFE','HOMICIDE','SUSPICIOUS PERSON','FIGHT','GANG DISTURBANCE'];
+// ── CPD DISPATCH (via Crime Reports) ─────────────────────────
+// Chicago does not publish real-time 911 dispatch data publicly.
+// We use CPD crime reports filtered to violent types as a dispatch proxy.
+const PRIORITY_TYPES = ['HOMICIDE','WEAPONS VIOLATION','CRIM SEXUAL ASSAULT','ROBBERY','ASSAULT','BATTERY'];
 
 async function dispatch(req: VercelRequest) {
-  const hours = Math.min(Number(req.query.hours) || 6, 48);
-  const key = `dispatch_${hours}`; const hit = cached(key, 180_000); if (hit) return hit;
+  const days = Math.min(Number(req.query.days) || 10, 30);
+  const key = `dispatch_${days}`; const hit = cached(key, 180_000); if (hit) return hit;
 
-  const since = new Date(Date.now() - hours * 3600000).toISOString();
-  const url = `https://data.cityofchicago.org/resource/n9g2-c7vt.json`
-    + `?$where=${encodeURIComponent(`entry_datetime>'${since}'`)}&$order=entry_datetime DESC&$limit=500`;
+  const since = new Date(Date.now() - days * 86400000).toISOString().split('T')[0];
+  const typeFilter = PRIORITY_TYPES.map(t => `primary_type='${t}'`).join(' OR ');
+  const where = `date>'${since}T00:00:00.000' AND (${typeFilter}) AND latitude IS NOT NULL`;
+  const url = `https://data.cityofchicago.org/resource/ijzp-q8t2.json`
+    + `?$where=${encodeURIComponent(where)}&$order=date DESC&$limit=500`;
 
   try {
     const res = await fetchRetry(url, { headers: { Accept: 'application/json' } }, 3, 20000);
-    const rows = await res.json();
-    const dispatches = rows.map((r: any) => {
-      const type = (r.initial_type_description || r.initial_type || '').toUpperCase();
+    const rows = await res.json() as any[];
+    const dispatches = (rows || []).map((r: any) => {
+      const type = (r.primary_type || '').toUpperCase();
       return {
-        id: r.event_no || r._id, time: r.entry_datetime,
-        type: r.initial_type_description || r.initial_type || 'Unknown',
+        id: r.id || r.case_number, time: r.date,
+        type: r.primary_type || 'Unknown',
+        description: r.description || '',
         block: r.block || '', district: r.district || '', beat: r.beat || '',
-        priority: r.priority || '',
-        isPriority: PRIORITY_TYPES.some(pt => type.includes(pt)),
-        status: r.current_disposition || '',
+        ward: r.ward || '',
+        isPriority: ['HOMICIDE','WEAPONS VIOLATION','CRIM SEXUAL ASSAULT'].includes(type),
+        latitude: Number(r.latitude), longitude: Number(r.longitude),
       };
     });
-    const data = { dispatches, count: dispatches.length, priorityCount: dispatches.filter((d: any) => d.isPriority).length, hours, fetchedAt: new Date().toISOString() };
+    const data = { dispatches, count: dispatches.length, priorityCount: dispatches.filter((d: any) => d.isPriority).length, days, source: 'CPD Crime Reports', fetchedAt: new Date().toISOString() };
     store(key, data); return data;
   } catch { return { dispatches: [], count: 0, priorityCount: 0, error: 'dispatch_failed' }; }
 }
@@ -182,7 +185,7 @@ async function cwb() {
   }
   // Fallback: Bluesky
   try {
-    const res = await fetchRetry('https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=cwbchicago.com&limit=30', { headers: { Accept: 'application/json' } });
+    const res = await fetchRetry('https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=did%3Aplc%3A3zhi77w7l2dic7ibsq2lof34&limit=30', { headers: { Accept: 'application/json' } });
     const raw = await res.json();
     const posts = (raw.feed || []).map((item: any) => ({
       text: item.post?.record?.text || '', createdAt: item.post?.record?.createdAt || '',
@@ -195,16 +198,20 @@ async function cwb() {
 
 // ── BLUESKY ──────────────────────────────────────────────────
 async function bluesky(req: VercelRequest) {
-  const handle = (req.query.handle as string) || 'cwbchicago.com';
+  const actor = (req.query.actor as string) || (req.query.handle as string) || 'did:plc:3zhi77w7l2dic7ibsq2lof34';
   const limit = Math.min(Number(req.query.limit) || 50, 100);
-  const key = `bsky_${handle}_${limit}`; const hit = cached(key, 180_000); if (hit) return hit;
+  const key = `bsky_${actor}_${limit}`; const hit = cached(key, 180_000); if (hit) return hit;
 
   try {
-    const res = await fetchRetry(`https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${handle}&limit=${limit}`, { headers: { Accept: 'application/json' } });
+    const res = await fetchRetry(
+      `https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(actor)}&limit=${limit}`,
+      { headers: { Accept: 'application/json' } },
+      3, 12000,
+    );
     const raw = await res.json();
     const posts = (raw.feed || []).map((item: any) => ({
       text: item.post?.record?.text || '', createdAt: item.post?.record?.createdAt || '',
-      uri: item.post?.uri || '', author: item.post?.author?.handle || handle,
+      uri: item.post?.uri || '', author: item.post?.author?.handle || 'cwbchicago.bsky.social',
       likeCount: item.post?.likeCount || 0, repostCount: item.post?.repostCount || 0,
     }));
     const data = { posts, count: posts.length, fetchedAt: new Date().toISOString() };
@@ -265,34 +272,47 @@ async function news(req: VercelRequest) {
   const data = { feeds }; store(key, data); return data;
 }
 
-// ── SCANNER (OpenMHz) ────────────────────────────────────────
+// ── SCANNER / DISPATCH ACTIVITY ──────────────────────────────
+// OpenMHz is Cloudflare-blocked as of March 2026.
+// Uses CPD recent violent crime data as real-time dispatch activity proxy.
+// CPD data has ~7-8 day lag, so we pull a 10-day window to ensure coverage.
 async function scanner(req: VercelRequest) {
-  const since = req.query.since as string || String(Date.now() - 3600000);
-  const key = `scanner_${since}`; const hit = cached(key, 120_000); if (hit) return hit;
+  const key = 'scanner_cpd'; const hit = cached(key, 120_000); if (hit) return hit;
 
-  // Try OpenMHz first
   try {
-    const res = await fetchRetry(
-      `https://api.openmhz.com/kcercs/calls?time=${since}&filterType=all`,
-      { headers: { Accept: 'application/json', 'User-Agent': 'Mozilla/5.0' } }, 1, 10000,
-    );
-    const data = await res.json();
-    if (data.calls && data.calls.length > 0) { store(key, data); return data; }
-  } catch { /* fall through to dispatch */ }
+    const hours = Number(req.query.hours) || 240; // 10 days default — CPD data lags ~8 days
+    const since = new Date(Date.now() - hours * 3600000).toISOString().split('T')[0];
 
-  // Fallback: CPD 911 dispatch
-  const hours = 6;
-  const sinceDate = new Date(Date.now() - hours * 3600000).toISOString();
-  try {
-    const url = `https://data.cityofchicago.org/resource/n9g2-c7vt.json`
-      + `?$where=${encodeURIComponent(`entry_datetime>'${sinceDate}'`)}&$order=entry_datetime DESC&$limit=200`;
-    const res = await fetchRetry(url, { headers: { Accept: 'application/json' } }, 2, 15000);
-    const rows = await res.json();
-    const calls = rows.map((r: any) => ({
-      id: r.event_no, time: r.entry_datetime, type: r.initial_type_description || r.initial_type || '',
-      block: r.block || '', district: r.district || '',
+    const typeFilter = "primary_type IN('WEAPONS VIOLATION','HOMICIDE','ASSAULT','BATTERY','ROBBERY','CRIM SEXUAL ASSAULT')";
+    const where = `date>'${since}T00:00:00.000' AND ${typeFilter} AND latitude IS NOT NULL`;
+    const url = `https://data.cityofchicago.org/resource/ijzp-q8t2.json`
+      + `?$where=${encodeURIComponent(where)}&$order=date DESC&$limit=500`;
+
+    const res = await fetchRetry(url, { headers: { Accept: 'application/json' } }, 3, 20000);
+    const raw = await res.json() as any[];
+
+    const calls = (raw || []).map((r: any) => ({
+      id: r.id || r.case_number,
+      time: r.date,
+      type: r.primary_type,
+      description: r.description,
+      block: r.block || '',
+      district: r.district || '',
+      beat: r.beat || '',
+      ward: r.ward || '',
+      communityArea: r.community_area || '',
+      latitude: Number(r.latitude),
+      longitude: Number(r.longitude),
+      source: 'CPD_DISPATCH',
     }));
-    const data = { calls, count: calls.length, source: 'cpd_dispatch', fetchedAt: new Date().toISOString() };
+
+    const data = {
+      calls,
+      count: calls.length,
+      source: 'Chicago Police Department — Crime Reports',
+      note: 'Violent crime dispatch activity from CPD (HOMICIDE, ASSAULT, BATTERY, ROBBERY, WEAPONS, CRIM SEXUAL ASSAULT). Data has ~7-8 day lag.',
+      fetchedAt: new Date().toISOString(),
+    };
     store(key, data); return data;
   } catch { return { calls: [], count: 0, error: 'scanner_failed' }; }
 }
