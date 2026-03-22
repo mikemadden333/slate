@@ -49,6 +49,7 @@ import type {
 } from './sentinel-engine/types';
 
 export const appStartTime = Date.now();
+export const SETTLE_TIME_MS = 15_000;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DESIGN TOKENS
