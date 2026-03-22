@@ -17,6 +17,8 @@ import { haversine, ageInHours } from '../../sentinel-engine/geo';
 import { getPrincipalCallList } from '../../sentinel-engine/principalPriority';
 import WeekForecast from '../campus/WeekForecast';
 import Explainer from '../shared/Explainer';
+import type { CitizenIncident } from '../../sentinel-api/citizen';
+import type { DispatchIncident } from '../../sentinel-api/scannerIntel';
 
 interface Props {
   risks: CampusRisk[];
