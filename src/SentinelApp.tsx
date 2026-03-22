@@ -43,6 +43,16 @@ import type {
   SchoolPeriod,
 } from './sentinel-engine/types';
 
+// ─── Network Tab Components ─────────────────────────────────────────────────
+import NetworkDashboard from './sentinel-components/network/NetworkDashboard';
+import NetworkMap from './sentinel-components/network/NetworkMap';
+import NetworkNews from './sentinel-components/network/NetworkNews';
+import NetworkIntelligence from './sentinel-components/network/NetworkIntelligence';
+import NetworkFeed from './sentinel-components/network/NetworkFeed';
+
+// ─── Campus Tab Component ───────────────────────────────────────────────────
+import CampusDashboard from './sentinel-components/campus/CampusDashboard';
+
 // Campus components
 import SituationCard from './sentinel-components/campus/SituationCard';
 import RightNowBar from './sentinel-components/campus/RightNowBar';
