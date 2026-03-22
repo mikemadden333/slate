@@ -43,44 +43,24 @@ import type {
   SchoolPeriod,
 } from './sentinel-engine/types';
 
-// ─── Network Tab Components ─────────────────────────────────────────────────
+// ─── Network Tab Components (NEW — "The Morning Brief" redesign) ────────────
 import NetworkDashboard from './sentinel-components/network/NetworkDashboard';
 import NetworkMap from './sentinel-components/network/NetworkMap';
 import NetworkNews from './sentinel-components/network/NetworkNews';
 import NetworkIntelligence from './sentinel-components/network/NetworkIntelligence';
 import NetworkFeed from './sentinel-components/network/NetworkFeed';
 
-// ─── Campus Tab Component ───────────────────────────────────────────────────
+// ─── Campus Tab Component (NEW — D2 "Nerve Center" design) ─────────────────
 import CampusDashboard from './sentinel-components/campus/CampusDashboard';
 
-// Campus components
-import SituationCard from './sentinel-components/campus/SituationCard';
-import RightNowBar from './sentinel-components/campus/RightNowBar';
-import MorningBriefing from './sentinel-components/campus/MorningBriefing';
-import ContagionPanel from './sentinel-components/campus/ContagionPanel';
-import WeekForecast from './sentinel-components/campus/WeekForecast';
-import IncidentList from './sentinel-components/campus/IncidentList';
-import SafeCorridorMap from './sentinel-components/campus/SafeCorridorMap';
-import IceIntelligence from './sentinel-components/campus/IceIntelligence';
-import EmergencyResponse from './sentinel-components/campus/EmergencyResponse';
-import CampusMap from './sentinel-components/campus/CampusMap';
-import LastNight from './sentinel-components/campus/LastNight';
-import DataFreshness from './sentinel-components/campus/DataFreshness';
+// ─── Campus support components (used by CampusDashboard internally or for feed) ──
 import RetaliationBanner from './sentinel-components/campus/RetaliationBanner';
 import { useRetaliationWindow } from './sentinel-hooks/useRetaliationWindow';
 import ContextualEducation from './sentinel-components/shared/ContextualEducation';
 import { useCampusMemory } from './sentinel-hooks/useCampusMemory';
-import SinceLastVisitCard from './sentinel-components/campus/SinceLastVisitCard';
-import CampusDashboard from './sentinel-components/campus/CampusDashboard';
 
-// Network components
-import NetworkDashboard from './sentinel-components/network/NetworkDashboard';
-import NetworkMap from './sentinel-components/network/NetworkMap';
-import NewsView from './sentinel-components/network/NewsView';
-import Intelligence from './sentinel-components/network/Analytics';
+// ─── Shared components ──────────────────────────────────────────────────────
 import CommandCenter from './sentinel-components/network/CommandCenter';
-
-// Shared components
 import ProtocolModal from './sentinel-components/shared/ProtocolModal';
 import IntelQuery from './sentinel-components/shared/IntelQuery';
 import CampusToolsDrawer from './sentinel-components/campus/CampusToolsDrawer';
@@ -332,8 +312,6 @@ export default function App() {
     }
     setNewsIncidents(parsed);
 
-    // ME and CPD Major removed — same publication lag as main CPD portal
-
     // Reddit real-time intel — r/ChicagoScanner, r/CrimeInChicago
     const redditData = await fetchRedditIntel(24);
     setRedditIncidents(redditData);
@@ -360,7 +338,6 @@ export default function App() {
     setScannerData(data);
     console.log('Scanner: ' + data.totalCalls + ' calls, ' + data.spikeZones.length + ' spike zones');
     // Transcribe ALL scanner calls for real-time dispatch intelligence
-    // This is the 24h overnight picture — the whole ballgame
     const allCalls = data.zones.flatMap(z => z.recentCalls);
     if (allCalls.length > 0) {
       console.log('Scanner intel: transcribing ' + allCalls.length + ' calls (no spike gate)');
@@ -554,8 +531,7 @@ export default function App() {
           />
         ) : (
           /* ══════════════════════════════════════════════════════════════
-           *  NEW: CampusDashboard replaces the old chapter-stack layout
-           *  All the same data, completely new visual — D2 "Nerve Center"
+           *  CampusDashboard — D2 "Nerve Center" design
            * ══════════════════════════════════════════════════════════════ */
           <CampusDashboard
             campus={selectedCampus}
@@ -578,10 +554,22 @@ export default function App() {
           />
         )
       ) : (
+        /* ══════════════════════════════════════════════════════════════
+         *  Network tabs — NEW redesigned components
+         *  Dashboard: "The Morning Brief"
+         *  Map: "The Situation Map"
+         *  News: "The Wire"
+         *  Intelligence: "The Analyst's View"
+         *  Feed: "The Chronograph"
+         * ══════════════════════════════════════════════════════════════ */
         <div>
-         {networkTab === 'dashboard' && (
-            <NetworkDashboard risks={allRisks} summary={networkSummary} forecast={networkForecast}
-              iceAlerts={iceAlerts} shotSpotterEvents={shotSpotterEvents}
+          {networkTab === 'dashboard' && (
+            <NetworkDashboard
+              risks={allRisks}
+              summary={networkSummary}
+              forecast={networkForecast}
+              iceAlerts={iceAlerts}
+              shotSpotterEvents={shotSpotterEvents}
               acuteIncidents={acuteIncidents}
               citizenIncidents={citizenIncidents}
               newsIncidents={newsIncidents}
@@ -592,26 +580,33 @@ export default function App() {
               newsIncidentCount={dataFreshness.newsIncidentCount}
               redditIncidentCount={redditIncidents.length}
               cpdCount={dataFreshness.cpdCount}
-              onSelectCampus={handleSelectCampusFromNetwork} />
+              onSelectCampus={handleSelectCampusFromNetwork}
+            />
           )}
           {networkTab === 'map' && (
-            <div style={{ borderRadius: 12, overflow: 'hidden' }}>
-              <NetworkMap risks={allRisks} zones={zones} incidents24h={acuteIncidents}
-                iceAlerts={iceAlerts} onSelectCampus={handleSelectCampusFromNetwork} />
-            </div>
+            <NetworkMap
+              risks={allRisks}
+              zones={zones}
+              incidents24h={acuteIncidents}
+              iceAlerts={iceAlerts}
+              onSelectCampus={handleSelectCampusFromNetwork}
+            />
           )}
           {networkTab === 'news' && (
-            <div style={{ maxWidth: 900, margin: '0 auto' }}>
-              <NewsView newsItems={newsItems} campusName={selectedCampus.short} />
-            </div>
+            <NetworkNews
+              newsItems={newsItems}
+              campusName={selectedCampus.short}
+            />
           )}
           {networkTab === 'intelligence' && (
-            <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-              <Intelligence risks={allRisks} incidents={incidents} zones={zones} />
-            </div>
+            <NetworkIntelligence
+              risks={allRisks}
+              incidents={incidents}
+              zones={zones}
+            />
           )}
           {networkTab === 'feed' && (
-            <FeedView
+            <NetworkFeed
               incidents={allIncidents}
               iceAlerts={iceAlerts}
               allCampuses={CAMPUSES}
