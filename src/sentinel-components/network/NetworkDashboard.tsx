@@ -27,7 +27,6 @@ import type { DispatchIncident } from '../../sentinel-api/scannerIntel';
 import { CAMPUSES } from '../../sentinel-data/campuses';
 import { RISK_COLORS } from '../../sentinel-data/weights';
 import { haversine } from '../../sentinel-engine/geo';
-import IntelQuery from '../shared/IntelQuery';
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 
@@ -791,19 +790,6 @@ export default function NetworkDashboard({
             </div>
           ))}
         </div>
-      </div>
-
-      {/* ═══ ASK SLATE ═══ */}
-      <div style={{
-        background: C.white, border: `1px solid ${C.chalk}`, borderRadius: 12,
-        padding: '20px 24px', marginBottom: 16,
-      }}>
-        <IntelQuery
-          context="network"
-          campusName="Network"
-          incidents={acuteIncidents}
-          iceAlerts={iceAlerts}
-        />
       </div>
     </div>
   );
