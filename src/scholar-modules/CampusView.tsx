@@ -12,7 +12,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useRoute, useLocation } from 'wouter';
 import { useWatchData } from '@/hooks/useWatchData';
-import { trpc } from '@/lib/trpc';
 import WatchLayout from '@/components/layout/WatchLayout';
 import { CAMPUSES, RISK_COLORS, SOURCE_STYLES, CONFIDENCE_STYLES } from '@/lib/campus-data';
 import { haversine, bearing as calcBearing, compassLabel, fmtAgo, fmtDist } from '@/lib/geo';
@@ -100,11 +99,9 @@ function useViolentCrimeStats(campus: typeof CAMPUSES[0] | undefined, incidents:
   }, [campus, incidents]);
 }
 
-// ─── AI Briefing Hook ───────────────────────────────────────
+// ─── AI Briefing Hook (uses /api/anthropic-proxy) ───────────
 
 function stripEchoedKPIs(raw: string): string {
-  // The LLM sometimes echoes back KPI numbers before the narrative.
-  // Strip lines like "0 VIOLENT 7D", "2 CONTAGION ZONES", etc.
   return raw
     .replace(/^\s*\d+\s+VIOLENT\s+\d+[DH]\s*$/gm, '')
     .replace(/^\s*\d+\s+CONTAGION\s+ZONES?\s*$/gm, '')
@@ -123,7 +120,6 @@ function useCampusBriefing(
   const [loading, setLoading] = useState(false);
   const prevKeyRef = useRef('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const briefingMutation = trpc.briefing.generate.useMutation();
 
   // Build a cache key from the values that should trigger regeneration
   const cacheKey = `${campus?.id}-${stats.violent7d}-${stats.violent24h}-${risk?.label}-${risk?.contagionZones?.length ?? 0}-${risk?.inRetaliationWindow}`;
@@ -132,7 +128,7 @@ function useCampusBriefing(
     if (!campus || !risk) return;
     setLoading(true);
     try {
-      const result = await briefingMutation.mutateAsync({
+      const input = {
         campusShort: campus.short,
         communityArea: campus.communityArea,
         riskLabel: risk.label,
@@ -145,15 +141,58 @@ function useCampusBriefing(
         iceNearby: 0,
         tempF: Math.round(tempF),
         timeOfDay: timeOfDay(),
+      };
+
+      const systemPrompt = `You are Slate Watch writing a campus intelligence briefing for a school principal.
+
+CRITICAL DATA CONSISTENCY RULE:
+The dashboard KPI strip shows these exact numbers to the principal:
+- "${input.violent7d} VIOLENT 7D" (violent crimes within 1 mile in the past 7 days)
+- "${input.violent24h} VIOLENT 24H" (violent crimes within 1 mile in the past 24 hours)
+- "${input.contagionZones} CONTAGION ZONE${input.contagionZones !== 1 ? 'S' : ''}" (active contagion zones)
+
+Your briefing text appears directly below these numbers. You MUST reference these exact counts accurately.
+- If violent24h > 0, you MUST acknowledge the violent incidents. NEVER say "no violent incidents" when the count is above zero.
+- If violent7d > 0, you MUST acknowledge recent violent activity. NEVER say the area has been quiet when violent incidents exist.
+- "Violent" means ONLY: homicides, murders, shootings, sexual assaults, kidnappings, and gun violence. NOT battery, robbery, or theft.
+- Reference specific incident types from topViolentTypes when available.
+- Focus your narrative EXCLUSIVELY on serious threats to student safety.
+- Data sources include CPD, news media, Citizen app, and police radio. All sources within 1 mile are included.
+
+Format rules:
+- Address the principal directly: "Your campus..."
+- 2-3 paragraphs max. Plain declarative sentences.
+- First paragraph: current status — reference the actual violent incident numbers and types.
+- Second paragraph: actionable guidance — what to do about it.
+- If ICE activity: mention it and recommend contacting Network Legal.
+- If cold weather (below 32°F): mention extended arrival/dismissal protocols.
+- No markdown, no bullets, no headers.
+- CRITICAL: Do NOT start your response by listing the KPI numbers. Do NOT echo back "0 VIOLENT 7D" or similar. Start directly with your narrative paragraph addressing the principal.`;
+
+      const res = await fetch('/api/anthropic-proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 500,
+          system: systemPrompt,
+          messages: [
+            { role: 'user', content: `Campus briefing context: ${JSON.stringify(input)}` },
+          ],
+        }),
       });
-      setText(stripEchoedKPIs(result.text || ''));
+
+      if (!res.ok) throw new Error(`Briefing API error: ${res.status}`);
+      const data = await res.json();
+      const content = data?.content?.[0]?.text || '';
+      setText(stripEchoedKPIs(content));
     } catch (err) {
       console.error('[Briefing] Error:', err);
       setText('');
     } finally {
       setLoading(false);
     }
-  }, [campus, risk, stats.violent7d, stats.violent24h, stats.topTypes, tempF, briefingMutation]);
+  }, [campus, risk, stats.violent7d, stats.violent24h, stats.topTypes, tempF]);
 
   // Auto-regenerate with debounce — waits for data to stabilize (3s after last change)
   useEffect(() => {
