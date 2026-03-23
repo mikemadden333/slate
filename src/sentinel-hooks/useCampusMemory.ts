@@ -63,6 +63,12 @@ export function useCampusMemory(campusId: number, risk: CampusRisk) {
   const [showCard, setShowCard] = useState(false);
   const autoHideTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
+  // Safe accessors — guard against risk being undefined/null during initial render
+  const riskScore = risk?.score ?? 0;
+  const riskLabel = risk?.label ?? 'LOW';
+  const riskInRetWin = risk?.inRetaliationWindow ?? false;
+  const riskZones = risk?.contagionZones ?? [];
+
   // Load memory and compute "since last visit" on mount
   useEffect(() => {
     const prev = loadMemory(campusId);
@@ -74,16 +80,16 @@ export function useCampusMemory(campusId: number, risk: CampusRisk) {
 
       // Only show "since last visit" if > 2 hours
       if (hoursAgo >= 2) {
-        const scoreChange = risk.score - prev.lastScore;
+        const scoreChange = riskScore - prev.lastScore;
 
         let retWindowUpdate: string | null = null;
-        if (prev.lastRetWin && risk.inRetaliationWindow) {
-          const retZone = risk.contagionZones.find(z => z.retWin);
+        if (prev.lastRetWin && riskInRetWin) {
+          const retZone = riskZones.find(z => z.retWin);
           if (retZone) {
             const hoursRemaining = Math.max(0, Math.round(72 - retZone.ageH));
             retWindowUpdate = `The retaliation window you were monitoring has advanced — ${hoursRemaining}h remaining.`;
           }
-        } else if (prev.lastRetWin && !risk.inRetaliationWindow) {
+        } else if (prev.lastRetWin && !riskInRetWin) {
           retWindowUpdate = 'The retaliation window you were monitoring has closed. Risk is returning to baseline.';
         }
 
@@ -108,10 +114,10 @@ export function useCampusMemory(campusId: number, risk: CampusRisk) {
     // Save current state as the new memory
     const newMemory: CampusMemory = {
       lastVisit: new Date().toISOString(),
-      lastScore: risk.score,
-      lastLabel: risk.label,
-      lastRetWin: risk.inRetaliationWindow,
-      lastRetZoneId: risk.contagionZones.find(z => z.retWin)?.incidentId ?? '',
+      lastScore: riskScore,
+      lastLabel: riskLabel,
+      lastRetWin: riskInRetWin,
+      lastRetZoneId: riskZones.find(z => z.retWin)?.incidentId ?? '',
       watchedItems: prev?.watchedItems ?? [],
     };
     saveMemory(campusId, newMemory);
@@ -126,9 +132,9 @@ export function useCampusMemory(campusId: number, risk: CampusRisk) {
   useEffect(() => {
     const prev = loadMemory(campusId);
     if (prev) {
-      saveMemory(campusId, { ...prev, lastScore: risk.score, lastLabel: risk.label, lastRetWin: risk.inRetaliationWindow });
+      saveMemory(campusId, { ...prev, lastScore: riskScore, lastLabel: riskLabel, lastRetWin: riskInRetWin });
     }
-  }, [campusId, risk.score, risk.label, risk.inRetaliationWindow]);
+  }, [campusId, riskScore, riskLabel, riskInRetWin]);
 
   const dismissCard = useCallback(() => {
     setShowCard(false);
@@ -158,15 +164,15 @@ export function useCampusMemory(campusId: number, risk: CampusRisk) {
   const resolvedItems = (memory?.watchedItems ?? []).filter(w => {
     if (w.type === 'zone') {
       // Check if the zone has closed
-      return !risk.contagionZones.some(z => z.incidentId === w.id);
+      return !riskZones.some(z => z.incidentId === w.id);
     }
     return false;
   });
 
   // Score change context
-  const scoreChangeText = memory && memory.lastScore !== risk.score
+  const scoreChangeText = memory && memory.lastScore !== riskScore
     ? (() => {
-        const diff = risk.score - memory.lastScore;
+        const diff = riskScore - memory.lastScore;
         const timeLabel = (() => {
           const h = (Date.now() - new Date(memory.lastVisit).getTime()) / 3600000;
           if (h < 12) return 'this morning';
@@ -187,6 +193,6 @@ export function useCampusMemory(campusId: number, risk: CampusRisk) {
     removeWatchedItem,
     resolvedItems,
     scoreChangeText,
-    scoreChangeDirection: memory ? (risk.score > memory.lastScore ? 'up' : risk.score < memory.lastScore ? 'down' : null) : null,
+    scoreChangeDirection: memory ? (riskScore > memory.lastScore ? 'up' : riskScore < memory.lastScore ? 'down' : null) : null,
   };
 }
