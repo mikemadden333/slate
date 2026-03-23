@@ -128,33 +128,26 @@ function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert
       // Use the EXACT same filters as the KPI strip in CampusHeader
       const now = Date.now();
 
-      // 7-day incidents within 1mi (matches "INCIDENTS 7D" KPI)
-      const nearby7d = incidents.filter(inc => {
+      // Violent crime only — matches KPI strip definitions
+      const SERIOUS_VIOLENT = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
+
+      // 7-day violent crime within 1mi (matches "VIOLENT 7D" KPI)
+      const violent7d = incidents.filter(inc => {
         const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
         const age = (now - new Date(inc.date).getTime()) / (1000 * 3600 * 24);
-        return d <= 1.0 && age <= 7;
+        return d <= 1.0 && age <= 7 && SERIOUS_VIOLENT.test(inc.type);
       });
 
-      // 24h serious violent crime within 1mi (matches "VIOLENT 24H" KPI)
-      // Only: homicide, murder, shooting, sexual assault, kidnapping, gun violence
-      // Excludes: battery, robbery, theft, property crime
-      const SERIOUS_VIOLENT = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
+      // 24h violent crime within 1mi (matches "VIOLENT 24H" KPI)
       const violent24h = incidents.filter(inc => {
         const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
         const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
         return d <= 1.0 && age <= 24 && SERIOUS_VIOLENT.test(inc.type);
       });
 
-      // 24h all-type incidents within 1mi
-      const nearby24h = incidents.filter(inc => {
-        const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-        const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
-        return d <= 1.0 && age <= 24;
-      });
-
-      // Top incident types for context
+      // Top violent incident types for context
       const typeCounts: Record<string, number> = {};
-      for (const inc of nearby7d) {
+      for (const inc of violent7d) {
         typeCounts[inc.type] = (typeCounts[inc.type] ?? 0) + 1;
       }
       const topTypes = Object.entries(typeCounts)
@@ -170,10 +163,9 @@ function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert
         communityArea: campus.communityArea,
         riskLabel: risk.label,
         riskScore: risk.score,
-        incidents7d: nearby7d.length,
+        violent7d: violent7d.length,
         violent24h: violent24h.length,
-        allIncidents24h: nearby24h.length,
-        topIncidentTypes7d: topTypes || 'none',
+        topViolentTypes7d: topTypes || 'none',
         contagionZones: zoneCount,
         inRetaliationWindow: risk.inRetaliationWindow,
         iceNearby: iceAlerts.length,
@@ -191,21 +183,22 @@ function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert
 
 CRITICAL DATA CONSISTENCY RULE:
 The dashboard KPI strip shows these exact numbers to the principal:
-- "${nearby7d.length} INCIDENTS 7D" (incidents within 1 mile in the past 7 days)
-- "${violent24h.length} VIOLENT 24H" (violent incidents within 1 mile in the past 24 hours)
+- "${violent7d.length} VIOLENT 7D" (violent crimes within 1 mile in the past 7 days)
+- "${violent24h.length} VIOLENT 24H" (violent crimes within 1 mile in the past 24 hours)
 - "${zoneCount} CONTAGION ZONE${zoneCount !== 1 ? 'S' : ''}" (active contagion zones)
 
 Your briefing text appears directly below these numbers. You MUST reference these exact counts accurately.
 - If violent24h > 0, you MUST acknowledge the violent incidents. NEVER say "no violent incidents" when the count is above zero.
+- If violent7d > 0, you MUST acknowledge recent violent activity. NEVER say the area has been quiet when violent incidents exist.
 - "Violent" means ONLY: homicides, murders, shootings, sexual assaults, kidnappings, and gun violence. NOT battery, robbery, or theft.
-- If incidents7d > 0, you MUST acknowledge recent activity. NEVER say the area has been quiet when incidents exist.
-- Reference specific incident types from topIncidentTypes7d when available.
-- Focus your narrative on serious threats to student safety — gun violence, homicides, sexual predators, kidnapping.
+- Reference specific incident types from topViolentTypes7d when available.
+- Focus your narrative EXCLUSIVELY on serious threats to student safety — gun violence, homicides, sexual predators, kidnapping.
+- Data sources include CPD, news media, Citizen app, and police radio. All sources within 1 mile are included.
 
 Format rules:
 - Address the principal directly: "Your campus..."
 - 2-3 paragraphs max. Plain declarative sentences.
-- First paragraph: current status — reference the actual incident numbers and types.
+- First paragraph: current status — reference the actual violent incident numbers and types.
 - Second paragraph: actionable guidance — what to do about it.
 - If ICE activity: mention it and recommend contacting Network Legal.
 - If cold weather (below 32°F): mention extended arrival/dismissal protocols.
@@ -278,17 +271,20 @@ const StatusBadge = ({ label }: { label: string }) => {
 const CampusHeader = ({ campus, risk, incidents, tempF }: {
   campus: Campus; risk: CampusRisk; incidents: Incident[]; tempF: number;
 }) => {
-  // Compute KPIs
-  const now = Date.now();
-  const nearby7d = incidents.filter(inc => {
-    const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-    const age = (now - new Date(inc.date).getTime()) / (1000 * 3600 * 24);
-    return d <= 1.0 && age <= 7;
-  }).length;
-
-  // Serious violent crime only: homicide, murder, shooting, sexual assault, kidnapping
+  // Compute KPIs — VIOLENT CRIME ONLY
+  // Only: homicide, murder, shooting, gun violence, sexual assault, kidnapping
   // Excludes: battery, robbery, theft, property crime
   const SERIOUS_VIOLENT_KPI = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
+  const now = Date.now();
+
+  // 7-day violent crime within 1mi
+  const violent7d = incidents.filter(inc => {
+    const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+    const age = (now - new Date(inc.date).getTime()) / (1000 * 3600 * 24);
+    return d <= 1.0 && age <= 7 && SERIOUS_VIOLENT_KPI.test(inc.type);
+  }).length;
+
+  // 24h violent crime within 1mi
   const violent24h = incidents.filter(inc => {
     const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
     const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
@@ -297,20 +293,20 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
 
   const zoneCount = risk.contagionZones?.length ?? 0;
 
-  // Build 7-day sparkline data
+  // Build 7-day sparkline data (violent crime only)
   const sparkData = Array.from({ length: 7 }, (_, i) => {
     const dayStart = now - (6 - i) * 86400000;
     const dayEnd = dayStart + 86400000;
     return incidents.filter(inc => {
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
       const t = new Date(inc.date).getTime();
-      return d <= 1.0 && t >= dayStart && t < dayEnd;
+      return d <= 1.0 && t >= dayStart && t < dayEnd && SERIOUS_VIOLENT_KPI.test(inc.type);
     }).length;
   });
 
   // Trend vs 30d average
-  const avg30d = Math.round(nearby7d / 7 * 30);
-  const trendPct = avg30d > 0 ? Math.round(((nearby7d / 7 * 30) / avg30d - 1) * 100) : 0;
+  const avg30d = Math.round(violent7d / 7 * 30);
+  const trendPct = avg30d > 0 ? Math.round(((violent7d / 7 * 30) / avg30d - 1) * 100) : 0;
 
   return (
     <div style={{
@@ -358,9 +354,9 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
         gap: 16, marginTop: 20,
       }}>
         {[
-          { value: nearby7d, label: 'INCIDENTS 7D', color: nearby7d > 20 ? C.watch : C.deep },
-          { value: violent24h, label: 'VIOLENT 24H', color: violent24h > 0 ? C.watch : C.deep },
-          { value: zoneCount, label: `CONTAGION ZONE${zoneCount !== 1 ? 'S' : ''}`, color: zoneCount > 0 ? C.amber : C.deep },
+          { value: violent7d, label: 'VIOLENT 7D', sublabel: 'within 1 mi', color: violent7d > 0 ? C.watch : C.deep },
+          { value: violent24h, label: 'VIOLENT 24H', sublabel: 'within 1 mi', color: violent24h > 0 ? C.watch : C.deep },
+          { value: zoneCount, label: `CONTAGION ZONE${zoneCount !== 1 ? 'S' : ''}`, sublabel: '', color: zoneCount > 0 ? C.amber : C.deep },
         ].map(kpi => (
           <div key={kpi.label} style={{ textAlign: 'center' }}>
             <div style={{
@@ -375,6 +371,14 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
             }}>
               {kpi.label}
             </div>
+            {kpi.sublabel && (
+              <div style={{
+                fontSize: 8, color: C.light, fontFamily: sans, marginTop: 2,
+                fontWeight: 400, letterSpacing: '.05em',
+              }}>
+                {kpi.sublabel}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -846,7 +850,47 @@ export default function CampusDashboard({
   iceAlerts, scannerData, corridors, forecast, tempF, schoolPeriod,
   onBeginProtocol, onAskPulse,
 }: Props) {
-  const briefing = useCampusBriefing(campus, risk, iceAlerts, incidents, tempF);
+  // ── Merge ALL incident sources so KPIs, briefing, and timeline see everything ──
+  // Deduplicate by id where possible; news/citizen/dispatch have synthetic ids
+  const allIncidents = useMemo(() => {
+    const seen = new Set<string>();
+    const merged: Incident[] = [];
+    const addAll = (arr: Incident[]) => {
+      for (const inc of arr) {
+        const key = inc.id || `${inc.lat}-${inc.lng}-${inc.date}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          merged.push(inc);
+        }
+      }
+    };
+    addAll(incidents);          // CPD data portal
+    addAll(acuteIncidents);     // Acute/realtime CPD
+    addAll(newsIncidents);      // News-geocoded incidents
+    // Convert citizen incidents to Incident shape if they have lat/lng/date/type
+    const citizenAsIncidents = (citizenIncidents || []).filter((c: any) => c.lat && c.lng && c.date).map((c: any) => ({
+      id: c.id || `citizen-${c.lat}-${c.lng}`,
+      lat: c.lat, lng: c.lng, date: c.date,
+      type: c.type || c.category || 'CITIZEN REPORT',
+      description: c.description || c.title || '',
+      block: c.block || c.address || '',
+      source: 'citizen',
+    } as Incident));
+    addAll(citizenAsIncidents);
+    // Convert dispatch incidents similarly
+    const dispatchAsIncidents = (dispatchIncidents || []).filter((d: any) => d.lat && d.lng && d.date).map((d: any) => ({
+      id: d.id || `dispatch-${d.lat}-${d.lng}`,
+      lat: d.lat, lng: d.lng, date: d.date,
+      type: d.type || d.category || 'DISPATCH',
+      description: d.description || d.title || '',
+      block: d.block || d.address || '',
+      source: 'scanner',
+    } as Incident));
+    addAll(dispatchAsIncidents);
+    return merged;
+  }, [incidents, acuteIncidents, newsIncidents, citizenIncidents, dispatchIncidents]);
+
+  const briefing = useCampusBriefing(campus, risk, iceAlerts, allIncidents, tempF);
 
   return (
     <div style={{ background: C.cream, fontFamily: sans, color: C.deep }}>
@@ -855,7 +899,7 @@ export default function CampusDashboard({
       <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 0 48px' }}>
 
         {/* ── Campus Header with KPIs ── */}
-        <CampusHeader campus={campus} risk={risk} incidents={incidents} tempF={tempF} />
+        <CampusHeader campus={campus} risk={risk} incidents={allIncidents} tempF={tempF} />
 
         {/* ── AI Intelligence Briefing ── */}
         <AIBriefing
@@ -891,7 +935,7 @@ export default function CampusDashboard({
           gap: 16, marginBottom: 24,
           minHeight: 380,
         }}>
-          <IncidentTimeline campus={campus} incidents={incidents} />
+          <IncidentTimeline campus={campus} incidents={allIncidents} />
           <CampusMapSection
             campus={campus} risk={risk} incidents={incidents}
             shotSpotterEvents={shotSpotterEvents} corridors={corridors}
