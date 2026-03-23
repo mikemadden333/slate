@@ -3,6 +3,12 @@
  * Lives between ContagionPanel and IncidentList. Always visible.
  * Control panel: time/distance/opacity sliders, type filters, layer toggles.
  * Fullscreen command mode. Toast notifications for new incidents.
+ *
+ * D3 FIXES:
+ *   1. Time slider now filters ALL sources (CPD included) — no more bypass
+ *   2. Default distance reduced to 1.0mi (was 3.0) for focused campus view
+ *   3. Scanner + corridor layers default OFF to reduce visual noise
+ *   4. Banner text clarified with exact filter state
  */
 
 import { appStartTime, SETTLE_TIME_MS } from '../../SentinelApp';
@@ -182,14 +188,12 @@ function MapController({ fitTrigger, bounds }: { fitTrigger: number; bounds: L.L
   useEffect(() => {
     if (fitTrigger > 0 && bounds && bounds.isValid()) {
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
-      // Never zoom out past neighborhood level
       if (map.getZoom() < 13) map.setZoom(13);
     }
   }, [fitTrigger, map, bounds]);
   return null;
 }
 
-/** Re-centers map when campus changes — always zoom 14 for neighborhood view */
 function CampusCenterController({ campusId, lat, lng }: { campusId: number; lat: number; lng: number }) {
   const map = useMap();
   useEffect(() => {
@@ -207,9 +211,9 @@ interface ToastItem { id: string; text: string; isHomicide: boolean }
 
 export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, contagionZones, corridors, scannerData }: Props) {
   /* ---- Slider state ---- */
-  const [timeSnapIdx, setTimeSnapIdx] = useState(2); // 24h default — overnight is the whole ballgame
+  const [timeSnapIdx, setTimeSnapIdx] = useState(2); // 24h default
   const timeWindowH = SNAP_HOURS[timeSnapIdx];
-  const [distanceRadius, setDistanceRadius] = useState(3.0);
+  const [distanceRadius, setDistanceRadius] = useState(1.0); // D3 FIX: was 3.0, now 1.0 for focused view
   const [zoneOpacity, setZoneOpacity] = useState(60);
 
   /* ---- Type filters ---- */
@@ -223,8 +227,8 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   const [showInc, setShowInc] = useState(true);
   const [showZones, setShowZones] = useState(true);
   const [showRadius, setShowRadius] = useState(true);
-  const [showCorridors, setShowCorridors] = useState(true);
-  const [showScanner, setShowScanner] = useState(true);
+  const [showCorridors, setShowCorridors] = useState(false); // D3 FIX: default OFF
+  const [showScanner, setShowScanner] = useState(false);     // D3 FIX: default OFF
 
   /* ---- UI ---- */
   const [fullscreen, setFullscreen] = useState(false);
@@ -238,7 +242,6 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   useEffect(() => {
     const ids = new Set(incidents.map(i => i.id));
 
-    // Silent during startup — no toasts for first 15 seconds after app launch
     if (Date.now() - appStartTime < SETTLE_TIME_MS) {
       prevIdsRef.current = ids;
       hasSeededRef.current = incidents.length > 0;
@@ -246,20 +249,16 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
     }
 
     if (!hasSeededRef.current) {
-      // First load after settle: seed known set with ALL current incidents, no toasts
       if (incidents.length > 0) {
         prevIdsRef.current = ids;
         hasSeededRef.current = true;
       }
       return;
     }
-    // Subsequent refreshes: only alert on genuinely new incidents within 3mi
     for (const inc of incidents) {
       if (prevIdsRef.current.has(inc.id)) continue;
-      const toastDist = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-      if (toastDist > 3.0) continue;
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-      if (d > 3.0) continue; // never toast beyond 3mi
+      if (d > 3.0) continue;
       const dir = compassLabel(bearing(campus.lat, campus.lng, inc.lat, inc.lng));
       const t: ToastItem = {
         id: inc.id,
@@ -274,22 +273,25 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
   }, [incidents, campus.lat, campus.lng]);
 
   /* ---- Filtered incidents ---- */
+  /* D3 FIX: Time filter now applies to ALL sources uniformly.
+     CPD data is 7-10 days old, so set the time slider to 14d or 30d to see it.
+     This eliminates the confusing behavior where the slider appeared broken. */
   const filteredInc = useMemo(() => {
     const cutoffMs = Date.now() - (timeWindowH * 60 * 60 * 1000);
-
-
 
     const result = incidents.filter(inc => {
       if (!inc.date) return false;
       const incMs = new Date(inc.date).getTime();
       if (isNaN(incMs)) return false;
+
+      // Distance filter — applies to all sources
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
       if (d > distanceRadius) return false;
-      // CPD verified data has structural 8-10 day lag — show as pattern, no time filter
-      // News and dispatch are live — apply time filter
-      if (inc.source === 'NEWS' || inc.source === 'DISPATCH') {
-        if (incMs < cutoffMs) return false;
-      }
+
+      // Time filter — applies to ALL sources uniformly (D3 FIX)
+      if (incMs < cutoffMs) return false;
+
+      // Type filter
       if (inc.source === 'NEWS') {
         if (!typeFilters['NEWS']) return false;
       } else {
@@ -299,15 +301,6 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       return true;
     });
 
-    console.log('Incidents after filter:', result.length);
-    if (result.length === 0 && incidents.length > 0) {
-      // Log age distribution to diagnose data skew
-      const ages = incidents.slice(0, 10).map(i => {
-        const ms = new Date(i.date).getTime();
-        return isNaN(ms) ? 'INVALID' : `${((Date.now() - ms) / 3600000).toFixed(1)}h`;
-      });
-      console.log('First 10 incident ages:', ages);
-    }
     return result;
   }, [incidents, timeSnapIdx, timeWindowH, distanceRadius, campus.lat, campus.lng, typeFilters]);
 
@@ -388,7 +381,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
       {/* Slider 1: Time Window */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontWeight: 600, color: '#121315' }}>Live Source Window</span>
+          <span style={{ fontWeight: 600, color: '#121315' }}>Time Window</span>
           <span style={{ color: '#6B7280', fontSize: 13 }}>Last {fmtTimeLabel(timeWindowH)}</span>
         </div>
         <input
@@ -401,7 +394,7 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
           {SNAP_LABELS.map(l => <span key={l}>{l}</span>)}
         </div>
         <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>
-          News + dispatch filtered to last {fmtTimeLabel(timeWindowH)} · CPD pattern always shown
+          All sources filtered to last {fmtTimeLabel(timeWindowH)} · CPD data is typically 7-10 days old — use 14d+ to see it
         </div>
       </div>
 
@@ -504,14 +497,14 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
         borderBottom: 'none',
       }}>
         <span>
-          <strong>Showing {visibleCount} incident{visibleCount !== 1 ? 's' : ''}</strong> within {distanceRadius.toFixed(1)}mi — CPD pattern + {fmtTimeLabel(timeWindowH)} live
+          <strong>Showing {visibleCount} incident{visibleCount !== 1 ? 's' : ''}</strong> within {distanceRadius.toFixed(1)}mi · last {fmtTimeLabel(timeWindowH)}
         </span>
         <span style={{ fontSize: 11, color: '#6B7280' }}>
           {incidents.length} total loaded
         </span>
       </div>
 
-      {/* Approximate location banner — visible when NEWS filter is on and news incidents exist */}
+      {/* Approximate location banner */}
       {typeFilters['NEWS'] && (typeCounts['NEWS'] ?? 0) > 0 && (
         <div style={{
           padding: '6px 14px', fontSize: 11, color: '#92400E',
@@ -615,10 +608,10 @@ export default function CampusMap({ campus, risk, incidents, shotSpotterEvents, 
             if (!district) return null;
             const maxCount = Math.max(...Object.values(scannerData.talkgroupCounts));
             const intensity = count / Math.max(maxCount, 1);
-            const radius = 400 + intensity * 1200; // 400m quiet → 1600m busy
+            const radius = 400 + intensity * 1200;
             const color = intensity > 0.6 ? '#D95F0C' : intensity > 0.3 ? '#B79145' : '#6B7280';
             const dist = haversine(campus.lat, campus.lng, district.lat, district.lng);
-            if (dist > 8) return null; // only show districts within 8mi
+            if (dist > 8) return null;
             return (
               <Circle
                 key={`scanner_${tg}`}
