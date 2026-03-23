@@ -157,7 +157,17 @@ export default function App() {
     [incidents, acuteIncidents, shotSpotterEvents, zones, tempF],
   );
 
-  const selectedRisk = allRisks.find(r => r.campusId === selectedCampusId) ?? allRisks[0];
+  // Safe default prevents crash when allRisks is empty (before first data load)
+  const DEFAULT_RISK: CampusRisk = {
+    campusId: selectedCampusId,
+    score: 0,
+    label: 'LOW',
+    inRetaliationWindow: false,
+    retaliationHoursRemaining: 0,
+    contagionZones: [],
+    factors: [],
+  } as CampusRisk;
+  const selectedRisk = allRisks.find(r => r.campusId === selectedCampusId) ?? allRisks[0] ?? DEFAULT_RISK;
 
   const forecast = useMemo(
     () => buildWeekForecast(selectedCampus, incidents, zones, weatherForecast),
