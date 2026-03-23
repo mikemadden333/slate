@@ -1,909 +1,271 @@
-/**
- * CampusView — Campus Intelligence Dashboard
- *
- * Layout:
- *   Header: Campus name, risk badge, KPI strip (violent crime only, 1mi)
- *   AI Briefing: Full-width intelligence narrative (auto-updates on violent crime changes)
- *   Two-column: Large map (left 60%) | Intel panel (right 40%)
- *   Contagion zones (if any)
- *   Ask Slate / Dismissal button
- */
+import { useState } from 'react';
+import {
+  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer, ReferenceLine,
+} from 'recharts';
+import { useRoster } from '../scholar-context/RosterDataContext';
 
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { useRoute, useLocation } from 'wouter';
-import { useWatchData } from '@/hooks/useWatchData';
-import WatchLayout from '@/components/layout/WatchLayout';
-import { CAMPUSES, RISK_COLORS, SOURCE_STYLES, CONFIDENCE_STYLES } from '@/lib/campus-data';
-import { haversine, bearing as calcBearing, compassLabel, fmtAgo, fmtDist } from '@/lib/geo';
-import WatchMap from '@/components/map/WatchMap';
-import LiveFeed from '@/components/feed/LiveFeed';
-import DismissalAssistant from '@/components/dismissal/DismissalAssistant';
-import { Loader2, MapPin, ArrowRight, ExternalLink, Shield, AlertTriangle, RefreshCw, Zap } from 'lucide-react';
-import type { UnifiedIncident, CampusRisk, ContagionZone } from '@/lib/types';
+const C = {
+  bg: '#0D1117', card: '#161B22', border: '#30363D',
+  text: '#E6EDF3', muted: '#8B949E', gold: '#F0B429',
+  green: '#3FB950', red: '#F85149', blue: '#58A6FF', purple: '#BC8CFF',
+};
 
-// ─── Constants ──────────────────────────────────────────────
+const YEARS_HIST  = ['SY18','SY19','SY20','SY21','SY22','SY23','SY24','SY25'];
+const YEARS_PROJ  = ['SY26','SY27','SY28','SY29','SY30'];
 
-const PRIMARY_TABS = [
-  { label: 'Network', href: '/network' },
-  { label: 'My Campus', href: '/campus' },
-  { label: 'How It Works', href: '/how-it-works' },
-];
+export default function CampusView() {
+  const { data } = useRoster();
+  const [selectedName, setSelectedName] = useState(data.campuses[0].name);
+  const [aiResponse, setAiResponse]     = useState('');
+  const [aiLoading, setAiLoading]       = useState(false);
+  const [aiRan, setAiRan]               = useState(false);
 
-const SUB_TABS = [
-  { label: 'Dashboard', id: 'dashboard' },
-  { label: 'Map', id: 'map' },
-  { label: 'News', id: 'news' },
-  { label: 'Feed', id: 'feed' },
-];
+  const campus = data.campuses.find(c => c.name === selectedName)!;
 
-/** Violent crime filter — ONLY serious threats to student safety */
-const SERIOUS_VIOLENT = /HOMICIDE|MURDER|SHOOTING|SHOT.?SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
+  // Build chart data — history bars + forecast lines
+  const chartData = [
+    ...YEARS_HIST.map((yr, i) => ({
+      year: yr,
+      actual: campus.history[i] ?? null,
+      forecast: null as number | null,
+    })),
+    ...YEARS_PROJ.map((yr, i) => ({
+      year: yr,
+      actual: null as number | null,
+      forecast: campus.forecast[i] ?? null,
+    })),
+  ];
 
-const serif = "'Playfair Display', Georgia, 'Times New Roman', serif";
-const sans = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
-const mono = "'JetBrains Mono', 'SF Mono', Menlo, monospace";
+  const sy25 = campus.history[7];
+  const sy26 = campus.forecast[0];
+  const sy30 = campus.forecast[4];
+  const delta2526 = sy26 !== undefined && sy25 !== undefined ? sy26 - sy25 : null;
+  const delta2530 = sy30 !== undefined && sy25 !== undefined ? sy30 - sy25 : null;
+  const utilPct   = sy25 / campus.capacity * 100;
 
-// ─── Helpers ────────────────────────────────────────────────
+  // Grade breakdown (HS only — grade6-8 not tracked for most campuses)
+  const gradeTotal = campus.grade9 + campus.grade10 + campus.grade11 + campus.grade12;
+  const grades = [
+    { label: '9th', value: campus.grade9 },
+    { label: '10th', value: campus.grade10 },
+    { label: '11th', value: campus.grade11 },
+    { label: '12th', value: campus.grade12 },
+  ];
 
-function timeOfDay(): string {
-  const h = new Date().getHours();
-  if (h < 5) return 'Overnight';
-  if (h < 12) return 'Morning';
-  if (h < 17) return 'Afternoon';
-  if (h < 21) return 'Evening';
-  return 'Tonight';
-}
+  const analyze = async () => {
+    setAiLoading(true);
+    setAiResponse('');
+    setAiRan(true);
 
-function formatAge(ts: string): string {
-  const mins = Math.round((Date.now() - new Date(ts).getTime()) / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
-}
+    const histStr = YEARS_HIST.map((yr, i) => `${yr}: ${campus.history[i] ?? 'N/A'}`).join(', ');
+    const projStr = YEARS_PROJ.map((yr, i) => `${yr}: ${campus.forecast[i] ?? 'N/A'}`).join(', ');
 
-// ─── Violent Crime Computation Hook ─────────────────────────
+    const prompt = `
+NOBLE SCHOOLS — CAMPUS ENROLLMENT ANALYSIS
+Campus: ${campus.name}
+SY25 Enrolled: ${sy25} / Capacity: ${campus.capacity} (${utilPct.toFixed(1)}% utilization)
+SY26 Projected: ${sy26} (${delta2526 !== null ? (delta2526 >= 0 ? '+' : '') + delta2526 : 'N/A'} vs SY25)
+SY30 Projected: ${sy30} (${delta2530 !== null ? (delta2530 >= 0 ? '+' : '') + delta2530 : 'N/A'} vs SY25)
+Yield Rate: ${(campus.yield * 100).toFixed(1)}%
+Attrition Rate: ${(campus.attrition * 100).toFixed(1)}%
+Applications: ${campus.applied.toLocaleString()} | Accepted: ${campus.accepted.toLocaleString()}
+Grade breakdown (SY25): 9th=${campus.grade9}, 10th=${campus.grade10}, 11th=${campus.grade11}, 12th=${campus.grade12}
 
-function useViolentCrimeStats(campus: typeof CAMPUSES[0] | undefined, incidents: UnifiedIncident[]) {
-  return useMemo(() => {
-    if (!campus) return { violent7d: 0, violent24h: 0, topTypes: '', violentIncidents7d: [] as UnifiedIncident[] };
+C1 Actuals (SY18–SY25): ${histStr}
+C1 Projections (SY26–SY30): ${projStr}
 
-    const now = Date.now();
+You are an enrollment strategist. Analyze this campus in 3 parts:
+1. What the historical trend tells us — is this campus growing, declining, or volatile? Why?
+2. What the SY26–SY30 projection implies for this campus and any risks to watch.
+3. One specific, actionable recommendation for the enrollment director at this campus.
+Under 200 words. Use actual numbers. No platitudes.`;
 
-    const violent7d = incidents.filter(inc => {
-      const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-      const age = (now - new Date(inc.timestamp).getTime()) / (1000 * 3600 * 24);
-      return d <= 1.0 && age <= 7 && SERIOUS_VIOLENT.test(inc.title + ' ' + inc.category);
-    });
-
-    const violent24h = incidents.filter(inc => {
-      const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-      const age = (now - new Date(inc.timestamp).getTime()) / (1000 * 3600);
-      return d <= 1.0 && age <= 24 && SERIOUS_VIOLENT.test(inc.title + ' ' + inc.category);
-    });
-
-    // Top types for context
-    const typeCounts: Record<string, number> = {};
-    for (const inc of violent7d) {
-      const cat = inc.category || 'OTHER';
-      typeCounts[cat] = (typeCounts[cat] ?? 0) + 1;
-    }
-    const topTypes = Object.entries(typeCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([type, count]) => `${type}: ${count}`)
-      .join(', ');
-
-    return { violent7d: violent7d.length, violent24h: violent24h.length, topTypes: topTypes || 'none', violentIncidents7d: violent7d };
-  }, [campus, incidents]);
-}
-
-// ─── AI Briefing Hook (uses /api/anthropic-proxy) ───────────
-
-function stripEchoedKPIs(raw: string): string {
-  return raw
-    .replace(/^\s*\d+\s+VIOLENT\s+\d+[DH]\s*$/gm, '')
-    .replace(/^\s*\d+\s+CONTAGION\s+ZONES?\s*$/gm, '')
-    .replace(/^\n+/, '')
-    .trim();
-}
-
-function useCampusBriefing(
-  campus: typeof CAMPUSES[0] | undefined,
-  risk: CampusRisk | undefined,
-  stats: { violent7d: number; violent24h: number; topTypes: string },
-  tempF: number,
-  dataReady: boolean,
-) {
-  const [text, setText] = useState('');
-  const [loading, setLoading] = useState(false);
-  const prevKeyRef = useRef('');
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Build a cache key from the values that should trigger regeneration
-  const cacheKey = `${campus?.id}-${stats.violent7d}-${stats.violent24h}-${risk?.label}-${risk?.contagionZones?.length ?? 0}-${risk?.inRetaliationWindow}`;
-
-  const generate = useCallback(async () => {
-    if (!campus || !risk) return;
-    setLoading(true);
     try {
-      const input = {
-        campusShort: campus.short,
-        communityArea: campus.communityArea,
-        riskLabel: risk.label,
-        riskScore: risk.score,
-        violent7d: stats.violent7d,
-        violent24h: stats.violent24h,
-        topViolentTypes: stats.topTypes,
-        contagionZones: risk.contagionZones?.length ?? 0,
-        inRetaliationWindow: risk.inRetaliationWindow ?? false,
-        iceNearby: 0,
-        tempF: Math.round(tempF),
-        timeOfDay: timeOfDay(),
-      };
-
-      const systemPrompt = `You are Slate Watch writing a campus intelligence briefing for a school principal.
-
-CRITICAL DATA CONSISTENCY RULE:
-The dashboard KPI strip shows these exact numbers to the principal:
-- "${input.violent7d} VIOLENT 7D" (violent crimes within 1 mile in the past 7 days)
-- "${input.violent24h} VIOLENT 24H" (violent crimes within 1 mile in the past 24 hours)
-- "${input.contagionZones} CONTAGION ZONE${input.contagionZones !== 1 ? 'S' : ''}" (active contagion zones)
-
-Your briefing text appears directly below these numbers. You MUST reference these exact counts accurately.
-- If violent24h > 0, you MUST acknowledge the violent incidents. NEVER say "no violent incidents" when the count is above zero.
-- If violent7d > 0, you MUST acknowledge recent violent activity. NEVER say the area has been quiet when violent incidents exist.
-- "Violent" means ONLY: homicides, murders, shootings, sexual assaults, kidnappings, and gun violence. NOT battery, robbery, or theft.
-- Reference specific incident types from topViolentTypes when available.
-- Focus your narrative EXCLUSIVELY on serious threats to student safety.
-- Data sources include CPD, news media, Citizen app, and police radio. All sources within 1 mile are included.
-
-Format rules:
-- Address the principal directly: "Your campus..."
-- 2-3 paragraphs max. Plain declarative sentences.
-- First paragraph: current status — reference the actual violent incident numbers and types.
-- Second paragraph: actionable guidance — what to do about it.
-- If ICE activity: mention it and recommend contacting Network Legal.
-- If cold weather (below 32°F): mention extended arrival/dismissal protocols.
-- No markdown, no bullets, no headers.
-- CRITICAL: Do NOT start your response by listing the KPI numbers. Do NOT echo back "0 VIOLENT 7D" or similar. Start directly with your narrative paragraph addressing the principal.`;
-
-      const res = await fetch('/api/anthropic-proxy', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 500,
-          system: systemPrompt,
-          messages: [
-            { role: 'user', content: `Campus briefing context: ${JSON.stringify(input)}` },
-          ],
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }],
         }),
       });
-
-      if (!res.ok) throw new Error(`Briefing API error: ${res.status}`);
-      const data = await res.json();
-      const content = data?.content?.[0]?.text || '';
-      setText(stripEchoedKPIs(content));
-    } catch (err) {
-      console.error('[Briefing] Error:', err);
-      setText('');
+      const json = await res.json();
+      const text = json.content?.map((b: { type: string; text?: string }) =>
+        b.type === 'text' ? b.text : '').join('') ?? 'No response.';
+      setAiResponse(text);
+    } catch {
+      setAiResponse('Analysis unavailable.');
     } finally {
-      setLoading(false);
+      setAiLoading(false);
     }
-  }, [campus, risk, stats.violent7d, stats.violent24h, stats.topTypes, tempF]);
-
-  // Auto-regenerate with debounce — waits for data to stabilize (3s after last change)
-  useEffect(() => {
-    if (!dataReady || !campus || !risk) return;
-    if (cacheKey === prevKeyRef.current) return;
-
-    // Clear any pending debounce
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(() => {
-      prevKeyRef.current = cacheKey;
-      generate();
-    }, 3000); // Wait 3s for data feeds to stabilize
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [cacheKey, campus, risk, generate, dataReady]);
-
-  return { text, loading, refresh: generate };
-}
-
-// ─── Sparkline Component ────────────────────────────────────
-
-function Sparkline({ data, color = '#C0392B', width = 120, height = 36 }: {
-  data: number[]; color?: string; width?: number; height?: number;
-}) {
-  if (data.length < 2) return null;
-  const max = Math.max(...data, 1);
-  const min = Math.min(...data, 0);
-  const range = max - min || 1;
-  const points = data.map((v, i) => {
-    const x = (i / (data.length - 1)) * width;
-    const y = height - ((v - min) / range) * (height - 4) - 2;
-    return `${x},${y}`;
-  }).join(' ');
-
-  return (
-    <svg width={width} height={height} style={{ display: 'block' }}>
-      <polyline points={points} fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
-      {(() => {
-        const lastX = width;
-        const lastY = height - ((data[data.length - 1] - min) / range) * (height - 4) - 2;
-        return <circle cx={lastX} cy={lastY} r={2.5} fill={color} />;
-      })()}
-    </svg>
-  );
-}
-
-// ─── Status Badge ───────────────────────────────────────────
-
-function StatusBadge({ label }: { label: string }) {
-  const colors: Record<string, { bg: string; text: string }> = {
-    LOW:      { bg: '#DCFCE7', text: '#14532D' },
-    ELEVATED: { bg: '#FEF3C7', text: '#92400E' },
-    HIGH:     { bg: '#FEE2E2', text: '#991B1B' },
-    CRITICAL: { bg: '#DC2626', text: '#FFFFFF' },
   };
-  const c = colors[label] ?? colors.LOW;
-  return (
-    <span style={{
-      fontSize: 10, fontWeight: 800, letterSpacing: '.1em',
-      padding: '4px 12px', borderRadius: 20,
-      background: c.bg, color: c.text, fontFamily: sans,
-    }}>
-      {label}
-    </span>
-  );
-}
 
-// ─── Campus Header with KPIs ────────────────────────────────
-
-function CampusHeader({ campus, risk, stats, tempF, sparkData }: {
-  campus: typeof CAMPUSES[0];
-  risk: CampusRisk;
-  stats: { violent7d: number; violent24h: number };
-  tempF: number;
-  sparkData: number[];
-}) {
-  const zoneCount = risk.contagionZones?.length ?? 0;
+  // Reset AI when campus changes
+  const handleCampusChange = (name: string) => {
+    setSelectedName(name);
+    setAiResponse('');
+    setAiRan(false);
+  };
 
   return (
-    <div style={{
-      background: '#FFFFFF', borderRadius: 12, border: '1px solid #E5E1D8',
-      borderTop: `4px solid ${risk.label === 'LOW' ? '#16A34A' : risk.label === 'ELEVATED' ? '#D97706' : '#C0392B'}`,
-      padding: '24px 28px', marginBottom: 20,
-    }}>
-      {/* Top row: name + badge + sparkline */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <h1 style={{
-            fontFamily: serif, fontSize: 28, fontWeight: 900,
-            color: '#1A1A1A', letterSpacing: '-.02em', margin: 0,
-          }}>
-            {campus.short.toUpperCase()}
-          </h1>
-          <StatusBadge label={risk.label} />
+    <div style={{ fontFamily: "'Inter', sans-serif" }}>
+
+      {/* Campus selector */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 11, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+          Select Campus
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ textAlign: 'right' }}>
-            <Sparkline data={sparkData} color={risk.label === 'LOW' ? '#16A34A' : '#C0392B'} />
-            <div style={{ fontSize: 10, color: '#9CA3AF', fontFamily: sans, marginTop: 2 }}>
-              7-day violent trend
-            </div>
-          </div>
-          <div style={{ fontSize: 12, color: '#6B7280', fontFamily: sans, display: 'flex', alignItems: 'center', gap: 4 }}>
-            {Math.round(tempF)}°F
-          </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {data.campuses.map(c => (
+            <button
+              key={c.name}
+              onClick={() => handleCampusChange(c.name)}
+              style={{
+                padding: '7px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600,
+                cursor: 'pointer', border: `1px solid ${selectedName === c.name ? C.gold : C.border}`,
+                background: selectedName === c.name ? C.gold + '22' : C.card,
+                color: selectedName === c.name ? C.gold : C.muted,
+                transition: 'all 0.15s',
+              }}
+            >
+              {c.short}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Address */}
-      <div style={{ fontSize: 12, color: '#9CA3AF', fontFamily: sans, marginTop: 6 }}>
-        {campus.addr} · {campus.communityArea}
-      </div>
-
-      {/* KPI Strip */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 20 }}>
+      {/* KPI strip */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12, marginBottom: 24 }}>
         {[
-          { value: stats.violent7d, label: 'VIOLENT 7D', sublabel: 'within 1 mi', color: stats.violent7d > 0 ? '#C0392B' : '#1A1A1A' },
-          { value: stats.violent24h, label: 'VIOLENT 24H', sublabel: 'within 1 mi', color: stats.violent24h > 0 ? '#C0392B' : '#1A1A1A' },
-          { value: zoneCount, label: `CONTAGION ZONE${zoneCount !== 1 ? 'S' : ''}`, sublabel: '', color: zoneCount > 0 ? '#D97706' : '#1A1A1A' },
-        ].map(kpi => (
-          <div key={kpi.label} style={{ textAlign: 'center' }}>
-            <div style={{ fontFamily: serif, fontSize: 36, fontWeight: 900, color: kpi.color, lineHeight: 1 }}>
-              {kpi.value}
-            </div>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.12em', color: '#9CA3AF', fontFamily: sans, marginTop: 6 }}>
-              {kpi.label}
-            </div>
-            {kpi.sublabel && (
-              <div style={{ fontSize: 8, color: '#9CA3AF', fontFamily: sans, marginTop: 2, fontWeight: 400, letterSpacing: '.05em' }}>
-                {kpi.sublabel}
-              </div>
-            )}
+          {
+            label: 'SY25 Enrolled', value: sy25?.toLocaleString() ?? '—',
+            sub: `of ${campus.capacity.toLocaleString()} capacity`, color: C.blue,
+          },
+          {
+            label: 'Utilization', value: `${utilPct.toFixed(1)}%`,
+            sub: utilPct >= 95 ? 'At capacity' : `${(campus.capacity - sy25).toLocaleString()} seats open`,
+            color: utilPct >= 95 ? C.green : utilPct >= 85 ? C.gold : C.red,
+          },
+          {
+            label: 'SY26 Projected', value: sy26?.toLocaleString() ?? '—',
+            sub: delta2526 !== null ? `${delta2526 >= 0 ? '+' : ''}${delta2526} vs SY25` : '',
+            color: delta2526 !== null && delta2526 >= 0 ? C.green : C.red,
+          },
+          {
+            label: 'SY30 Projected', value: sy30?.toLocaleString() ?? '—',
+            sub: delta2530 !== null ? `${delta2530 >= 0 ? '+' : ''}${delta2530} vs SY25` : '',
+            color: delta2530 !== null && delta2530 >= 0 ? C.green : C.red,
+          },
+          {
+            label: 'Yield Rate', value: `${(campus.yield * 100).toFixed(1)}%`,
+            sub: `${campus.accepted.toLocaleString()} offers → enrolled`,
+            color: campus.yield >= 0.52 ? C.green : campus.yield >= 0.42 ? C.gold : C.red,
+          },
+          {
+            label: 'Attrition Rate', value: `${(campus.attrition * 100).toFixed(1)}%`,
+            sub: `~${Math.round(sy25 * campus.attrition)} students/yr`,
+            color: campus.attrition > 0.042 ? C.red : campus.attrition > 0.034 ? C.gold : C.green,
+          },
+        ].map((k, i) => (
+          <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: '14px 16px' }}>
+            <div style={{ fontSize: 10, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{k.label}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: k.color, fontFamily: "'DM Mono', monospace" }}>{k.value}</div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>{k.sub}</div>
           </div>
         ))}
       </div>
-    </div>
-  );
-}
 
-// ─── AI Intelligence Briefing ───────────────────────────────
-
-function AIBriefing({ briefing }: {
-  briefing: { text: string; loading: boolean; refresh: () => void };
-}) {
-  const tod = timeOfDay().toUpperCase();
-
-  return (
-    <div style={{
-      background: '#FFFDF8', borderRadius: 12,
-      border: '1px solid #E5E1D8', padding: '24px 28px',
-      marginBottom: 20,
-    }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Zap size={14} style={{ color: '#B79145' }} />
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1A1A', fontFamily: sans, letterSpacing: '-.01em' }}>
-            AI Intelligence Briefing
-          </span>
+      {/* Trend chart */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+          {campus.name} — Enrollment Trend
         </div>
-        <button
-          onClick={briefing.refresh}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
-          title="Regenerate briefing"
-        >
-          <RefreshCw size={12} className={briefing.loading ? 'animate-spin' : ''} style={{ color: '#9CA3AF' }} />
-        </button>
+        <div style={{ fontSize: 12, color: C.muted, marginBottom: 20 }}>
+          SY18–SY25 C1 actuals · SY26–SY30 C1 projected (EHH eliminated FY26)
+        </div>
+        <ResponsiveContainer width="100%" height={280}>
+          <ComposedChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+            <XAxis dataKey="year" tick={{ fontSize: 11, fill: C.muted }} />
+            <YAxis
+              domain={[0, Math.ceil((campus.capacity * 1.05) / 100) * 100]}
+              tickFormatter={v => v.toLocaleString()}
+              tick={{ fontSize: 11, fill: C.muted }}
+            />
+            <Tooltip
+              contentStyle={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, color: C.text }}
+              formatter={(v: number, name: string) => [v?.toLocaleString() ?? '—', name]}
+            />
+            <Legend wrapperStyle={{ fontSize: 11, color: C.muted }} />
+            <ReferenceLine
+              y={campus.capacity}
+              stroke={C.purple}
+              strokeDasharray="6 3"
+              label={{ value: 'Capacity', fill: C.purple, fontSize: 10, position: 'right' }}
+            />
+            <Bar dataKey="actual" name="Actual (C1)" fill={C.blue} radius={[3,3,0,0]} maxBarSize={44} />
+            <Line
+              dataKey="forecast" name="Projected (C1)" stroke={C.gold}
+              strokeWidth={2.5} dot={{ fill: C.gold, r: 4 }} connectNulls
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
       </div>
 
-      {/* Assessment label */}
-      <div style={{
-        fontSize: 9, fontWeight: 700, letterSpacing: '.14em',
-        textTransform: 'uppercase', color: '#C0392B',
-        fontFamily: sans, marginBottom: 14,
-      }}>
-        {tod} ASSESSMENT
-      </div>
-
-      {/* Narrative */}
-      {briefing.loading && !briefing.text ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {[95, 80, 60].map((w, i) => (
-            <div key={i} style={{
-              height: 16, borderRadius: 4, width: `${w}%`,
-              background: 'linear-gradient(90deg, #E5E1D8 0%, #F3F0EA 50%, #E5E1D8 100%)',
-              backgroundSize: '400px 100%', animation: 'shimmer 1.4s infinite linear',
-            }} />
-          ))}
-          <style>{`@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}`}</style>
+      {/* Grade breakdown */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 16 }}>
+          Grade Distribution — SY25
         </div>
-      ) : (
-        <div style={{
-          fontFamily: serif, fontSize: 15, lineHeight: 1.85,
-          color: '#1A1A1A', whiteSpace: 'pre-wrap',
-        }}>
-          {briefing.text || 'Generating campus intelligence briefing…'}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Incident Timeline (compact, for right panel) ───────────
-
-function IncidentPanel({ campus, incidents }: {
-  campus: typeof CAMPUSES[0]; incidents: UnifiedIncident[];
-}) {
-  const now = Date.now();
-  const nearby = useMemo(() =>
-    incidents
-      .filter(inc => {
-        const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-        const age = (now - new Date(inc.timestamp).getTime()) / (1000 * 3600);
-        return d <= 1.5 && age <= 24;
-      })
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, 10),
-    [campus, incidents, now]
-  );
-
-  const isViolent = (inc: UnifiedIncident) => SERIOUS_VIOLENT.test(inc.title + ' ' + inc.category);
-
-  return (
-    <div style={{
-      background: '#FFFFFF', borderRadius: 12,
-      border: '1px solid #E5E1D8', padding: '16px 18px',
-      height: '100%', display: 'flex', flexDirection: 'column',
-    }}>
-      <div style={{
-        fontSize: 9, fontWeight: 800, letterSpacing: '.14em',
-        textTransform: 'uppercase', color: '#1A1A1A', fontFamily: sans,
-        marginBottom: 12,
-      }}>
-        Nearby Incidents · 24h
-      </div>
-
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        {nearby.length === 0 ? (
-          <div style={{ padding: '20px 0', textAlign: 'center', fontSize: 12, color: '#9CA3AF', fontFamily: sans }}>
-            No incidents near campus in the last 24 hours.
-          </div>
-        ) : (
-          nearby.map((inc, i) => {
-            const dist = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-            const violent = isViolent(inc);
-            const srcStyle = SOURCE_STYLES[inc.source] ?? { color: '#6B7280', label: inc.source };
-
+        <div style={{ display: 'flex', gap: 12 }}>
+          {grades.map(g => {
+            const pct = gradeTotal > 0 ? g.value / gradeTotal * 100 : 0;
+            // Cohort shrink from 9→12 is natural; flag if drop >15%
+            const expectedDrop = g.label !== '9th' ? grades[0].value * (1 - campus.attrition) ** (grades.indexOf(g)) : null;
             return (
-              <div key={inc.id || i} style={{
-                display: 'flex', alignItems: 'flex-start', gap: 10,
-                padding: '8px 0',
-                borderBottom: i < nearby.length - 1 ? '1px solid #F5F3EF' : 'none',
-              }}>
-                {/* Severity indicator */}
-                <div style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: violent ? '#C0392B' : inc.severity === 'HIGH' ? '#D97706' : '#9CA3AF',
-                  flexShrink: 0, marginTop: 5,
-                }} />
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, color: '#1A1A1A', fontFamily: sans, lineHeight: 1.4, fontWeight: violent ? 600 : 400 }}>
-                    {inc.title}
-                  </div>
-                  <div style={{ fontSize: 10, color: '#9CA3AF', fontFamily: sans, marginTop: 2, display: 'flex', gap: 8 }}>
-                    <span style={{ fontFamily: mono, fontSize: 10 }}>{fmtDist(dist)}</span>
-                    <span>{formatAge(inc.timestamp)}</span>
-                    <span style={{ color: srcStyle.color, fontWeight: 600 }}>{srcStyle.label}</span>
-                  </div>
+              <div key={g.label} style={{ flex: 1, background: '#21262D', borderRadius: 10, padding: '16px 20px', textAlign: 'center' }}>
+                <div style={{ fontSize: 11, color: C.muted, marginBottom: 8 }}>Grade {g.label}</div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: C.text, fontFamily: "'DM Mono', monospace" }}>
+                  {g.value}
+                </div>
+                <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>{pct.toFixed(1)}% of school</div>
+                {/* Visual bar */}
+                <div style={{ height: 4, background: C.border, borderRadius: 2, marginTop: 10, overflow: 'hidden' }}>
+                  <div style={{ width: `${pct}%`, height: '100%', background: C.blue, borderRadius: 2 }} />
                 </div>
               </div>
             );
-          })
-        )}
+          })}
+        </div>
+        <div style={{ marginTop: 12, fontSize: 11, color: C.muted }}>
+          9th→12th cohort retention: {gradeTotal > 0 ? ((campus.grade12 / campus.grade9) * 100).toFixed(1) : '—'}%
+          · Avg attrition per grade: ~{Math.round((campus.grade9 - campus.grade12) / 3)} students
+        </div>
       </div>
+
+      {/* AI campus analysis */}
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: C.text }}>AI Campus Analysis — {campus.short}</span>
+          {aiRan && !aiLoading && (
+            <button onClick={analyze} style={{
+              marginLeft: 'auto', fontSize: 11, color: C.muted, background: 'none',
+              border: `1px solid ${C.border}`, borderRadius: 6, padding: '3px 10px', cursor: 'pointer',
+            }}>Re-analyze</button>
+          )}
+        </div>
+        {!aiRan && (
+          <button onClick={analyze} style={{
+            padding: '9px 20px', borderRadius: 8, background: C.gold, color: '#000',
+            fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer',
+          }}>Analyze {campus.short}</button>
+        )}
+        {aiLoading && <div style={{ fontSize: 13, color: C.muted, fontStyle: 'italic' }}>Analyzing {campus.short}...</div>}
+        {aiResponse && <div style={{ fontSize: 13, color: C.text, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{aiResponse}</div>}
+      </div>
+
     </div>
-  );
-}
-
-// ─── Risk Profile (compact) ─────────────────────────────────
-
-function RiskProfile({ risk, campus, tempF, allRisks }: {
-  risk: CampusRisk; campus: typeof CAMPUSES[0]; tempF: number; allRisks: CampusRisk[];
-}) {
-  const violenceIndex = (risk.score / 100 * 10).toFixed(1);
-  const zoneCount = risk.contagionZones?.length ?? 0;
-  const trendLabel = risk.inRetaliationWindow ? '↑ Rising' : risk.label === 'LOW' ? '→ Stable' : '↗ Elevated';
-  const weatherDesc = tempF <= 20 ? 'Cold snap' : tempF <= 32 ? 'Freezing' : tempF >= 90 ? 'Heat advisory' : 'Normal';
-  const networkAvg = allRisks.length > 0 ? allRisks.reduce((s, r) => s + r.score, 0) / allRisks.length : 0;
-
-  const metrics = [
-    { label: 'Violence Index', value: `${violenceIndex} / 10`, pct: Math.min(risk.score, 100), color: risk.score > 65 ? '#C0392B' : risk.score > 35 ? '#D97706' : '#16A34A' },
-    { label: 'Contagion Risk', value: zoneCount > 0 ? `${zoneCount} zone${zoneCount > 1 ? 's' : ''}` : 'None', pct: zoneCount > 0 ? Math.min(zoneCount * 30, 100) : 0, color: zoneCount > 0 ? '#D97706' : '#16A34A' },
-    { label: 'Trend', value: trendLabel, pct: risk.inRetaliationWindow ? 80 : risk.label === 'LOW' ? 20 : 50, color: risk.inRetaliationWindow ? '#C0392B' : risk.label === 'LOW' ? '#16A34A' : '#D97706' },
-    { label: 'Weather', value: `${Math.round(tempF)}°F ${weatherDesc.toLowerCase()}`, pct: tempF <= 20 ? 60 : tempF <= 32 ? 40 : tempF >= 90 ? 50 : 15, color: tempF <= 32 ? '#3B82F6' : tempF >= 90 ? '#C0392B' : '#16A34A' },
-  ];
-
-  return (
-    <div style={{
-      background: '#FFFFFF', borderRadius: 12,
-      border: '1px solid #E5E1D8', padding: '16px 18px',
-    }}>
-      <div style={{
-        fontSize: 9, fontWeight: 800, letterSpacing: '.14em',
-        textTransform: 'uppercase', color: '#1A1A1A', fontFamily: sans,
-        marginBottom: 14,
-      }}>
-        Risk Profile
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {metrics.map(m => (
-          <div key={m.label}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-              <span style={{ fontSize: 11, color: '#6B7280', fontFamily: sans }}>{m.label}</span>
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#1A1A1A', fontFamily: sans }}>{m.value}</span>
-            </div>
-            <div style={{ height: 4, borderRadius: 2, background: '#F0EDE6', overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${m.pct}%`, background: m.color, borderRadius: 2, transition: 'width .4s ease' }} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Network comparison */}
-      <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid #E5E1D8' }}>
-        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#9CA3AF', fontFamily: sans, marginBottom: 6 }}>
-          vs Network Average
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 80, height: 4, borderRadius: 2, background: '#F0EDE6', position: 'relative', overflow: 'visible' }}>
-            <div style={{ position: 'absolute', left: '50%', top: -2, width: 2, height: 8, background: '#9CA3AF', borderRadius: 1 }} />
-            <div style={{
-              position: 'absolute',
-              left: `${Math.min(Math.max((risk.score / 100) * 100, 5), 95)}%`,
-              top: -3, width: 10, height: 10, borderRadius: '50%',
-              background: risk.score > networkAvg ? '#C0392B' : '#16A34A',
-              border: '2px solid #FFFFFF',
-            }} />
-          </div>
-          <span style={{ fontSize: 11, color: '#6B7280', fontFamily: sans }}>
-            {campus.short} ({risk.score} vs avg {Math.round(networkAvg)})
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Contagion Zones Section ────────────────────────────────
-
-function ContagionZonesSection({ zones }: { zones: ContagionZone[] }) {
-  if (!zones || zones.length === 0) return null;
-
-  return (
-    <div style={{
-      background: '#FFFFFF', borderRadius: 12,
-      border: '1px solid #E5E1D8', padding: '18px 22px',
-      marginBottom: 20,
-    }}>
-      <div style={{
-        fontSize: 9, fontWeight: 800, letterSpacing: '.14em',
-        textTransform: 'uppercase', color: '#1A1A1A', fontFamily: sans,
-        marginBottom: 14,
-      }}>
-        Active Contagion Zones · {zones.length}
-      </div>
-      {zones.map((zone, i) => {
-        const phaseColor = zone.phase === 'ACUTE' ? '#DC2626' : zone.phase === 'ACTIVE' ? '#D97706' : '#FBBF24';
-        return (
-          <div key={i} style={{
-            display: 'flex', alignItems: 'center', gap: 14,
-            padding: '10px 0',
-            borderBottom: i < zones.length - 1 ? '1px solid #F5F3EF' : 'none',
-          }}>
-            <span style={{
-              fontSize: 8, fontWeight: 800, letterSpacing: '.1em',
-              textTransform: 'uppercase', color: phaseColor, fontFamily: sans,
-              width: 60, flexShrink: 0,
-            }}>
-              {zone.phase}
-            </span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1A1A1A', fontFamily: sans }}>
-                {zone.distanceFromCampus?.toFixed(1) ?? '?'} mi {zone.bearing}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-      <div style={{ fontSize: 9, color: '#9CA3AF', fontFamily: sans, marginTop: 10 }}>
-        Contagion model: Papachristos et al., Yale/UChicago
-      </div>
-    </div>
-  );
-}
-
-// ─── Main Component ─────────────────────────────────────────
-
-export default function CampusView() {
-  const [, params] = useRoute('/campus/:id');
-  const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [showDismissal, setShowDismissal] = useState(false);
-  const data = useWatchData();
-
-  const campusId = params?.id ? parseInt(params.id, 10) : undefined;
-  const campus = campusId ? CAMPUSES.find(c => c.id === campusId) : undefined;
-
-  const risk = useMemo(() => {
-    if (!campusId) return undefined;
-    return data.campusRisks.find(r => r.campusId === campusId);
-  }, [data.campusRisks, campusId]);
-
-  // Compute violent crime stats (shared between KPIs and briefing)
-  const violentStats = useViolentCrimeStats(campus, data.fusedIncidents);
-
-  // AI briefing — reactive to violent crime count changes
-  const briefing = useCampusBriefing(campus, risk, violentStats, data.weather.temperature, !data.isLoading);
-
-  // 7-day sparkline data
-  const sparkData = useMemo(() => {
-    if (!campus) return [0, 0, 0, 0, 0, 0, 0];
-    const now = Date.now();
-    return Array.from({ length: 7 }, (_, i) => {
-      const dayStart = now - (6 - i) * 86400000;
-      const dayEnd = dayStart + 86400000;
-      return data.fusedIncidents.filter(inc => {
-        const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-        const t = new Date(inc.timestamp).getTime();
-        return d <= 1.0 && t >= dayStart && t < dayEnd && SERIOUS_VIOLENT.test(inc.title + ' ' + inc.category);
-      }).length;
-    });
-  }, [campus, data.fusedIncidents]);
-
-  // Campus-specific feed items
-  const campusFeed = useMemo(() => {
-    if (!campus) return [];
-    return data.feedItems.filter(item => {
-      if (item.lat == null || item.lng == null) return false;
-      return haversine(campus.lat, campus.lng, item.lat, item.lng) <= 3;
-    });
-  }, [data.feedItems, campus]);
-
-  // News items near campus
-  const campusNews = useMemo(() => {
-    if (!campus) return [];
-    return data.feedItems.filter(item => {
-      if (item.lat == null || item.lng == null) return false;
-      const dist = haversine(campus.lat, campus.lng, item.lat, item.lng);
-      return dist <= 5 && ['NEWS_RSS', 'NEWS_CWB', 'BLUESKY'].includes(item.source);
-    });
-  }, [data.feedItems, campus]);
-
-  // ── Early returns AFTER all hooks ──
-
-  if (!campusId || !campus) {
-    return (
-      <WatchLayout primaryTabs={PRIMARY_TABS}>
-        <div className="px-6 py-8">
-          <h2 className="text-base font-bold mb-4" style={{ color: '#121315' }}>Select Your Campus</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {CAMPUSES.map(c => {
-              const campusRisk = data.campusRisks.find(r => r.campusId === c.id);
-              const riskStyle = campusRisk ? RISK_COLORS[campusRisk.label] : RISK_COLORS.LOW;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => navigate(`/campus/${c.id}`)}
-                  className="text-left px-5 py-4 rounded-xl flex items-center justify-between transition-colors"
-                  style={{ background: '#FFFFFF', border: '1px solid #E7E2D8' }}
-                  onMouseEnter={e => (e.currentTarget.style.background = '#F7F5F1')}
-                  onMouseLeave={e => (e.currentTarget.style.background = '#FFFFFF')}
-                >
-                  <div>
-                    <div className="text-sm font-semibold" style={{ color: '#121315' }}>{c.name}</div>
-                    <div className="text-[11px] flex items-center gap-1 mt-0.5" style={{ color: '#9CA3AF' }}>
-                      <MapPin size={9} /> {c.communityArea}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {campusRisk && (
-                      <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded" style={{ background: riskStyle.bg, color: riskStyle.color }}>
-                        {campusRisk.label}
-                      </span>
-                    )}
-                    <ArrowRight size={14} style={{ color: '#D1D5DB' }} />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </WatchLayout>
-    );
-  }
-
-  if (data.isLoading) {
-    return (
-      <WatchLayout primaryTabs={PRIMARY_TABS}>
-        <div className="flex items-center justify-center py-32">
-          <div className="flex items-center gap-3">
-            <Loader2 size={20} className="animate-spin" style={{ color: '#B79145' }} />
-            <span className="text-sm" style={{ color: '#6B7280' }}>Loading campus intelligence...</span>
-          </div>
-        </div>
-      </WatchLayout>
-    );
-  }
-
-  const safeRisk = risk ?? {
-    campusId: campusId,
-    score: 0,
-    label: 'LOW' as const,
-    statusReason: '',
-    incidentsNearby24h: 0,
-    contagionZones: [],
-    inRetaliationWindow: false,
-  };
-
-  return (
-    <WatchLayout
-      primaryTabs={PRIMARY_TABS}
-      subTabs={SUB_TABS}
-      activeSubTab={activeTab}
-      onSubTabChange={setActiveTab}
-      tagline={`${campus.name} · ${campus.communityArea}`}
-      lastUpdate={data.lastUpdate}
-      isLoading={data.isLoading}
-      onRefresh={data.refresh}
-    >
-      <div className="px-6 py-5">
-        {activeTab === 'dashboard' && (
-          <div>
-            {/* Campus Header with KPIs */}
-            <CampusHeader
-              campus={campus}
-              risk={safeRisk}
-              stats={violentStats}
-              tempF={data.weather.temperature}
-              sparkData={sparkData}
-            />
-
-            {/* AI Intelligence Briefing */}
-            <AIBriefing briefing={briefing} />
-
-            {/* Two-column layout: Map (60%) | Intel Panel (40%) */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '3fr 2fr',
-              gap: 16, marginBottom: 20,
-              minHeight: 420,
-            }}>
-              {/* Left: Campus Map */}
-              <div style={{
-                background: '#FFFFFF', borderRadius: 12,
-                border: '1px solid #E5E1D8', padding: '16px 18px',
-                display: 'flex', flexDirection: 'column',
-              }}>
-                <div style={{
-                  fontSize: 9, fontWeight: 800, letterSpacing: '.14em',
-                  textTransform: 'uppercase', color: '#1A1A1A', fontFamily: sans,
-                  marginBottom: 12,
-                }}>
-                  Campus Map · 1 Mile Radius
-                </div>
-                <div style={{ flex: 1, borderRadius: 8, overflow: 'hidden', minHeight: 360 }}>
-                  <WatchMap
-                    incidents={data.fusedIncidents}
-                    campusRisks={data.campusRisks}
-                    selectedCampusId={campusId}
-                    onSelectCampus={(id) => navigate(`/campus/${id}`)}
-                  />
-                </div>
-                {/* Map legend */}
-                <div style={{ display: 'flex', gap: 12, marginTop: 10, fontSize: 10, color: '#9CA3AF', fontFamily: sans, flexWrap: 'wrap' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#C0392B', display: 'inline-block' }} />
-                    Critical
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#D97706', display: 'inline-block' }} />
-                    High
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#16A34A', display: 'inline-block' }} />
-                    Low
-                  </span>
-                  {(safeRisk.contagionZones?.length ?? 0) > 0 && (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(220,38,38,0.2)', border: '1px solid #C0392B', display: 'inline-block' }} />
-                      Contagion Zone
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Right: Incident Panel */}
-              <IncidentPanel campus={campus} incidents={data.fusedIncidents} />
-            </div>
-
-            {/* Risk Profile */}
-            <RiskProfile risk={safeRisk} campus={campus} tempF={data.weather.temperature} allRisks={data.campusRisks} />
-
-            {/* Contagion Zones */}
-            <div style={{ marginTop: 20 }}>
-              <ContagionZonesSection zones={safeRisk.contagionZones ?? []} />
-            </div>
-
-            {/* Dismissal Assessment Button */}
-            <button
-              onClick={() => setShowDismissal(true)}
-              className="w-full py-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
-              style={{ background: '#121315', color: '#FFFFFF', marginTop: 8 }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#2D2D30')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#121315')}
-            >
-              <Shield size={14} />
-              Run Dismissal Assessment
-            </button>
-
-            <DismissalAssistant
-              isOpen={showDismissal}
-              onClose={() => setShowDismissal(false)}
-              campusRisks={data.campusRisks}
-              weather={data.weather}
-              nwsAlerts={data.nwsAlerts}
-              incidents={data.fusedIncidents}
-            />
-
-            {/* Footer attribution */}
-            <div style={{
-              fontSize: 10, color: '#9CA3AF', lineHeight: 1.6,
-              padding: '14px 0', marginTop: 20,
-              borderTop: '1px solid #E5E1D8', textAlign: 'center', fontFamily: sans,
-            }}>
-              Data: CPD, Citizen App, CPD Radio, RSS news (9 sources), Open-Meteo weather.
-              Contagion model: Papachristos et al., Yale/UChicago.
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'map' && (
-          <div>
-            <h3 className="text-[10px] font-bold uppercase tracking-[2px] mb-3" style={{ color: '#121315' }}>
-              {campus.short} Area Map — Incidents within 2 miles
-            </h3>
-            <div className="rounded-xl overflow-hidden" style={{ height: '600px', border: '1px solid #E7E2D8' }}>
-              <WatchMap
-                incidents={data.fusedIncidents}
-                campusRisks={data.campusRisks}
-                selectedCampusId={campusId}
-                onSelectCampus={(id) => navigate(`/campus/${id}`)}
-              />
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'news' && (
-          <div>
-            <h3 className="text-[10px] font-bold uppercase tracking-[2px] mb-3" style={{ color: '#121315' }}>
-              News Near {campus.short} — {campusNews.length} stories
-            </h3>
-            <div className="space-y-2">
-              {campusNews.map(item => {
-                const srcStyle = SOURCE_STYLES[item.source] ?? { color: '#6B7280', label: item.source };
-                return (
-                  <div key={item.id} className="rounded-xl px-5 py-4" style={{ background: '#FFFFFF', border: '1px solid #E7E2D8' }}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded" style={{ background: srcStyle.color + '18', color: srcStyle.color }}>
-                        {srcStyle.label}
-                      </span>
-                      <span className="text-[10px] ml-auto" style={{ color: '#9CA3AF' }}>{formatAge(item.timestamp)}</span>
-                    </div>
-                    <h4 className="text-sm font-semibold" style={{ color: '#121315', borderLeft: `3px solid ${srcStyle.color}`, paddingLeft: '10px' }}>
-                      {item.title}
-                    </h4>
-                    {item.description && (
-                      <p className="text-[11px] mt-1 pl-[13px]" style={{ color: '#6B7280' }}>
-                        {item.description.slice(0, 200)}{item.description.length > 200 ? '...' : ''}
-                      </p>
-                    )}
-                    {item.url && (
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-2 pl-[13px] text-[10px]" style={{ color: '#3B82F6' }}>
-                        <ExternalLink size={9} /> {new URL(item.url).hostname}
-                      </a>
-                    )}
-                  </div>
-                );
-              })}
-              {campusNews.length === 0 && (
-                <div className="text-center py-12 text-xs" style={{ color: '#9CA3AF' }}>No news stories near {campus.short}.</div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'feed' && (
-          <div>
-            <h3 className="text-[10px] font-bold uppercase tracking-[2px] mb-3" style={{ color: '#121315' }}>
-              Intelligence Feed Near {campus.short} — {campusFeed.length} items
-            </h3>
-            <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #E7E2D8', maxHeight: '700px' }}>
-              <LiveFeed items={campusFeed} />
-            </div>
-          </div>
-        )}
-      </div>
-    </WatchLayout>
   );
 }
