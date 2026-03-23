@@ -157,7 +157,7 @@ export default function App() {
     [incidents, acuteIncidents, shotSpotterEvents, zones, tempF],
   );
 
-  // Safe default prevents crash when allRisks is empty (before first data load)
+   // Safe default prevents crash when allRisks is empty (before first data load)
   const DEFAULT_RISK: CampusRisk = {
     campusId: selectedCampusId,
     score: 0,
@@ -166,6 +166,9 @@ export default function App() {
     retaliationHoursRemaining: 0,
     contagionZones: [],
     factors: [],
+    schoolPeriod: 'after_hours',
+    minutesToDismissal: 0,
+    minutesToArrival: 0,
   } as CampusRisk;
   const selectedRisk = allRisks.find(r => r.campusId === selectedCampusId) ?? allRisks[0] ?? DEFAULT_RISK;
 
