@@ -1,17 +1,18 @@
 /**
- * CampusDashboard — Slate Watch · D2 "The Nerve Center"
+ * CampusDashboard — Slate Watch · D3 "The Nerve Center"
  *
- * Structured campus intelligence view:
- *   Top:    Campus header with name, status badge, KPI strip, sparkline, weather
- *   Middle: Full-width AI Intelligence Briefing with action buttons
- *   Bottom: Three-column grid — Incident Timeline | Campus Map | Risk Profile
+ * Redesigned campus intelligence view:
+ *   Top:    Campus header with name, status badge, KPI strip (violent crime only), sparkline, weather
+ *   Below:  Full-width AI Intelligence Briefing (auto-updates on violent crime changes)
+ *   Middle: Two-column grid — Large Map (60%) | Incident Timeline (40%)
+ *   Below:  Risk Profile (horizontal bar metrics)
+ *   Below:  Contagion Zones (if any)
  *   Footer: Ask Slate
  *
- * This component replaces the vertical chapter-stack layout with a
- * data-dense, three-column design that a principal can scan in seconds.
- *
- * It wraps existing sub-components (CampusMap, MorningBriefing, etc.)
- * in the new layout — no logic changes needed.
+ * Key fixes over D2:
+ *   1. AI briefing debounces 3s and watches VIOLENT crime counts (not total), eliminating stale narratives
+ *   2. KPI strip and briefing share the same violent-crime filter — numbers always match
+ *   3. Two-column layout gives the map room to breathe; risk profile is a horizontal strip below
  */
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
@@ -90,6 +91,46 @@ const STYLES = `
   @keyframes pulseRing{0%{transform:scale(1);opacity:.45}100%{transform:scale(2.1);opacity:0}}
 `;
 
+// ─── SHARED VIOLENT CRIME FILTER ────────────────────────────────────────────
+// Single source of truth: used by KPI strip, briefing, and timeline highlighting
+const SERIOUS_VIOLENT = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
+
+function useViolentCrimeStats(campus: Campus, incidents: Incident[]) {
+  return useMemo(() => {
+    const now = Date.now();
+
+    const violent7d = incidents.filter(inc => {
+      const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+      const age = (now - new Date(inc.date).getTime()) / (1000 * 3600 * 24);
+      return d <= 1.0 && age <= 7 && SERIOUS_VIOLENT.test(inc.type);
+    });
+
+    const violent24h = incidents.filter(inc => {
+      const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
+      const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
+      return d <= 1.0 && age <= 24 && SERIOUS_VIOLENT.test(inc.type);
+    });
+
+    const typeCounts: Record<string, number> = {};
+    for (const inc of violent7d) {
+      typeCounts[inc.type] = (typeCounts[inc.type] ?? 0) + 1;
+    }
+    const topTypes = Object.entries(typeCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([type, count]) => `${type}: ${count}`)
+      .join(', ');
+
+    return {
+      violent7d: violent7d.length,
+      violent24h: violent24h.length,
+      violent7dList: violent7d,
+      violent24hList: violent24h,
+      topTypes: topTypes || 'none',
+    };
+  }, [campus.id, campus.lat, campus.lng, incidents]);
+}
+
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
 function fmtTime() {
@@ -116,46 +157,26 @@ function timeOfDay() {
   return 'Tonight';
 }
 
-// ─── AI CAMPUS BRIEFING ──────────────────────────────────────────────────────
+// ─── AI CAMPUS BRIEFING (REACTIVE) ──────────────────────────────────────────
 
-function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert[], incidents: Incident[], tempF: number) {
+function useCampusBriefing(
+  campus: Campus,
+  risk: CampusRisk,
+  iceAlerts: IceAlert[],
+  violent7d: number,
+  violent24h: number,
+  topTypes: string,
+  tempF: number,
+  dataReady: boolean,
+) {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastKeyRef = useRef('');
 
   const generate = useCallback(async () => {
     setLoading(true);
     try {
-      // Use the EXACT same filters as the KPI strip in CampusHeader
-      const now = Date.now();
-
-      // Violent crime only — matches KPI strip definitions
-      const SERIOUS_VIOLENT = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
-
-      // 7-day violent crime within 1mi (matches "VIOLENT 7D" KPI)
-      const violent7d = incidents.filter(inc => {
-        const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-        const age = (now - new Date(inc.date).getTime()) / (1000 * 3600 * 24);
-        return d <= 1.0 && age <= 7 && SERIOUS_VIOLENT.test(inc.type);
-      });
-
-      // 24h violent crime within 1mi (matches "VIOLENT 24H" KPI)
-      const violent24h = incidents.filter(inc => {
-        const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-        const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
-        return d <= 1.0 && age <= 24 && SERIOUS_VIOLENT.test(inc.type);
-      });
-
-      // Top violent incident types for context
-      const typeCounts: Record<string, number> = {};
-      for (const inc of violent7d) {
-        typeCounts[inc.type] = (typeCounts[inc.type] ?? 0) + 1;
-      }
-      const topTypes = Object.entries(typeCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([type, count]) => `${type}: ${count}`)
-        .join(', ');
-
       const zoneCount = risk.contagionZones?.length ?? 0;
 
       const ctx = {
@@ -163,9 +184,9 @@ function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert
         communityArea: campus.communityArea,
         riskLabel: risk.label,
         riskScore: risk.score,
-        violent7d: violent7d.length,
-        violent24h: violent24h.length,
-        topViolentTypes7d: topTypes || 'none',
+        violent7d,
+        violent24h,
+        topViolentTypes7d: topTypes,
         contagionZones: zoneCount,
         inRetaliationWindow: risk.inRetaliationWindow,
         iceNearby: iceAlerts.length,
@@ -183,8 +204,8 @@ function useCampusBriefing(campus: Campus, risk: CampusRisk, iceAlerts: IceAlert
 
 CRITICAL DATA CONSISTENCY RULE:
 The dashboard KPI strip shows these exact numbers to the principal:
-- "${violent7d.length} VIOLENT 7D" (violent crimes within 1 mile in the past 7 days)
-- "${violent24h.length} VIOLENT 24H" (violent crimes within 1 mile in the past 24 hours)
+- "${violent7d} VIOLENT 7D" (violent crimes within 1 mile in the past 7 days)
+- "${violent24h} VIOLENT 24H" (violent crimes within 1 mile in the past 24 hours)
 - "${zoneCount} CONTAGION ZONE${zoneCount !== 1 ? 'S' : ''}" (active contagion zones)
 
 Your briefing text appears directly below these numbers. You MUST reference these exact counts accurately.
@@ -194,6 +215,8 @@ Your briefing text appears directly below these numbers. You MUST reference thes
 - Reference specific incident types from topViolentTypes7d when available.
 - Focus your narrative EXCLUSIVELY on serious threats to student safety — gun violence, homicides, sexual predators, kidnapping.
 - Data sources include CPD, news media, Citizen app, and police radio. All sources within 1 mile are included.
+
+DO NOT echo back the raw KPI numbers as a list. Weave them naturally into your narrative.
 
 Format rules:
 - Address the principal directly: "Your campus..."
@@ -207,12 +230,31 @@ Format rules:
         }),
       });
       const data = await res.json();
-      setText(data?.content?.[0]?.text ?? '');
+      let raw = data?.content?.[0]?.text ?? '';
+
+      // Strip any echoed KPI block the LLM might prepend
+      raw = raw.replace(/^[\s\S]*?(Your campus)/i, '$1').trim();
+
+      setText(raw);
     } catch { setText(''); }
     finally { setLoading(false); }
-  }, [campus.id, risk.label, iceAlerts.length, incidents.length]);
+  }, [campus.id, campus.short, campus.communityArea, risk.label, risk.score,
+      risk.contagionZones?.length, risk.inRetaliationWindow,
+      iceAlerts.length, violent7d, violent24h, topTypes, tempF]);
 
-  useEffect(() => { generate(); }, [generate]);
+  // Debounce: wait 3s after data changes before generating
+  useEffect(() => {
+    if (!dataReady) return;
+
+    const key = `${campus.id}-${violent7d}-${violent24h}-${risk.label}-${iceAlerts.length}`;
+    if (key === lastKeyRef.current && text) return;
+    lastKeyRef.current = key;
+
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => { generate(); }, 3000);
+
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [dataReady, campus.id, violent7d, violent24h, risk.label, iceAlerts.length, generate, text]);
 
   return { text, loading, refresh: generate };
 }
@@ -235,7 +277,6 @@ const Sparkline = ({ data, color = C.watch, width = 100, height = 32 }: {
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: 'block' }}>
       <polyline points={points} fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
-      {/* Dot on last point */}
       {(() => {
         const lastX = width;
         const lastY = height - ((data[data.length - 1] - min) / range) * (height - 4) - 2;
@@ -257,7 +298,8 @@ const StatusBadge = ({ label }: { label: string }) => {
   const c = colors[label] ?? colors.LOW;
   return (
     <span style={{
-      fontSize: 10, fontWeight: 800, letterSpacing: '.1em',
+      fontSize: 10, fontWeight: 800, letterSpacing: '.12em',
+      textTransform: 'uppercase' as const,
       padding: '4px 12px', borderRadius: 20,
       background: c.bg, color: c.text, fontFamily: sans,
     }}>
@@ -268,29 +310,11 @@ const StatusBadge = ({ label }: { label: string }) => {
 
 // ─── SECTION: CAMPUS HEADER ──────────────────────────────────────────────────
 
-const CampusHeader = ({ campus, risk, incidents, tempF }: {
+const CampusHeader = ({ campus, risk, incidents, tempF, violent7d, violent24h }: {
   campus: Campus; risk: CampusRisk; incidents: Incident[]; tempF: number;
+  violent7d: number; violent24h: number;
 }) => {
-  // Compute KPIs — VIOLENT CRIME ONLY
-  // Only: homicide, murder, shooting, gun violence, sexual assault, kidnapping
-  // Excludes: battery, robbery, theft, property crime
-  const SERIOUS_VIOLENT_KPI = /HOMICIDE|MURDER|SHOOTING|SHOT SPOTTER|CRIM SEXUAL ASSAULT|CRIMINAL SEXUAL|KIDNAPPING|AGGRAVATED ASSAULT.*HANDGUN|AGGRAVATED ASSAULT.*FIREARM/i;
   const now = Date.now();
-
-  // 7-day violent crime within 1mi
-  const violent7d = incidents.filter(inc => {
-    const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-    const age = (now - new Date(inc.date).getTime()) / (1000 * 3600 * 24);
-    return d <= 1.0 && age <= 7 && SERIOUS_VIOLENT_KPI.test(inc.type);
-  }).length;
-
-  // 24h violent crime within 1mi
-  const violent24h = incidents.filter(inc => {
-    const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
-    const age = (now - new Date(inc.date).getTime()) / (1000 * 3600);
-    return d <= 1.0 && age <= 24 && SERIOUS_VIOLENT_KPI.test(inc.type);
-  }).length;
-
   const zoneCount = risk.contagionZones?.length ?? 0;
 
   // Build 7-day sparkline data (violent crime only)
@@ -300,11 +324,10 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
     return incidents.filter(inc => {
       const d = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
       const t = new Date(inc.date).getTime();
-      return d <= 1.0 && t >= dayStart && t < dayEnd && SERIOUS_VIOLENT_KPI.test(inc.type);
+      return d <= 1.0 && t >= dayStart && t < dayEnd && SERIOUS_VIOLENT.test(inc.type);
     }).length;
   });
 
-  // Trend vs 30d average
   const avg30d = Math.round(violent7d / 7 * 30);
   const trendPct = avg30d > 0 ? Math.round(((violent7d / 7 * 30) / avg30d - 1) * 100) : 0;
 
@@ -315,7 +338,6 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
       padding: '24px 28px', marginBottom: 24,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-        {/* Left: Campus name + badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <h1 style={{
             fontFamily: serif, fontSize: 32, fontWeight: 900,
@@ -326,7 +348,6 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
           <StatusBadge label={risk.label} />
         </div>
 
-        {/* Right: Sparkline + weather */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <div style={{ textAlign: 'right' }}>
             <Sparkline data={sparkData} color={risk.label === 'LOW' ? C.green : C.watch} />
@@ -343,12 +364,11 @@ const CampusHeader = ({ campus, risk, incidents, tempF }: {
         </div>
       </div>
 
-      {/* Address */}
       <div style={{ fontSize: 12, color: C.light, fontFamily: sans, marginTop: 6 }}>
         {campus.address} · {campus.communityArea}
       </div>
 
-      {/* KPI Strip */}
+      {/* KPI Strip — uses the shared violent crime stats passed as props */}
       <div style={{
         display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
         gap: 16, marginTop: 20,
@@ -402,7 +422,6 @@ const AIBriefing = ({ briefing, campus, onNotifyDeans, onContactLegal }: {
       border: `1px solid ${C.chalk}`, padding: '28px 32px',
       marginBottom: 24,
     }}>
-      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
         <span style={{ fontSize: 16 }}>✦</span>
         <span style={{
@@ -413,7 +432,6 @@ const AIBriefing = ({ briefing, campus, onNotifyDeans, onContactLegal }: {
         </span>
       </div>
 
-      {/* Assessment label */}
       <div style={{
         fontSize: 10, fontWeight: 700, letterSpacing: '.14em',
         textTransform: 'uppercase', color: C.section,
@@ -422,7 +440,6 @@ const AIBriefing = ({ briefing, campus, onNotifyDeans, onContactLegal }: {
         {tod} ASSESSMENT
       </div>
 
-      {/* Narrative */}
       {briefing.loading && !briefing.text ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[95, 80, 60].map((w, i) => (
@@ -442,7 +459,6 @@ const AIBriefing = ({ briefing, campus, onNotifyDeans, onContactLegal }: {
         </div>
       )}
 
-      {/* Action buttons */}
       <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
         <button
           onClick={onNotifyDeans}
@@ -475,7 +491,7 @@ const AIBriefing = ({ briefing, campus, onNotifyDeans, onContactLegal }: {
             cursor: 'pointer', fontFamily: sans,
           }}
         >
-          View Full Briefing →
+          ↻ Refresh Briefing
         </button>
       </div>
     </div>
@@ -495,7 +511,7 @@ const IncidentTimeline = ({ campus, incidents }: {
       return d <= 1.0 && age <= 24;
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 12);
+    .slice(0, 20);
 
   const severityColor = (type: string) => {
     if (/HOMICIDE|MURDER/i.test(type)) return C.watch;
@@ -505,10 +521,12 @@ const IncidentTimeline = ({ campus, incidents }: {
     return C.light;
   };
 
+  const isViolent = (type: string) => SERIOUS_VIOLENT.test(type);
+
   const sourceLabel = (inc: Incident) => {
     if ((inc as any).source === 'citizen') return 'Citizen';
     if ((inc as any).source === 'news') return 'News';
-    if ((inc as any).source === 'scanner') return 'CPD';
+    if ((inc as any).source === 'scanner') return 'Scanner';
     return 'CPD';
   };
 
@@ -518,7 +536,6 @@ const IncidentTimeline = ({ campus, incidents }: {
       border: `1px solid ${C.chalk}`, padding: '20px 22px',
       height: '100%', display: 'flex', flexDirection: 'column',
     }}>
-      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
         <div style={{
           fontSize: 10, fontWeight: 800, letterSpacing: '.14em',
@@ -526,9 +543,11 @@ const IncidentTimeline = ({ campus, incidents }: {
         }}>
           Incident Timeline
         </div>
+        <div style={{ fontSize: 10, color: C.light, fontFamily: sans }}>
+          24h · 1mi radius
+        </div>
       </div>
 
-      {/* Timeline */}
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {nearby.length === 0 ? (
           <div style={{
@@ -543,25 +562,36 @@ const IncidentTimeline = ({ campus, incidents }: {
             const timeStr = t.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
             const dist = haversine(campus.lat, campus.lng, inc.lat, inc.lng);
             const desc = inc.description || inc.block || inc.type.replace(/_/g, ' ').toLowerCase();
+            const violent = isViolent(inc.type);
 
             return (
               <div key={inc.id || i} style={{
                 display: 'flex', alignItems: 'flex-start', gap: 12,
                 padding: '10px 0',
                 borderBottom: i < nearby.length - 1 ? `1px solid #F5F3EF` : 'none',
+                background: violent ? 'rgba(192,57,43,0.04)' : 'transparent',
+                marginLeft: -8, marginRight: -8, paddingLeft: 8, paddingRight: 8,
+                borderRadius: violent ? 6 : 0,
               }}>
-                {/* Severity dot */}
-                <div style={{
-                  width: 8, height: 8, borderRadius: '50%',
-                  background: severityColor(inc.type),
-                  flexShrink: 0, marginTop: 5,
-                }} />
+                <div style={{ position: 'relative', flexShrink: 0, marginTop: 5 }}>
+                  {violent && (
+                    <div style={{
+                      position: 'absolute', top: -4, left: -4,
+                      width: 16, height: 16, borderRadius: '50%',
+                      background: `${severityColor(inc.type)}20`,
+                      animation: 'pulseRing 2s infinite',
+                    }} />
+                  )}
+                  <div style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: severityColor(inc.type),
+                  }} />
+                </div>
 
-                {/* Content */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
                     fontSize: 13, color: C.deep, fontFamily: sans,
-                    lineHeight: 1.4, fontWeight: 500,
+                    lineHeight: 1.4, fontWeight: violent ? 600 : 500,
                   }}>
                     <span style={{ fontFamily: mono, fontSize: 11, color: C.light, marginRight: 6 }}>
                       {timeStr}
@@ -573,6 +603,7 @@ const IncidentTimeline = ({ campus, incidents }: {
                   </div>
                   <div style={{ fontSize: 10, color: C.light, fontFamily: sans, marginTop: 2 }}>
                     · {sourceLabel(inc)}
+                    {violent && <span style={{ color: C.watch, fontWeight: 700, marginLeft: 6 }}>VIOLENT</span>}
                   </div>
                 </div>
               </div>
@@ -584,34 +615,20 @@ const IncidentTimeline = ({ campus, incidents }: {
   );
 };
 
-// ─── SECTION: RISK PROFILE ───────────────────────────────────────────────────
+// ─── SECTION: RISK PROFILE (HORIZONTAL) ─────────────────────────────────────
 
 const RiskProfile = ({ risk, campus, incidents, tempF, allRisks }: {
   risk: CampusRisk; campus: Campus; incidents: Incident[];
   tempF: number; allRisks: CampusRisk[];
 }) => {
-  // Violence index (score / 100 * 10)
   const violenceIndex = (risk.score / 100 * 10).toFixed(1);
-
-  // Contagion risk
   const zoneCount = risk.contagionZones?.length ?? 0;
   const nearestZoneDist = zoneCount > 0
     ? Math.min(...(risk.contagionZones ?? []).map((z: any) => z.distanceFromCampus ?? 99)).toFixed(1)
     : null;
-
-  // Trend direction
   const trendLabel = risk.inRetaliationWindow ? '↑ Rising' : risk.label === 'LOW' ? '→ Stable' : '↗ Elevated';
-
-  // Source coverage
-  const sourceLive = 10;
-  const sourceTotal = 10;
-
-  // Weather impact
   const weatherDesc = tempF <= 20 ? 'Cold snap' : tempF <= 32 ? 'Freezing' : tempF >= 90 ? 'Heat advisory' : 'Normal';
-
-  // Network comparison
   const networkAvg = allRisks.reduce((s, r) => s + r.score, 0) / allRisks.length;
-  const vsNetwork = risk.score - networkAvg;
 
   const metrics = [
     {
@@ -627,94 +644,57 @@ const RiskProfile = ({ risk, campus, incidents, tempF, allRisks }: {
       color: zoneCount > 0 ? C.amber : C.green,
     },
     {
-      label: 'Trend Direction',
+      label: 'Trend',
       value: trendLabel,
       pct: risk.inRetaliationWindow ? 80 : risk.label === 'LOW' ? 20 : 50,
       color: risk.inRetaliationWindow ? C.watch : risk.label === 'LOW' ? C.green : C.amber,
     },
     {
-      label: 'Source Coverage',
-      value: `${sourceLive}/${sourceTotal} live`,
-      pct: (sourceLive / sourceTotal) * 100,
-      color: C.green,
-    },
-    {
-      label: 'Weather Impact',
+      label: 'Weather',
       value: `${Math.round(tempF)}°F ${weatherDesc.toLowerCase()}`,
       pct: tempF <= 20 ? 60 : tempF <= 32 ? 40 : tempF >= 90 ? 50 : 15,
       color: tempF <= 20 ? C.blue : tempF <= 32 ? C.blue : tempF >= 90 ? C.watch : C.green,
+    },
+    {
+      label: 'vs Network',
+      value: `${risk.score > networkAvg ? '+' : ''}${(risk.score - networkAvg).toFixed(0)} pts`,
+      pct: Math.min(Math.max((risk.score / 100) * 100, 5), 95),
+      color: risk.score > networkAvg ? C.watch : C.green,
     },
   ];
 
   return (
     <div style={{
       background: C.white, borderRadius: 12,
-      border: `1px solid ${C.chalk}`, padding: '20px 22px',
-      height: '100%', display: 'flex', flexDirection: 'column',
+      border: `1px solid ${C.chalk}`, padding: '20px 24px',
+      marginBottom: 24,
     }}>
-      {/* Header */}
       <div style={{
         fontSize: 10, fontWeight: 800, letterSpacing: '.14em',
         textTransform: 'uppercase', color: C.deep, fontFamily: sans,
-        marginBottom: 18,
+        marginBottom: 16,
       }}>
         Risk Profile
       </div>
 
-      {/* Metrics */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        gap: 20,
+      }}>
         {metrics.map(m => (
           <div key={m.label}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 5 }}>
-              <span style={{ fontSize: 12, color: C.mid, fontFamily: sans }}>{m.label}</span>
-              <span style={{ fontSize: 12, fontWeight: 600, color: C.deep, fontFamily: sans }}>{m.value}</span>
-            </div>
-            <div style={{ height: 5, borderRadius: 3, background: '#F0EDE6', overflow: 'hidden' }}>
+            <div style={{ fontSize: 11, color: C.mid, fontFamily: sans, marginBottom: 4 }}>{m.label}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: C.deep, fontFamily: sans, marginBottom: 6 }}>{m.value}</div>
+            <div style={{ height: 4, borderRadius: 2, background: '#F0EDE6', overflow: 'hidden' }}>
               <div style={{
                 height: '100%', width: `${m.pct}%`,
-                background: m.color, borderRadius: 3,
+                background: m.color, borderRadius: 2,
                 transition: 'width .4s ease',
               }} />
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Network comparison */}
-      <div style={{
-        marginTop: 18, paddingTop: 14,
-        borderTop: `1px solid ${C.chalk}`,
-      }}>
-        <div style={{
-          fontSize: 9, fontWeight: 800, letterSpacing: '.14em',
-          textTransform: 'uppercase', color: C.light, fontFamily: sans,
-          marginBottom: 8,
-        }}>
-          Compared to Network
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{
-            width: 80, height: 4, borderRadius: 2, background: '#F0EDE6',
-            position: 'relative', overflow: 'visible',
-          }}>
-            {/* Network average marker */}
-            <div style={{
-              position: 'absolute', left: '50%', top: -2,
-              width: 2, height: 8, background: C.light, borderRadius: 1,
-            }} />
-            {/* Campus position */}
-            <div style={{
-              position: 'absolute',
-              left: `${Math.min(Math.max((risk.score / 100) * 100, 5), 95)}%`,
-              top: -3, width: 10, height: 10, borderRadius: '50%',
-              background: risk.score > networkAvg ? C.watch : C.green,
-              border: `2px solid ${C.white}`,
-            }} />
-          </div>
-          <span style={{ fontSize: 11, color: C.mid, fontFamily: sans }}>
-            {campus.short}
-          </span>
-        </div>
       </div>
     </div>
   );
@@ -733,7 +713,6 @@ const CampusMapSection = ({ campus, risk, incidents, shotSpotterEvents, corridor
       border: `1px solid ${C.chalk}`, padding: '20px 22px',
       height: '100%', display: 'flex', flexDirection: 'column',
     }}>
-      {/* Header */}
       <div style={{
         fontSize: 10, fontWeight: 800, letterSpacing: '.14em',
         textTransform: 'uppercase', color: C.deep, fontFamily: sans,
@@ -742,8 +721,7 @@ const CampusMapSection = ({ campus, risk, incidents, shotSpotterEvents, corridor
         Campus Map
       </div>
 
-      {/* Map container */}
-      <div style={{ flex: 1, borderRadius: 8, overflow: 'hidden', minHeight: 280 }}>
+      <div style={{ flex: 1, borderRadius: 8, overflow: 'hidden', minHeight: 380 }}>
         <CampusMap
           campus={campus}
           risk={risk}
@@ -755,7 +733,6 @@ const CampusMapSection = ({ campus, risk, incidents, shotSpotterEvents, corridor
         />
       </div>
 
-      {/* Map legend */}
       <div style={{
         display: 'flex', gap: 14, marginTop: 12, fontSize: 10,
         color: C.light, fontFamily: sans, flexWrap: 'wrap',
@@ -822,7 +799,6 @@ const AskSlate = ({ campus, risk }: { campus: Campus; risk: CampusRisk }) => {
         </button>
       </div>
 
-      {/* Suggestions */}
       <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
         {suggestions.map(s => (
           <button
@@ -850,8 +826,7 @@ export default function CampusDashboard({
   iceAlerts, scannerData, corridors, forecast, tempF, schoolPeriod,
   onBeginProtocol, onAskPulse,
 }: Props) {
-  // ── Merge ALL incident sources so KPIs, briefing, and timeline see everything ──
-  // Deduplicate by id where possible; news/citizen/dispatch have synthetic ids
+  // ── Merge ALL incident sources ──
   const allIncidents = useMemo(() => {
     const seen = new Set<string>();
     const merged: Incident[] = [];
@@ -864,10 +839,9 @@ export default function CampusDashboard({
         }
       }
     };
-    addAll(incidents);          // CPD data portal
-    addAll(acuteIncidents);     // Acute/realtime CPD
-    addAll(newsIncidents);      // News-geocoded incidents
-    // Convert citizen incidents to Incident shape if they have lat/lng/date/type
+    addAll(incidents);
+    addAll(acuteIncidents);
+    addAll(newsIncidents);
     const citizenAsIncidents = (citizenIncidents || []).filter((c: any) => c.lat && c.lng && c.date).map((c: any) => ({
       id: c.id || `citizen-${c.lat}-${c.lng}`,
       lat: c.lat, lng: c.lng, date: c.date,
@@ -877,7 +851,6 @@ export default function CampusDashboard({
       source: 'citizen',
     } as Incident));
     addAll(citizenAsIncidents);
-    // Convert dispatch incidents similarly
     const dispatchAsIncidents = (dispatchIncidents || []).filter((d: any) => d.lat && d.lng && d.date).map((d: any) => ({
       id: d.id || `dispatch-${d.lat}-${d.lng}`,
       lat: d.lat, lng: d.lng, date: d.date,
@@ -890,7 +863,18 @@ export default function CampusDashboard({
     return merged;
   }, [incidents, acuteIncidents, newsIncidents, citizenIncidents, dispatchIncidents]);
 
-  const briefing = useCampusBriefing(campus, risk, iceAlerts, allIncidents, tempF);
+  // ── Single source of truth for violent crime stats ──
+  const stats = useViolentCrimeStats(campus, allIncidents);
+
+  // ── Data readiness ──
+  const dataReady = allIncidents.length > 0;
+
+  // ── AI Briefing: watches violent crime counts, debounces 3s ──
+  const briefing = useCampusBriefing(
+    campus, risk, iceAlerts,
+    stats.violent7d, stats.violent24h, stats.topTypes,
+    tempF, dataReady,
+  );
 
   return (
     <div style={{ background: C.cream, fontFamily: sans, color: C.deep }}>
@@ -898,8 +882,11 @@ export default function CampusDashboard({
 
       <div style={{ maxWidth: 1080, margin: '0 auto', padding: '0 0 48px' }}>
 
-        {/* ── Campus Header with KPIs ── */}
-        <CampusHeader campus={campus} risk={risk} incidents={allIncidents} tempF={tempF} />
+        {/* ── Campus Header with KPIs (uses shared stats) ── */}
+        <CampusHeader
+          campus={campus} risk={risk} incidents={allIncidents} tempF={tempF}
+          violent7d={stats.violent7d} violent24h={stats.violent24h}
+        />
 
         {/* ── AI Intelligence Briefing ── */}
         <AIBriefing
@@ -928,24 +915,26 @@ export default function CampusDashboard({
           </div>
         )}
 
-        {/* ── Three-Column Grid: Timeline | Map | Risk Profile ── */}
+        {/* ── Two-Column Grid: Map (60%) | Timeline (40%) ── */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
+          gridTemplateColumns: '3fr 2fr',
           gap: 16, marginBottom: 24,
-          minHeight: 380,
+          minHeight: 440,
         }}>
-          <IncidentTimeline campus={campus} incidents={allIncidents} />
           <CampusMapSection
             campus={campus} risk={risk} incidents={incidents}
             shotSpotterEvents={shotSpotterEvents} corridors={corridors}
             scannerData={scannerData}
           />
-          <RiskProfile
-            risk={risk} campus={campus} incidents={incidents}
-            tempF={tempF} allRisks={allRisks}
-          />
+          <IncidentTimeline campus={campus} incidents={allIncidents} />
         </div>
+
+        {/* ── Risk Profile (horizontal strip) ── */}
+        <RiskProfile
+          risk={risk} campus={campus} incidents={incidents}
+          tempF={tempF} allRisks={allRisks}
+        />
 
         {/* ── Contagion Zones (if any) ── */}
         {(risk.contagionZones?.length ?? 0) > 0 && (
