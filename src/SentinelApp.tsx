@@ -59,6 +59,9 @@ import { useRetaliationWindow } from './sentinel-hooks/useRetaliationWindow';
 import ContextualEducation from './sentinel-components/shared/ContextualEducation';
 import { useCampusMemory } from './sentinel-hooks/useCampusMemory';
 
+// ─── Source Health Monitor ──────────────────────────────────────────────────
+import SourceHealth, { useSourceHealth } from './sentinel-components/shared/SourceHealth';
+
 // ─── Shared components ──────────────────────────────────────────────────────
 import CommandCenter from './sentinel-components/network/CommandCenter';
 import ProtocolModal from './sentinel-components/shared/ProtocolModal';
@@ -74,6 +77,9 @@ type NetworkTab = 'dashboard' | 'map' | 'news' | 'intelligence' | 'feed';
 type CampusTab = 'watch' | 'feed';
 
 export default function App() {
+  // --- Source Health Tracking ---
+  const sourceHealth = useSourceHealth();
+
   // --- Navigation ---
   const [view, setView] = useState<View>('network');
   const [networkTab, setNetworkTab] = useState<NetworkTab>('dashboard');
@@ -157,7 +163,7 @@ export default function App() {
     [incidents, acuteIncidents, shotSpotterEvents, zones, tempF],
   );
 
-   // Safe default prevents crash when allRisks is empty (before first data load)
+  // Safe default prevents crash when allRisks is empty (before first data load)
   const DEFAULT_RISK: CampusRisk = {
     campusId: selectedCampusId,
     score: 0,
@@ -166,9 +172,6 @@ export default function App() {
     retaliationHoursRemaining: 0,
     contagionZones: [],
     factors: [],
-    schoolPeriod: 'after_hours',
-    minutesToDismissal: 0,
-    minutesToArrival: 0,
   } as CampusRisk;
   const selectedRisk = allRisks.find(r => r.campusId === selectedCampusId) ?? allRisks[0] ?? DEFAULT_RISK;
 
@@ -272,9 +275,9 @@ export default function App() {
   // --- Refresh Cycles ---
   const refresh90s = useCallback(async () => {
     const [acute, shots, realtime] = await Promise.all([
-      fetchIncidents(48, 500),
-      fetchShotSpotter(2, 100),
-      fetchRealtimeIncidents(),
+      sourceHealth.track('cpd_acute', () => fetchIncidents(48, 500)),
+      sourceHealth.track('shot_spotter', () => fetchShotSpotter(2, 100)),
+      sourceHealth.track('cpd_realtime', () => fetchRealtimeIncidents()),
     ]);
     setRealtimeIncidents(realtime);
     setDataFreshness(prev => ({ ...prev, realtimeCount: realtime.length, realtimeLastUpdate: new Date() }));
@@ -299,34 +302,34 @@ export default function App() {
   }, []);
 
   const refresh10min = useCallback(async () => {
-    const full = await fetchIncidents(720, 5000);
+    const full = await sourceHealth.track('cpd_full', () => fetchIncidents(720, 5000));
     setIncidents(full);
     console.log('CPD full fetch (30d):', full.length, 'incidents');
   }, []);
 
   const refresh30min = useCallback(async () => {
     const [wx, wxForecast] = await Promise.all([
-      fetchWeather(),
-      fetchWeatherForecast(),
+      sourceHealth.track('weather', () => fetchWeather()),
+      sourceHealth.track('weather_forecast', () => fetchWeatherForecast()),
     ]);
     setWeather(wx);
     setWeatherForecast(wxForecast);
   }, []);
 
   const refresh5min = useCallback(async () => {
-    const news = await fetchAllFeeds();
+    const news = await sourceHealth.track('news_rss', () => fetchAllFeeds());
     setNewsItems(news);
-    const ice = await fetchIceSignals(news);
+    const ice = await sourceHealth.track('ice', () => fetchIceSignals(news));
     setIceAlerts(ice);
     // AI geocoding with keyword-parser fallback
-    let parsed = await geocodeNewsIncidents(news);
+    let parsed = await sourceHealth.track('news_geocoded', () => geocodeNewsIncidents(news), r => r.length);
     if (parsed.length === 0) {
       parsed = parseNewsAsIncidents(news);
     }
     setNewsIncidents(parsed);
 
     // Reddit real-time intel — r/ChicagoScanner, r/CrimeInChicago
-    const redditData = await fetchRedditIntel(24);
+    const redditData = await sourceHealth.track('reddit', () => fetchRedditIntel(24));
     setRedditIncidents(redditData);
     setDataFreshness(prev => ({
       ...prev,
@@ -338,7 +341,7 @@ export default function App() {
 
   const refreshCitizen = useCallback(async () => {
     const campus = CAMPUSES.find(c => c.id === selectedCampusId) ?? CAMPUSES[0];
-    const citizen = await fetchCitizenIncidents(campus.lat, campus.lng, 2.0);
+    const citizen = await sourceHealth.track('citizen', () => fetchCitizenIncidents(campus.lat, campus.lng, 2.0));
     setCitizenIncidents(citizen);
     setDataFreshness(prev => ({
       ...prev,
@@ -347,7 +350,7 @@ export default function App() {
     }));
   }, [selectedCampusId]);
   const refreshScanner = useCallback(async () => {
-    const data = await fetchScannerActivity(120);
+    const data = await sourceHealth.track('scanner', () => fetchScannerActivity(120), d => d.totalCalls);
     setScannerData(data);
     console.log('Scanner: ' + data.totalCalls + ' calls, ' + data.spikeZones.length + ' spike zones');
     // Transcribe ALL scanner calls for real-time dispatch intelligence
@@ -628,7 +631,12 @@ export default function App() {
         </div>
       )}
 
-      <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 32, fontSize: 11, color: '#23272F', borderTop: '1px solid #E7E2D8' }}>
+      {/* ═══ SOURCE HEALTH MONITOR ═══ */}
+      <div style={{ maxWidth: 1080, margin: '32px auto 0', padding: '0 16px' }}>
+        <SourceHealth sources={sourceHealth.sources} getSummary={sourceHealth.getSummary} />
+      </div>
+
+      <footer style={{ textAlign: 'center', padding: '20px 16px', marginTop: 16, fontSize: 11, color: '#23272F', borderTop: '1px solid #E7E2D8' }}>
         <div style={{ color: '#23272F', letterSpacing: '0.5px' }}>Slate Watch — Start with the Facts — {weather.temperature.toFixed(0)}°F</div>
         <div style={{ fontSize: 9, color: '#6B7280', marginTop: 4 }}>Madden Education Advisory · Chicago, Illinois · 2026</div>
       </footer>
